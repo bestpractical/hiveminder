@@ -1,0 +1,173 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+# this is for Devel::REPL. one way to set this up is to create your Devel::REPL
+# config at ~/.re.pl/repl.rc, which has:
+# $Devel::REPL::Script::CURRENT_SCRIPT->apply_file("/x/y/btdt/etc/repl-config");
+# see http://sartak.org/conf/repl.rc for an example repl.rc
+
+# load up Jifty {{{
+use Jifty;
+BEGIN { Jifty->new }
+# }}}
+# globs -- BMU->new instead of BTDT::Model::User->new {{{
+# these do have to be done at compile time or the subs we define later will
+# be overwritten
+BEGIN {
+    package J;     *J::     = *Jifty::;
+    package JDBI;  *JDBI::  = *Jifty::DBI::;
+    package BM;    *BM::    = *BTDT::Model::;
+}
+
+BEGIN {
+    package JDBIC; *JDBIC:: = *JDBI::Collection::;
+    package JDBIR; *JDBIR:: = *JDBI::Record::;
+    package BMU;   *BMU::   = *BM::User::;
+    package BMUC;  *BMUC::  = *BM::UserCollection::;
+    package BMT;   *BMT::   = *BM::Task::;
+    package BMTC;  *BMTC::  = *BM::TaskCollection::;
+    package CU;    *CU::    = *BTDT::CurrentUser::;
+}
+
+package main;
+# }}}
+# methods -- collection->items {{{
+# $u->cu = user as current_user
+sub BMU::cu      { CU->new(email => $_[0]->email) }
+sub CU::cu       { $_[0] }
+sub JDBIC::items { @{ $_[0]->items_array_ref } }
+# }}}
+# functions/commands -- sudo { BMU->new } {{{
+sub cu     { J->web->current_user(@_) }
+sub cuo () { cu->user_object }
+
+# BMT->new(current_user => root)
+sub root () { CU->superuser }
+
+# nah, we can do one better: BMT->new(as_root)
+# (later we can make it so sudo { BMT->new } does exactly what you'd expect)
+sub as_root () { current_user => root }
+
+# list of all users, the collection itself is scalar context
+sub users () {
+    my $u = BMUC->new(as_root);
+    $u->unlimit;
+    wantarray ? $u->items : $u
+}
+
+# hash of all users, keyed by name. hashref if scalar context
+sub u () { wantarray ?   map { $_->name => $_ } users
+                     : { map { $_->name => $_ } users } }
+
+# as $user, { todo "eat tonight" }
+sub as {
+    my $u    = shift;
+    my $code = shift;
+
+    my $t = cu;
+    cu($u);
+
+    my @ret;
+    if (wantarray) { @ret    = $code->() }
+    else           { $ret[0] = $code->() }
+
+    cu($t);
+
+    return wantarray ? @ret : $ret[0];
+}
+
+# sudo { create_user 'Foo' }
+sub sudo (&) { as root, $_[0] }
+
+# become root (or whoever) for the rest of the session
+sub su (;$) {
+    my $u = shift || root;
+    if (!ref($u)) {
+        my $user = sudo { BMU->new };
+        $user->load_by_cols(name => $u);
+        die "No user by the name $u" unless $user->id;
+        $u = $user;
+    }
+    cu($u->cu)
+}
+
+sub whoami () { cuo ? cuo->name : "nobody" }
+
+sub create_user {
+    unshift @_, 'name' if @_ == 1;
+    my %args = @_;
+    $args{email} ||= "$args{name}\@example.com";
+    $args{email_confirmed} = 1
+        unless exists $args{email_confirmed};
+    $args{password} ||= "password";
+
+    my $u = sudo { BMU->new };
+    $u->create(%args);
+}
+*new_user = \&create_user;
+
+sub todo {
+    my $summary = shift;
+    my %args = @_;
+    my $t = BMT->new;
+    $t->create(summary => $summary, %args);
+}
+*new_task = \&todo;
+
+sub sql {
+    my $query = shift;
+    my $rv     = J->_handle->simple_query($query);
+    my $result = $rv->fetchall_arrayref();
+    return $result;
+}
+# }}}
+# IM -- im 'todo' {{{
+use BTDT::IM::Web;
+our $im = BTDT::IM::Web->new;
+*BTDT::IM::Web::linkify = \&BTDT::IM::Test::linkify;
+sub im {
+    my @ret = $im->interp(@_);
+    s{<br[^>]*>}{\n}gi for @ret;
+    @ret;
+}
+# }}}
+# DateTime fun (dtfn, dm, intuit_date, intuit_date_explicit) {{{
+sub intuit_date_explicit {
+    my $in = shift;
+    BTDT::DateTime->intuit_date_explicit($in);
+}
+
+sub intuit_date {
+    my $in = shift;
+    BTDT::DateTime->intuit_date($in);
+}
+
+sub dtfn {
+    my $in = shift;
+    my $dt = BTDT::DateTime->now;
+    $dt->parse_dtfn($dt->preprocess($in));
+}
+
+sub dm {
+    my $in = shift;
+    my $dt = BTDT::DateTime->now;
+    $dt->parse_date_manip($dt->preprocess($in));
+}
+
+sub de {
+    my $in = shift;
+    my $dt = BTDT::DateTime->now;
+    $dt->parse_date_extract($dt->preprocess($in));
+}
+
+# use the raw DateTime::Format::Natural with prefer_future OFF. you can pass
+# in a second argument to turn on prefer_future.
+sub _dtfn {
+    my $in = shift;
+    my $prefer_future = shift;
+    my $parser = DateTime::Format::Natural->new(prefer_future => shift);
+    $parser->parse_datetime($in);
+}
+# }}}
+

@@ -1,0 +1,71 @@
+<%args>
+$id       => undef
+$property => undef
+$edit     => 0
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new;
+$task->load($id);
+return unless $task->id;
+
+my $label;
+my $update;
+
+if ( $edit ) { 
+    $update = Jifty->web->new_action(
+        class   => "UpdateTask",
+        moniker => "edit-property-$property-" . Jifty->web->serial,
+        record  => $task
+    );
+}
+else {
+    # Get the proper label for the property
+    if ( $property =~ /project|milestone/ ) {
+        $label = $task->$property->id
+                    ? $task->$property->summary
+                    : '(none)';
+    }
+    else {
+        $label = $task->$property;
+    }
+}
+</%init>
+
+% if ( $edit ) {
+
+<%
+    $update->form_field(
+        $property,
+        onchange => [
+            {
+                submit       => $update,
+                refresh_self => 1,
+                args         => { edit => 0 },
+            },
+            {
+                refresh => Jifty->web->current_region->parent->qualified_name,
+                args    => { maybe_view => 1 },
+            }
+        ],
+        onblur   => [{
+            refresh_self => 1,
+            args         => { edit => 0 },
+        }],
+        focus => 1
+    )->render_widget
+%>
+
+% } else {
+
+<%
+    Jifty->web->link(
+        label => $label,
+        onclick   => [{
+            refresh_self => 1,
+            args         => { edit => 1 },
+        }]
+    )
+%>
+
+% }
+

@@ -1,0 +1,6 @@
+  <& edit_basics, task => $task, update_task => $update_task &>
+  <& add_comment, task => $task, update_task => $update_task &>
+<%args>
+$task
+$update_task
+</%args>

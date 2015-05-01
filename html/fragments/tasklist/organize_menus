@@ -1,0 +1,55 @@
+<%args>
+$task
+$tokens
+$update
+</%args>
+<%init>
+return unless $task->id && $update;
+</%init>
+<%perl>
+for my $type (qw( project milestone )) {
+    my $menu = Jifty::Web::Menu->new( label => ucfirst($type).'...' );
+
+    if ( not $task->complete
+         and $task->__value('group')
+         and not $task->$type->id )
+    {
+        my $items = Jifty->web->mason->cache->get( "group${type}s-" . $task->group->id );
+        my @items = @{ $items || [] };
+        unless (@items) {
+            my $class = "BTDT::".ucfirst($type)."Collection";
+            my $collection = $class->new;
+            $collection->group( $task->group->id );
+            $collection->incomplete;
+            $collection->order_by({ column => 'summary' });
+            @items = map { $_->id => $_->summary } @$collection;
+            Jifty->web->mason->cache->set(
+                "group${type}s-" . $task->group->id => \@items,
+                '5 min'
+            );
+        }
+
+        while ( my $id = shift @items ) {
+            my $name = shift @items;
+
+            $menu->child(
+                $name,
+                link => $update->button(
+                    label     => $name,
+                    arguments => { $type => $id },
+                    onclick   => {
+                        submit       => $update,
+                        refresh_self => 1,
+                        args         => { maybe_view => 1 }
+                    },
+                    as_link => 1,
+                )
+            );
+        }
+    }
+    my @kids = $menu->children;
+    $m->out( $menu->render_as_context_menu )
+        if @kids;
+}
+</%perl>
+

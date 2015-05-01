@@ -1,0 +1,256 @@
+/* This will eventually supercede projects.css */
+
+/* Tasklists */
+
+.dashboard-tasklist .tasklist .create {
+    width: auto;
+    margin-left: 0;
+}
+
+.dashboard-tasklist .tasklist .create input.argument-tags {
+    width: 5em;
+}
+
+/* Graph lists */
+
+.dashboard .graph {
+    width: 100%;
+}
+
+.graph-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.graph-list .subject {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.graph-list .subject a { text-decoration: none; }
+.graph-list .subject a:hover { text-decoration: underline; }
+
+.graph-list .time-tracking {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.switch-graph-list {
+    display: block;
+    margin-top: -0.8em;
+    margin-bottom: 0.2em;
+    text-align: right;
+    font-size: 0.9em;
+}
+
+/* People list */
+
+.group-dashboard dl.projects,
+.group-dashboard dl.milestones,
+.group-dashboard dl.people
+{
+    padding: 0;
+    margin: 0;
+}
+
+.group-dashboard dl.people {
+    padding-left: 0.5em;
+}
+
+.group-dashboard dl.people .person {
+    display: block;
+}
+
+.group-dashboard dl.people dt {
+    display: inline;
+}
+
+.group-dashboard dl.people dt a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.group-dashboard dl.people dt a:hover {
+    text-decoration: underline;
+}
+
+.group-dashboard dl.people dt.invited {
+    padding-left: 30px;
+}
+
+.group-dashboard dl.people dt .graph,
+.group-dashboard dl.projects dt .graph,
+.group-dashboard dl.milestones dt .graph
+{
+    display: block;
+    float: left;
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    width*: 30px;
+}
+
+.group-dashboard dl.people dt .graph img,
+.group-dashboard dl.projects dt .graph img,
+.group-dashboard dl.milestones dt .graph img
+{
+    position: absolute;
+    clip: rect(8px 33px 33px 8px);
+    top: -8px;
+    left: -7px;
+}
+
+.group-dashboard dl.projects dt a,
+.group-dashboard dl.milestones dt a
+{
+    font-size: 1.1em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.group-dashboard dl.projects dt.complete a,
+.group-dashboard dl.milestones dt.complete a
+{
+    color: #666;
+    text-decoration: line-through; 
+}
+
+.group-dashboard dl.projects dt a:hover,
+.group-dashboard dl.milestones dt a:hover
+{
+    text-decoration: underline;
+}
+
+.group-dashboard dl.projects dd,
+.group-dashboard dl.milestones dd,
+.group-dashboard dl.people dd
+{
+    color: #666;
+    padding: 0 0 0 20px;
+    margin: -0.1em 0 0 0;
+}
+
+.group-dashboard dl.people dd {
+    display: inline;
+    padding-left: 0.5em;
+    margin: 0;
+}
+
+.group-dashboard dl.projects dd a,
+.group-dashboard dl.milestones dd a,
+.group-dashboard dl.people dd a
+{
+    color: #666;
+    text-decoration: none;
+}
+
+.group-dashboard dl.projects dd a:hover,
+.group-dashboard dl.milestones dd a:hover,
+.group-dashboard dl.people dd a:hover
+{
+    text-decoration: underline;
+}
+
+.group-dashboard ul.projects {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.group-dashboard ul.projects li .project-details {
+    color: #666;
+    padding-left: 0.5em;
+}
+
+.group-dashboard ul.projects li .project-details a {
+    color: #666;
+    text-decoration: none;
+}
+
+.group-dashboard ul.projects li .project-details a:hover {
+    text-decoration: underline;
+}
+
+.group-dashboard ul.projects li .subject {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.group-dashboard ul.projects li .subject a { text-decoration: none; }
+.group-dashboard ul.projects li .subject a:hover { text-decoration: underline; }
+
+/* Basic info overview */
+
+.group-dashboard .overview .name {
+    color: #222;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin: 0 0 0.3em 0;
+    padding: 0;
+    line-height: 1em;
+}
+
+.group-dashboard .overview .name .complete a.editable {
+    color: #666 !important;
+    text-decoration: line-through; 
+}
+
+.group-dashboard .overview .name .complete a.editable:hover {
+    text-decoration: none;
+}
+
+.group-dashboard .overview .properties {
+    color: #444;
+}
+
+.group-dashboard .overview .properties .property {
+    font-weight: bold;
+}
+
+.group-dashboard .overview .type {
+    color: #bbb;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+/* Inline editable stuff */
+
+.group-dashboard .overview form .jifty-region,
+.group-dashboard .overview form .jifty-region input
+{
+    display: inline;
+}
+
+.group-dashboard .overview form .jifty-region .hidden {
+    display: inline;
+    visibility: hidden;
+}
+
+.group-dashboard .overview form .jifty-region input.argument-summary { width: 90%; }
+/*.group-dashboard .overview form .jifty-region input.argument-owner_id { width: 60%; }*/
+
+.group-dashboard .overview .editable-inline a.editable { text-decoration: none; }
+.group-dashboard .overview .editable-inline a.editable:hover { background-color: #ffff9c; }
+.group-dashboard .overview .name .editable-inline a.editable { color: #222; }
+.group-dashboard .overview .properties .editable-inline a.editable { color: #444; }
+
+.group-dashboard .overview .actions form,
+.group-dashboard .overview .actions div.submit_button
+{
+    display: inline;
+}
+
+.group-dashboard .overview .actions form div.hidden {
+    display: inline;
+    visibility: hidden;
+}
+
+/* extra */
+
+.group-dashboard .overview-extra h2 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}

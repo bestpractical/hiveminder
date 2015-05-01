@@ -1,0 +1,129 @@
+use GD::Graph::lines;
+use List::Util qw(max);
+require 'save.pl';
+
+print STDERR "Processing sample52\n";
+ my @legend;
+    push @legend, '' for (1..12);
+    my      @by_you =  (4, 3, 5, 60, 30,  125, 55, -30, -4, -6, -7, -16);
+    my  @for_you=       (2, 2, 72, -50, 5,  4.5,150,  -200, 173,  25,  -44,  3);
+
+@data = ( 
+    [@legend ],
+    [      @by_you ],
+    [ @for_you]
+);
+
+my $todo_max = max( map { abs($_)} @for_you, @by_you);
+
+$my_graph = GD::Graph::lines->new(300,100 )||die $@;
+
+$my_graph->set( 
+	title => 'How are you doing this year?',
+	y_max_value => $todo_max,
+	y_min_value => 0-$todo_max,
+    #y_tick_number => 16,
+    #y_label_skip => 2,
+	box_axis => 0,
+    axis_space => 15,
+    no_axes => 0,
+	line_width => 1,
+	zero_axis_only => 1,
+    tick_length => 0,
+    x_ticks => 0,
+    y_tick_number =>0,
+	transparent => 1,
+);
+ $my_graph->set( dclrs => [ qw(red blue) ] );
+
+$my_graph->set_legend("By you", "For you");
+$my_graph->plot(\@data);
+draw_y_ticks_v($my_graph);
+#$my_graph->draw_ticks;
+save_chart($my_graph, 'sample52');
+`open sample52.png`;
+
+sub draw_y_ticks_v {
+    my $self = shift;
+
+    for my $t ( 0 .. $self->{y_tick_number} ) {
+
+        # XXX Ugh, why did I ever do it this way? How bloody obscure.
+        for my $axis ( 1 .. ( $self->{two_axes} + 1 ) ) {
+            my $value = $self->{y_values}[$axis][$t];
+            my $label = $self->{y_labels}[$axis][$t];
+
+            my ( $x, $y ) = $self->val_to_pixel( 0, $value, -$axis );
+            $x = ( $axis == 1 ) ? $self->{left} : $self->{right};
+
+#if ($self->{y_long_ticks}) {
+#    $self->{graph}->line( $x, $y, $x + $self->{right} - $self->{left}, $y, $self->{fgci} ) unless ($axis-1); }
+#else {
+#          $self->{graph}->line( $x, $y, $x + ( 3 - 2 * $axis ) * $self->{y_tick_length}, $y, $self->{fgci} );
+
+            #}
+
+          #  next if $t % ($self->{y_label_skip}) || ! $self->{y_plot_values};
+
+            $self->{gdta_y_axis}->set_text($label);
+                $self->{gdta_y_axis}->set_align( 'center', 'right' );
+                $x += $self->{axis_space};
+            $self->{gdta_y_axis}->draw( $x, $y );
+        }
+    }
+
+    return $self;
+}
+
+sub draw_y_ticks_h
+{
+    my $self = shift;
+
+    for my $t (0 .. $self->{y_tick_number})
+    {
+        for my $axis (1 .. ($self->{two_axes} + 1))
+        {
+            my $value = $self->{y_values}[$axis][$t];
+            my $label = $self->{y_labels}[$axis][$t];
+
+            my ($x, $y) = $self->val_to_pixel(0, $value, -$axis);
+            $y = ($axis == 1) ? $self->{bottom} : $self->{top};
+
+            if ($self->{y_long_ticks})
+            {
+                $self->{graph}->line(
+                    $x, $self->{bottom},
+                    $x, $self->{top},
+                    $self->{fgci}
+                ) unless ($axis-1);
+            }
+            else
+            {
+                $self->{graph}->line(
+                    $x, $y,
+                    $x, $y  - $self->{y_tick_length},
+                    $self->{fgci}
+                );
+            }
+
+            next
+                if $t % ($self->{y_label_skip}) || ! $self->{y_plot_values};
+
+            $self->{gdta_y_axis}->set_text($label);
+            if ($axis == 1)
+            {
+                $self->{gdta_y_axis}->set_align('top', 'center');
+                $y += $self->{axis_space};
+            }
+            else
+            {
+                $self->{gdta_y_axis}->set_align('bottom', 'center');
+                $y -= $self->{axis_space};
+            }
+            $self->{gdta_y_axis}->draw($x, $y);
+        }
+    }
+
+    return $self;
+}
+

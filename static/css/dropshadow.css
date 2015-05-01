@@ -1,0 +1,33 @@
+.dropshadow_wrap1, .dropshadow_wrap2, .dropshadow_wrap3 {
+  display:inline-table;
+  /* \*/display:block;/**/
+}
+.dropshadow_wrap1 {
+  float: left;
+  background:url(/static/images/dropshadow/shadow.gif) right bottom;
+}
+.dropshadow_wrap2 {
+  background:url(/static/images/dropshadow/corner_bl.gif) -12px 100% no-repeat;
+}
+.dropshadow_wrap3 {
+  padding:0 7px 7px 0;
+  background:url(/static/images/dropshadow/corner_tr.gif) 100% -12px no-repeat;
+}
+
+/* For left drop shadows */
+
+.dropshadow_left_wrap1, .dropshadow_left_wrap2, .dropshadow_left_wrap3 {
+  display:inline-table;
+  /* \*/display:block;/**/
+}
+.dropshadow_left_wrap1 {
+  float: right;
+  background:url(/static/images/dropshadow/shadow_left_f6f6f6.gif) left bottom;
+}
+.dropshadow_left_wrap2 {
+  background:url(/static/images/dropshadow/corner_br_f6f6f6.gif) 102% bottom no-repeat;
+}
+.dropshadow_left_wrap3 {
+  padding:0 0 7px 7px;
+  background:url(/static/images/dropshadow/corner_tl_f6f6f6.gif) left -35px no-repeat;
+}

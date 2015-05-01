@@ -1,0 +1,4 @@
+---
+framework:
+  Database:
+    RecordBaseClass: Jifty::DBI::Record::Memcached

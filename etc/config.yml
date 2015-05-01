@@ -1,0 +1,95 @@
+---
+framework:
+  ConfigFileVersion: 6
+  ApplicationClass: BTDT
+  ApplicationName: Hiveminder
+  DevelMode: 0
+  AdminMode: 0
+  ActionBasePath: BTDT::Action
+  LogLevel: DEBUG
+  TemplateClass: BTDT::View
+  View:
+    Handlers:
+      - Jifty::View::Static::Handler
+      - Jifty::View::Mason::Handler
+      - Jifty::View::Declare::Handler
+  Web:
+    Port: 8008
+    TemplateRoot: html
+    StaticRoot: static
+    BaseURL: http://localhost/
+    MasonConfig:
+      component_error_handler: 0
+    FastCGI:
+      MaxRequests: 1024
+      Gladiator: 1
+    SessionCookieName: JIFTY_SID_HIVEMINDER
+  CAS:
+    Default:
+      Class: Jifty::CAS::Store::Nested
+      Parts:
+        - Class: Jifty::CAS::Store::Memory
+        - Class: Jifty::CAS::Store::LocalFile
+          Path: %var/cas%
+  L10N:
+    AllowedLang:
+        - en$
+  Database:
+    CheckSchema: 0
+    Database: jifty
+    Driver: Pg
+    Host: localhost
+    User: postgres
+    Version: 0.3.1
+    Password: ''
+  Mailer: IO
+  MailerArgs:
+    - %log/mail.log%
+  Plugins: 
+    - SkeletonApp: {}
+    - CompressedCSSandJS:
+        css: 1
+        js: 1
+#        external_publish: 1
+#        jsmin: %bin/jsmin-closure%
+    - REST: {}
+    - Chart:
+        DefaultRenderer: XMLSWF
+        license_key: 'redacted'
+        PreloadRenderers:
+            - Google
+            - GoogleViz
+    - Monitoring:
+        path:
+          - BTDT::Statistics
+    - Quota:
+        disk:
+          # 500MB (in bytes)
+          User: 524288000
+    - OAuth: {}
+application:
+  # 5MB (in bytes)
+  MaxAttachmentSize: 5242880
+  EmailSecrets: %etc/adverbs.txt%
+  EULAVersion: 1
+  InvitesPerUser: 5
+  FeatureFlags:
+    IMAP: 1
+    Twitter: 1
+    TimeTracking: 1
+    Projects: 0
+  IM:
+    aim_screenname: 'redacted'
+    aim_password: 'redacted'
+  AuthorizeNet:
+    # Test credentials -- real ones should be in site_config.yml
+    LiveMode: 0
+    login: 'redacted'
+    transaction_key: 'redacted'
+  IMAP:
+    port: 8080
+    ssl_port: 8100
+    uidvalidity: 2
+    memcache: 1800
+    poll_every: 60
+    monitor_port: 8120

@@ -1,0 +1,15 @@
+<%init>
+my $action = Jifty->web->new_action(class => 'CreateTask', moniker => 'create', sticky => 1);
+</%init>
+<&| /mini/_elements/wrapper, title => "Create a task in Hiveminder" &>
+<%perl>
+Jifty->web->form->start();
+    my @f = qw/priority summary description group owner requestor due tags time_left/;
+    foreach my $argument (@f) {
+        Jifty->web->out( $action->form_field( $argument ) );
+    }
+
+Jifty->web->form->submit( label => 'Create');
+Jifty->web->form->end();
+</%perl>
+</&>

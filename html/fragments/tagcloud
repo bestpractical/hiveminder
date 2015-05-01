@@ -1,0 +1,94 @@
+<%args>
+$tokens => undef # A space-seperated list of tokens
+$group_id => ''
+$page_tokens => undef
+</%args>
+<div id="tagcloud">
+<div class="tagcloud">
+  <h3>Tags <% BTDT->contextual_help("reference/tasks/tags") %></h3>
+  <div class="links">
+% for my $type (qw( page group all )) {
+%     next if $type eq 'group' and not $group_id;
+%     next if $type eq 'page' and not defined $page_tokens;
+%
+%     my @class = ();
+%     push @class, class => 'active'
+%           if defined $tokens and $tokens eq $type_tokens{$type};
+    <%
+        Jifty->web->link(
+                label   => $type,
+                onclick => {
+                    refresh_self => 1,
+                    args => {
+                        tokens      => ($page_tokens ? $type_tokens{$type} : undef),
+                        page_tokens => $page_tokens,
+                        group_id    => $group_id,
+                    },
+                },
+                @class,
+        ) %>
+% }
+  </div>
+  <% $cloud->html | n %>
+
+  <div class="links">
+% # don't display "untagged" if we already have tags
+% if ( $untagged_tasks && $path !~ m{/(?:tag|untagged)/} ) {
+    (<%   Jifty->web->link(
+             label   => 'untagged',
+             url     => "/list/untagged$path",
+         ) %>)
+% }
+  </div>
+
+</div>
+</div>
+<%init>
+return unless(Jifty->web->current_user);
+
+$page_tokens = $tokens if not defined $page_tokens;
+
+my %type_tokens = (
+    page    => $page_tokens,
+    all     => 'owner me not complete',
+);
+
+$tokens ||= $type_tokens{all};
+
+$group_id = $ARGS{'group'}->id if not $group_id and defined $ARGS{'group'};
+
+$group_id = undef if not $page_tokens;
+if ($group_id) {
+    $type_tokens{'group'} = 'not complete group ' . $group_id;
+    $page_tokens .= " group ".$group_id unless ($page_tokens =~ /group $group_id(?:\s|$)/i); 
+}
+
+my $task_collection = BTDT::Model::TaskCollection->new();
+my @tokens = BTDT::Model::TaskCollection->split_tokens($tokens);
+$task_collection->from_tokens(@tokens);
+$task_collection->columns( 'tags', 'owner_id', 'requestor_id', 'group_id' );
+
+my $tag_count = $task_collection->tags;
+my $untagged_tasks = delete $tag_count->{''};
+
+# '' to get us a leading slash
+my $path = BTDT::Model::TaskCollection->join_tokens_url('', @tokens);
+
+# Get a list of tags on which we've already filtered
+use Text::Tags::Parser;
+my $parser     = Text::Tags::Parser->new;
+my %default    = $task_collection->new_defaults;
+my @searchtags = $parser->parse_tags( $default{'tags'} );
+
+my $cloud = HTML::TagCloud->new;
+for my $tag ( keys %$tag_count ) {
+    # Skip tags on which we've already filtered
+    next if grep { $tag eq $_ } @searchtags;
+
+    my $tagpath = BTDT::Model::TaskCollection->add_tag_tokens($path, $tag);
+
+    $cloud->add( Jifty->web->escape($tag),
+                 "/list$tagpath",
+                 $tag_count->{$tag} );
+}
+</%init>

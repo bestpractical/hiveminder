@@ -1,0 +1,26 @@
+<h1>Text edit</h1>
+<div class="textedit">
+<% Jifty->web->form->start %>
+<% $action->hidden(format => 'sync') %>
+<% $action->form_field('content', label => '', default_value => $text) %>
+<% Jifty->web->form->submit( label => "Update it!", onclick => [{ refresh => Jifty->web->current_region->parent },
+{
+            replace_with => '/__jifty/empty',
+            toggle       => 1,
+},
+{ submit => $action} ]) %>
+<% Jifty->web->form->end %>
+</div>
+<%args>
+$tokens
+</%args>
+<%init>
+my $collection = BTDT::Model::TaskCollection->new();
+my @tokens = $collection->split_tokens($tokens);
+$collection->from_tokens(@tokens);
+
+my $action = Jifty->web->new_action(class => "UploadTasks", moniker => "uploadtasks");
+my $sync = BTDT::Sync::TextFile->new;
+my $text =  $sync->as_text($collection);
+
+</%init>

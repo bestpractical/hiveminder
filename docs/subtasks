@@ -1,0 +1,6 @@
+* you should be able to set up a set of next actions for a task.
+    * next actions are just tasks this task depends on
+* you should be able to set up a list of things a task depends on.
+* you should be able to hide tasks that have open dependencies.  
+* you should be able to get a list of tasks that have no open deps
+

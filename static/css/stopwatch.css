@@ -1,0 +1,71 @@
+/* in-page */
+.stopwatch-widget {
+    padding: 0.7em 1em 1em 1em;
+    margin: 0;
+}
+
+/* popout */
+body.stopwatch-widget {
+    margin: 0.7em 1em 1em 1em;
+    padding: 0;
+}
+
+/* common */
+.stopwatch-widget a.task {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+    color: #333;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.stopwatch-widget a.task:hover {
+    text-decoration: underline;
+}
+
+.stopwatch-widget label {
+    width: 10em;
+    line-height: 2em;
+}
+
+.stopwatch-widget label.argument-add_time_worked { margin-top: 0.5em; }
+
+.stopwatch-widget input.argument-add_time_worked,
+.stopwatch-widget input.argument-time_left {
+    width: 5em;
+}
+
+.stopwatch-widget textarea.argument-comment {
+    width: 100%;
+    height: 2.75em;
+}
+
+.stopwatch-widget label.argument-comment {
+    font-weight: normal;
+}
+
+.stopwatch-widget button.start { color: green; }
+.stopwatch-widget button.stop  { color: red; }
+
+.stopwatch-widget input.button {
+    float: right;
+    margin-left: 1em;
+}
+
+.stopwatch-widget form {
+    margin-top: 0.5em;
+}
+
+.stopwatch-widget #messages, .stopwatch-widget #errors {
+    font-size: 0.9em;
+}
+
+.stopwatch-widget a.popout {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    text-decoration: none;
+    color: #888;
+    text-indent: -5000em;
+}
+

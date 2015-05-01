@@ -1,0 +1,46 @@
+TaskAttachment
+    
+    - attachment stored in database as base64 (using filter)
+    - attached to a TaskTransaction and optional TaskEmail (if mailed in)
+    - TaskTransaction->attachments and TaskEmail->attachments
+
+    column task =>
+      references BTDT::Model::Task,
+      label is 'Task',
+      is mandatory;
+
+    column transaction =>
+      references BTDT::Model::TaskTransaction,
+      label is 'Transaction',
+      is mandatory;
+
+    column email =>
+      references BTDT::Model::TaskEmail,
+      label is 'Email';
+
+    column content =>
+      label is 'Content',
+      type is 'bytea',
+      filters are qw/ Jifty::DBI::base64 /,
+      is immutable,
+      is mandatory;
+
+    column user =>
+      references BTDT::Model::User,
+      label is 'User',
+      is mandatory;
+
+    column filename =>
+      type is 'text',
+      label is 'Filename';
+
+    column name =>
+      type is 'text',
+      label is 'Name';
+
+
+UI:
+    - attachments tab (view, add, delete, rename)
+    - add attachments from tasklist
+    - show # of attachments for a task in tasklist
+

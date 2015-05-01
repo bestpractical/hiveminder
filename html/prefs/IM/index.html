@@ -1,0 +1,113 @@
+<&| /_elements/wrapper, title => "Preferences", subtitle => $subtitle &>
+
+<p>
+  Hiveminders are busy people, and who are we to mess with your flow?
+  Sometimes the full Hiveminder interface (and even the
+  <% Jifty->web->link( url => '/mobile', label => 'mobile interface' ) %>)
+  are more cumbersome than your time demands.
+</p>
+
+<p>
+  Now you can tell us your tasks like you're talking to a buddy.
+  <% BTDT->contextual_help("how-to/tasks-by-IM") %>
+  Hiveminder IM lets you add tasks, search for tasks, and even update tasks
+  from within your Instant Messaging client.
+</p>
+
+<p>
+Want to try it out?
+</p>
+
+<% Jifty->web->region(
+    name     => 'im-instructions',
+    path     => $instruction_path,
+)%>
+
+<hr />
+
+<% Jifty->web->form->start %>
+<p>
+<% $create->button(
+    label => 'Give me a password!',
+    arguments => { user_id => Jifty->web->current_user->id },
+    onclick => [
+        # add the new password to the list
+        {
+            submit => $create,
+            refresh => 'im-passwords',
+        },
+        # refresh the Twitter fragment to update its "d hmtasks password" link
+        {
+            refresh => 'im-instructions',
+        },
+    ]
+)%>
+</p>
+<% Jifty->web->form->end %>
+
+<% $passwdregion->render %>
+
+<h2><% $known_screennames %></h2>
+<dl class="im_addresses">
+% while (my $im = $im_addresses->next) {
+
+<%    Jifty->web->region(
+        name     => 'im-' . $im->id,
+        path     => '/fragments/im/delete',
+        defaults => {
+            id        => $im->id,
+           },
+    ) %>
+
+
+% } 
+</dl>
+
+</&>
+
+<%init>
+my $type = $instructions eq 'twitter' ? 'Twitter' : 'IM';
+
+my $instruction_path = $type eq 'Twitter'
+                     ? '/fragments/im/twitter'
+                     : '/fragments/im/primary';
+
+my $subtitle = $type eq 'Twitter'
+             ? 'Tasks by Twitter'
+             : 'Tasks by IM';
+
+my $known_screennames = $type eq 'Twitter'
+                      ? 'Linked Twitter Accounts'
+                      : 'Known Screennames';
+
+# Set up the actions
+my $create = Jifty->web->new_action(class => 'CreateUserIM');
+
+#Get their current addresses
+my $im_addresses = BTDT::Model::UserIMCollection->new;
+$im_addresses->limit(column => 'user_id', value => Jifty->web->current_user->id);
+$im_addresses->limit(column => 'confirmed', value => 1);
+
+# display only the right screennames
+if ($type eq 'Twitter') {
+    $im_addresses->limit(column => 'protocol', operator => "=", value => 'Twitter');
+}
+elsif ($type eq 'IM') {
+    $im_addresses->limit(column => 'protocol', operator => "=", value => 'AIM');
+    $im_addresses->limit(column => 'protocol', operator => "=", value => 'Jabber');
+}
+
+# Create region here to avoid "Can't find region" warnings when we render
+# a button referencing the region before the region is created.
+my $passwdregion = Jifty::Web::PageRegion->new(
+    name     => 'im-passwords',
+    path     => '/fragments/im/passwords',
+    defaults => {
+        protocol => $type,
+    },
+);
+
+</%init>
+<%args>
+$instructions => 'primary',
+</%args>

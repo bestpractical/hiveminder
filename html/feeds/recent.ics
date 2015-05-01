@@ -1,0 +1,9 @@
+<%init>
+my $feed = Data::ICal->new();
+$feed->add_properties('x-wr-prodid' => 'Hiveminder');
+$m->comp("_elements/recent", feed => $feed, as => "ical_event");
+Jifty->web->response->content_type('text/calendar');
+$m->out( $feed->as_string() );
+$m->abort();
+</%init>
+

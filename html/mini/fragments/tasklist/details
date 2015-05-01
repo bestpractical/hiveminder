@@ -1,0 +1,210 @@
+<%args>
+$id => undef
+$searchpath => '/list/owner/me/not/complete'
+$tokens => undef
+$show_group => 1
+$maybe_view => 0
+$bulk_edit => undef
+$brief => 0
+</%args>
+<%once>
+our $LOCATOR = Number::RecordLocator->new();
+</%once>
+<%init>
+
+my $task = BTDT::Model::Task->new();
+$task->load($id);
+
+return unless $task->id;
+
+my $update;
+my $bulk_edit_action;
+my $first_before; 
+my $first_after;
+my $assign;
+
+my ($and_then, @and_then_summaries, @and_then_ids, $but_first, @but_first_summaries, @but_first_ids);
+
+if ($and_then = $task->depended_on_by_count) { 
+ @and_then_summaries = split(/\t/,$task->depended_on_by_summaries);
+ @and_then_ids = split(/\t/,$task->depended_on_by_ids);
+}
+if ($but_first = $task->depends_on_count ) {
+ @but_first_summaries = split(/\t/,$task->depends_on_summaries);
+ @but_first_ids = split(/\t/,$task->depends_on_ids);
+}
+
+
+    $update = Jifty->web->new_action(
+        class   => "UpdateTask",
+        moniker => "edit-" . Jifty->web->serial,
+        record  => $task
+    );
+   
+
+    $assign = Jifty::Web::Menu->new( label => 'Assign to...' );
+    
+    if ( ! $task->complete
+        && $task->__value('group')
+        && $task->owner_id == BTDT::CurrentUser->nobody->id )
+    {
+        my @members = $task->group->cached_group_members;
+    
+        my $assign_action = Jifty->web->new_action(
+            class  => "UpdateTask",
+            record => $task
+        );
+        while ( my $id = shift @members ) {
+            my $name = shift @members;
+            my $email = shift @members;
+    
+            $assign->child(
+                $name,
+                link => $assign_action->button(
+                    label     => $name,
+                    arguments => { owner_id => $email },
+                    onclick   => {
+                        submit       => $assign_action,
+                        refresh_self => 1,
+                        args         => { maybe_view => 1 }
+                    },
+                    as_link => 1,
+                )
+            );
+        }
+    }
+
+if ( $maybe_view && $tokens ) {
+    my $search = BTDT::Model::TaskCollection->new();
+    $search->from_tokens($search->split_tokens($tokens));
+    $search->limit( column => 'id', value => $id );
+    return () unless $search->count;
+}
+
+</%init>
+<div class="task_container">
+<dt class="<% $task->complete ? 'complete' : 'todo' %> task <% $task->text_priority %>_priority ">
+    <span class="task">
+    <% 
+$update->form_field('complete', onclick => [ { submit => $update }, { refresh_self => 1, args => {maybe_view => 1} } ]) ->render_widget
+    %>
+% my $priority = $task->priority || 3;
+% my $text_priority = $task->text_priority;
+<span class="priority <% $text_priority %>_priority"
+      title="<% $text_priority %> priority">
+  <span class="priority_text"><% $text_priority %></span>
+</span>
+    <span class="task_summary"><%Jifty->web->link( url => "/task/".$task->record_locator, label => $task->summary || '(Empty task)', target => '_blank') %></span>
+% if(!$task->complete) {
+    <& context_menu, id => $id, tokens => $tokens, current_mode => 'details' &>
+% my @kids = $assign->children;
+% if (@kids) {
+    <% $assign->render_as_context_menu %>
+% }
+% }
+% unless($brief) {
+<div class="related_tasks">
+% if ($but_first) {
+<span class="butfirst">But first
+    <% Jifty->web->link( label => shift @but_first_summaries, url => '/task/'.$LOCATOR->encode(shift @but_first_ids )) %>
+% if ($but_first > 1) {
+    and <% Jifty->web->link( label => ($but_first-1)." more", url => '/list/and_then/'.$task->record_locator) %>
+% }
+</span>
+% }
+% if ($and_then) {
+<span class="andthen">And then
+    <% Jifty->web->link( label => shift @and_then_summaries, url => '/task/'. $LOCATOR->encode(shift @and_then_ids), taget => '_blank' ) %>
+% if ($and_then > 1) {
+    and <% Jifty->web->link( label => ($and_then -1)." more", url => '/list/but_first/'.$task->record_locator, target => '_blank') %>
+% }
+</span>
+% }
+</div>
+% }
+    <div class="metadata">
+<span class="record_locator"><% Jifty->web->link( label => "#".$task->record_locator, url => '/task/'.$task->record_locator, target => '_blank') %></span>
+
+% if ( $task->due ) {
+<span class="due <% $task->overdue ? 'overdue' : '' %>" title="Due date"><% $task->due->friendly_date %></span>
+% }
+
+% if ($show_group and $task->group_id and $task->group->id and $task->group->current_user_can('read')) {
+    <span class="task_group"><%Jifty->web->link( url => "/groups/".$task->group->id, label => $task->group->name, target => '_blank' )%></span>
+% }
+<span class="task_people">
+<%perl>
+
+unless ($task->requestor->id == $task->owner->id and $task->owner->id == Jifty->web->current_user->id) {
+if ((       $tokens and $tokens !~ /(?<!not )requestor (?:me|\Q@{[$task->requestor->id]}\E)/)
+    and $task->requestor->id != BTDT::CurrentUser->nobody->id ) {
+    $m->out(q{<span class="task_for">});
+    $m->out('For ');
+    if ( $task->requestor->id != Jifty->web->current_user->user_object->id ) {
+        $m->out(
+            Jifty->web->link(
+                label => $task->requestor->name,
+                url   => $searchpath . '/requestor/' . $task->requestor->email,
+                target=> '_blank'
+            )
+        );
+    } else {
+        $m->out('you');
+    }
+    $m->out(q{</span>});
+}
+if ((       $tokens and $tokens !~ /(?<!not )owner (?:me|\Q@{[$task->owner->id]}\E)/)
+    and $task->owner->id != BTDT::CurrentUser->nobody->id) {
+    $m->out(q{<span class="task_by">});
+
+    my $closespan = 0;
+    if ( not $task->accepted ) {
+        $closespan = 1;
+        if ( not defined $task->accepted or not length $task->accepted ) {
+            $m->out(q{<span class="unaccepted">});
+        }
+        else {
+            $m->out(q{<span class="declined">});
+        }
+    }
+    $m->out(' by ');
+    $m->out(
+        Jifty->web->link(
+            label => (
+                $task->owner->id == Jifty->web->current_user->id
+                ? 'you'
+                : $task->owner->name
+            ),
+            url => $searchpath . '/owner/' . $task->owner->email,
+            target => 'blank'
+        )
+    );
+    $m->out(q{</span>}) if $closespan;
+    $m->out(q{</span>});
+}
+}
+</%perl>
+</span>
+
+% if ( $task->tag_array ) {
+<span title="Tags" class="tags">
+% for my $tag ($task->tag_array) {
+%   my $thistag = BTDT::Model::TaskCollection->add_tag_tokens($searchpath . "/", $tag);
+    <span class="tag"><%Jifty->web->link( url => $thistag, label => $tag, target => '_blank' ) %></span>
+% }
+</span>
+% }
+% if ($task->repeat_period and $task->repeat_period ne 'once' ){ 
+<span class="repeat"><%Jifty->web->link( url =>'/task/'.$task->record_locator."/repeat" , label => $task->repeat_period , target => '_blank')%></span>
+% }
+    </div>
+    </span>
+    </dt>
+    <dd class="task_addcomment">
+      <span id="add-comment-<% Jifty->web->current_region->qualified_name %>"></span>
+    </dd>
+    <dd class="task_dependencies">
+      <span id="but-first-<% Jifty->web->current_region->qualified_name %>"></span>
+      <span id="and-then-<% Jifty->web->current_region->qualified_name %>"></span>
+    </dd>
+</div>

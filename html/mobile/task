@@ -1,0 +1,64 @@
+<&| _elements/wrapper, title => $task->summary &>
+<span class="locator"><a href="http://task.hm/<%$task->record_locator%>">http://task.hm/<%$task->record_locator%></a></span>
+<h1><%$task->summary%></h1>
+<div class="basicpage">
+<& _elements/task_nav, task => $task &>
+<% Jifty->web->form->start %>
+
+<h3>Overview</h3>
+% for (qw(complete summary)) {
+    <%$update_task->form_field($_, render_mode =>  $mode)%><br/>
+% }
+% if ($mode eq 'read') {
+% if ( my @taglist = $task->tag_array ) {
+<span class="label">Tags</span>
+<span title="Tags" class="tags">
+% for my $tag (@taglist) {
+%   my $thistag = BTDT::Model::TaskCollection->add_tag_tokens("/mobile/search/tag/", $tag);
+    <span class="tag"><%Jifty->web->link( url => $thistag, label => $tag ) %></span>
+% }
+</span>
+% }
+% } else {
+    <%$update_task->form_field('tags')%><br/>
+% }
+% for (qw(priority description)) {
+    <%$update_task->form_field($_, render_mode =>  $mode)%><br/>
+% }
+
+% if ($task->is_unaccepted) {
+    <% Jifty->web->form->submit( label => 'Decline', submit => { action => $update_task, arguments => { accepted => '0' } } ) %>
+    <% Jifty->web->form->submit( label => 'Accept',  submit => { action => $update_task, arguments => { accepted => '1' } } ) %>
+% }
+
+<h3>People</h3>
+% for (qw(group_id requestor_id owner_id)) {
+    <%$update_task->form_field($_, render_mode => ($_ eq 'requestor_id' ? 'read' : $mode))%><br/>
+% }
+<h3>Dates</h3>
+% for (qw( created starts due)){ 
+    <%$update_task->form_field($_, render_mode => ($_ eq 'created' ? 'read' : $mode))%><br/>
+% }
+<h3>Repeats</h3>
+% for (qw( repeat_period repeat_every repeat_stacking repeat_days_before_due )) {
+    <%$update_task->form_field($_, render_mode =>$mode)%><br/>
+% }
+
+  <div id="taskpage-comments">
+    <h3>Add a comment</h3>
+    <% $update_task->form_field('comment')->render_widget %>
+  </div>
+
+<% Jifty->web->form->submit(label => 'Save') %>
+<% Jifty->web->form->end %>
+</div>
+</&>
+<%args>
+$id
+$mode => 'read'
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load_by_locator($id);
+my $update_task = Jifty->web->new_action(class => 'UpdateTask', record => $task);
+</%init>

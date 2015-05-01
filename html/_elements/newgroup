@@ -1,0 +1,15 @@
+<%init>
+my $action = Jifty->web->new_action(class => "CreateGroup", moniker => "newgroup");
+</%init>
+<div>
+<% Jifty->web->form->start %>
+<% Jifty->web->form->next_page( url => "/groups/new/manage" ) %>
+<p>Groups allow you to easily maintain a to do list for any activity you do with more than just yourself.
+You can share tasks with each other, comment on each other's tasks, and easily track the development of
+your shared endeavors.  Go ahead and get started!</p>
+<% $action->form_field('name') %>
+<% $action->form_field('description') %>
+<div class="button_line"><% Jifty->web->form->submit( label => 'Create') %></div>
+<% Jifty->web->form->end %>
+</div>
+

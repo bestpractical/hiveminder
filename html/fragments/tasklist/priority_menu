@@ -1,0 +1,45 @@
+<%args>
+$action
+$task
+$read_only => 0
+</%args>
+<%init>
+return unless $task->id && $action;
+
+# This label gets replaced with the first link in the menu
+my $context = Jifty::Web::Menu->new( label => 'Priority' );
+
+if (!$read_only) {
+    $context->child( $task->text_priority."-default", label => _( 'Priority'));
+
+    foreach my $prio ( @{ $action->arguments->{'priority'}->{valid_values} } ) {
+        $context->child(
+            $prio->{'display'} => class => $prio->{'display'} . "_priority",
+            link               => $action->button(
+                label     => $prio->{'display'},
+                arguments => { priority => $prio->{'value'} },
+                onclick   => [
+                    {   submit       => $action,
+                        refresh_self => 1,
+                        args         => { maybe_view => 1, },
+                    },
+                    {   region       => "notices",
+                        replace_with => "/fragments/notices",
+                    },
+                ],
+                as_link      => 1,
+                escape_label => 0,
+            )
+        );
+    }
+
+    my $first = ($context->children)[1];
+    $context->label( $first->label );
+    $context->escape_label(0);
+}
+</%init>
+% if ($read_only) {
+<span class="<% $task->text_priority %>_priority_icon"> </span>
+% } else {
+<% $context->render_as_context_menu %>
+% }

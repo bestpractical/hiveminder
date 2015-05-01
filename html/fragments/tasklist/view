@@ -1,0 +1,296 @@
+<%args>
+$id => undef
+$searchpath => '/list/owner/me/not/complete'
+$tokens => undef
+$show_context_menu => 1
+$show_checkbox => 1
+$show_group => 1
+$show_project => undef
+$show_milestone => undef
+$maybe_view => 0
+$bulk_edit => undef
+$brief => 0
+$reassign => 0
+$prioritize_assign => 0
+$read_only => 0
+$print => 0
+</%args>
+<%once>
+our $LOCATOR = Number::RecordLocator->new();
+</%once>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load($id);
+
+return unless $task->id;
+
+my $update;
+my $bulk_edit_action;
+my $first_before; 
+my $first_after;
+
+my ($and_then, @and_then_summaries, @and_then_ids, $but_first, @but_first_summaries, @but_first_ids);
+
+if ($and_then = $task->depended_on_by_count) { 
+    @and_then_summaries = split(/\t/,$task->depended_on_by_summaries);
+    @and_then_ids = split(/\t/,$task->depended_on_by_ids);
+}
+if ($but_first = $task->depends_on_count ) {
+    @but_first_summaries = split(/\t/,$task->depends_on_summaries);
+    @but_first_ids = split(/\t/,$task->depends_on_ids);
+}
+
+if($bulk_edit) {
+    $bulk_edit_action = Jifty->web->new_action(
+        class   => "BulkUpdateTasks",
+        moniker => $bulk_edit,
+       );
+} else {
+    $update = Jifty->web->new_action(
+        class   => "UpdateTask",
+        moniker => "edit-" . Jifty->web->serial,
+        record  => $task
+    );
+}
+
+if ( $maybe_view && $tokens ) {
+    my $search = BTDT::Model::TaskCollection->new();
+    $search->from_tokens($search->split_tokens($tokens));
+    $search->limit( column => 'id', value => $id );
+    return () unless $search->count;
+}
+
+# XXX TODO ACL
+my $staff = $task->group->has_feature('Projects') ? 1 : 0;
+
+# By default show project and milestone in the metadata if the user has
+# the Projects feature
+my %show = (
+    project   => $staff,
+    milestone => $staff,
+);
+
+# If we have tokens, we can try to guess at whether we should show
+# project and milestone
+if ( $tokens ) {
+    for my $key (keys %show) {
+        # If they're searching explicitly for this project/milestone
+        # then don't show it
+        $show{$key} = 0
+            if $task->$key->id and $tokens =~ /(?<!not )\Q$key\E \Q@{[$task->$key->record_locator]}\E(?: |$)/;
+
+        # If they're sorting by project/milestone, tasks are already grouped
+        $show{$key} = 0
+            if $task->$key->id and $tokens =~ /sort_by \Q$key\E/;
+    }
+}
+
+# Override any implicit values with explicit options if they exist
+$show{'project'} = $show_project
+    if defined $show_project;
+
+$show{'milestone'} = $show_milestone
+    if defined $show_milestone;
+
+my $summarize = sub {
+    my $summary = shift;
+    return Jifty->web->escape($summary) if length($summary) < 25;
+    return Jifty->web->escape(substr($summary, 0, 25)) . '&hellip;';
+};
+
+my $show_assign = 0;
+
+if (    not $task->complete
+    and $task->__value('group')
+    and ($reassign || $task->owner_id == BTDT::CurrentUser->nobody->id) )
+{
+    my @members = $task->group->cached_group_members;
+    $show_assign = 1 if @members;
+}
+</%init>
+<div class="task_container <% $task->complete ? 'complete' : 'todo' %>" id="task-<%Jifty->web->current_region->qualified_name%>">
+<dt class="<% $task->complete ? 'complete' : 'todo' %> task <% $task->text_priority %>_priority ">
+    <span class="task" id="task-<% $task->id %>">
+<%perl>
+if ($bulk_edit) {
+    $m->out(
+        Jifty->web->link(
+            label   => "[not this]",
+            onclick => {
+                region       => Jifty->web->current_region,
+                replace_with => '/__jifty/empty'
+            },
+            class => "argument-select"
+        )
+    );
+    $m->out( $bulk_edit_action->hidden( ids => $id ) );
+} elsif (not $read_only and $prioritize_assign and $show_assign) {
+    $m->out(
+        Jifty->web->region(
+            name      => Jifty->web->current_region->qualified_name.'-assign-menu',
+            class     => 'assign-menu-region',
+            path      => '/fragments/tasklist/menu_button',
+            arguments => { type => 'assign', task_id => $task->id, tokens => $tokens, reassign => $reassign }
+        )
+    );
+    $m->out('</span>');
+} elsif (!$read_only && $show_checkbox) {
+    $m->out( $update->form_field( 'complete', onclick => [ { submit => $update }, { refresh_self => 1, args => { maybe_view => 0 } } ])->render_widget);
+}
+</%perl>
+
+% unless ( $print ) {
+  <span class="priority <% $task->text_priority %>_priority"> <& priority_menu, action => $update, task => $task, read_only => $read_only &></span>
+% } else {
+  <span class="priority <% $task->text_priority %>_priority_icon priority_icon"><% chr(ord('A') + 5 - $task->priority) %>)</span>
+% }
+
+    <span class="task_summary"><%Jifty->web->tangent( url => "/task/".$task->record_locator, label => ($task->summary || '(Empty task)'), tooltip => ($task->summary || '(Empty task)') ) %></span>
+% unless($brief) {
+% if ( $but_first or $and_then ) {
+<div class="related_tasks">
+% if ($but_first) {
+<span class="butfirst">But first
+    <% Jifty->web->link( label => $summarize->($but_first_summaries[0]), tooltip => Jifty->web->escape($but_first_summaries[0]), escape_label => 0, url => '/task/'.$LOCATOR->encode(shift @but_first_ids )) %><% $but_first > 1 ? '' : '.' %>
+% if ($but_first > 1) {
+    and <% Jifty->web->link( label => ($but_first-1)." more", url => '/list/and_then/'.$task->record_locator) %>.
+% }
+</span>
+% }
+% if ($and_then) {
+<span class="andthen">And then
+    <% Jifty->web->link( label => $summarize->($and_then_summaries[0]), tooltip => Jifty->web->escape($and_then_summaries[0]), escape_label => 0, url => '/task/'. $LOCATOR->encode(shift @and_then_ids) ) %><% $and_then > 1 ? '' : '.' %>
+% if ($and_then > 1) {
+    and <% Jifty->web->link( label => ($and_then -1)." more", url => '/list/but_first/'.$task->record_locator) %>.
+% }
+</span>
+% }
+</div>
+% }
+% }
+    <div class="metadata">
+<span class="record_locator"><% Jifty->web->link( label => "#".$task->record_locator, url => '/task/'.$task->record_locator) %></span>
+
+<& /_elements/time_tracking, task => $task &>
+
+% if ( $task->due ) {
+<span class="due <% $task->overdue ? 'overdue' : '' %>" title="Due date"><% $task->due->friendly_date %></span>
+% }
+
+% if ($show_group and $task->group_id and $task->group->id and $task->group->current_user_can('read')) {
+    <span class="task_group"><%Jifty->web->link( url => "/groups/".$task->group->id, label => $task->group->name )%></span>
+% }
+
+% for my $type (qw( project milestone )) {
+%     if ( $show{$type} ) {
+
+<span class="task_<% $type %>"><span><% uc substr $type, 0, 1 %>:</span>
+<%
+  Jifty->web->region(
+      name => Jifty->web->current_region->qualified_name.'-'.$type,
+      path => '/fragments/tasklist/editable_property',
+      defaults => {
+          id       => $task->id,
+          property => $type,
+          edit     => 0,
+      }
+  )
+%>
+
+</span>
+
+%     }
+% }
+
+<span class="task_people">
+<%perl>
+
+unless ($task->requestor->id == $task->owner->id and $task->owner->id == Jifty->web->current_user->id) {
+if (    ( $tokens and $tokens !~ /(?<!not )requestor (?:me|\Q@{[$task->requestor->id]}\E)|\Q@{[$task->owner->email]}\E/ )
+    and $task->requestor->id != BTDT::CurrentUser->nobody->id )
+{
+    $m->out(q{<span class="task_for">});
+    $m->out('For ');
+    if ( $task->requestor->id != Jifty->web->current_user->user_object->id ) {
+        my $link = $m->scomp( '/_elements/username', user => $task->requestor,
+            url  => $searchpath . '/requestor/' . $task->requestor->email);
+        $m->out( $link );
+    } else {
+        $m->out('you');
+    }
+    $m->out(q{</span>});
+}
+
+if (    ( $tokens and $tokens !~ /(?<!not )owner (?:me|\Q@{[$task->owner->id]}\E|\Q@{[$task->owner->email]}\E)/ )
+    and $task->owner->id != BTDT::CurrentUser->nobody->id )
+{
+    $m->out(q{<span class="task_by">});
+
+    my $closespan = 0;
+    if ( not $task->accepted ) {
+        $closespan = 1;
+        if ( not defined $task->accepted or not length $task->accepted ) {
+            $m->out(q{<span class="unaccepted">});
+        }
+        else {
+            $m->out(q{<span class="declined">});
+        }
+    }
+    $m->out(' by ');
+    my $link = $m->scomp( '/_elements/username',
+        user    => $task->owner,
+        url     => $searchpath . '/owner/' . $task->owner->email,
+        useyou  => 1
+    );
+    $m->out( $link );
+    $m->out(q{</span>}) if $closespan;
+    $m->out(q{</span>});
+}
+}
+</%perl>
+</span>
+% if ( my @taglist = $task->tag_array ) {
+<span title="Tags" class="tags">
+<%perl>
+for my $tag (@taglist) {
+    my $thistag = BTDT::Model::TaskCollection->add_tag_tokens($searchpath . "/", $tag);
+</%perl>
+    <span class="tag"><%Jifty->web->link( url => $thistag, label => $tag ) %></span>
+% }
+</span>
+% }
+
+% if ( ($task->attachment_count || 0) > 0 ) {
+<span title="Attachments" class="attachments">
+  <% Jifty->web->link( url => '/task/'.$task->record_locator.'/attachments',
+        label => _("%quant(%1,attachment)", $task->attachment_count)) %>
+</span>
+% }
+
+% if ($task->repeat_period and $task->repeat_period ne 'once' ){ 
+% my $period = $task->repeat_period; $period =~ s/s$//;
+<span class="repeat"><%Jifty->web->link( url =>'/task/'.$task->record_locator , label => _("%quant(%1,$period)",$task->repeat_every ))%></span>
+% }
+    </div>
+    </span>
+    </dt>
+    <dd class="task_description">
+      <% Jifty->web->region( name => Jifty->web->current_region->qualified_name . '-desc',
+            path => '/fragments/tasklist/view_description',
+            force_arguments => { id => $task->id } ) %>
+    </dd>
+    <dd class="task_addcomment">
+      <span id="add-comment-<% Jifty->web->current_region->qualified_name %>"></span>
+    </dd>
+    <dd class="task_dependencies">
+      <span id="but-first-<% Jifty->web->current_region->qualified_name %>"></span>
+      <span id="and-then-<% Jifty->web->current_region->qualified_name %>"></span>
+    </dd>
+
+% if ( !$read_only && !$bulk_edit && $show_context_menu && !$task->complete ) {
+    <dd class="tools" id="tools-<% Jifty->web->current_region->qualified_name %>">
+    <& /_elements/tasklist_parts/tools, task => $task, update => $update, tokens => $tokens, prioritize_assign => $prioritize_assign, show_assign => $show_assign, reassign => $reassign &>
+    </dd>
+% } 
+    <div id="stopwatch-<% Jifty->web->current_region->qualified_name %>"></div>
+</div>

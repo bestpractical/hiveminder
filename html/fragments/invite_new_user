@@ -1,0 +1,22 @@
+<div id="invite_new_user">
+  <h3>Invite a friend</h3>
+  <% Jifty->web->form->start( disable_autocomplete => 1 ) %>
+  <div class="inline">
+  <% $invite_new_user->form_field('email') %>
+  </div>
+  <% Jifty->web->form->submit( 
+        label => "Invite",
+        onclick => { submit       => $invite_new_user,
+                     refresh_self => 1 },
+     ) 
+   %>
+  <% Jifty->web->form->end %>
+  <& /_elements/clear &>
+</div>
+<%init>
+
+my $invite_new_user = Jifty->web->new_action( 
+        class => "InviteNewUser", 
+        moniker => "invite_new_user" );
+</%init>
+

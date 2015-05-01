@@ -1,0 +1,162 @@
+@import "context-menus-standalone.css";
+
+ul.menu {
+    clear: none;
+    float: left;
+    margin: 0;
+}
+
+ul.menu, ul.menu ul {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.menu li.toplevel {
+    float: left;
+    margin: 0 0.5em 0 0;
+    padding: 0.2em;
+    border: 1px solid white;
+    color: lightgrey;
+    white-space: nowrap;
+}
+
+.menu li.toplevel:hover {
+    color: #793300;
+    border-bottom-color: #ccc;
+    border-right-color: #ccc;
+}
+
+#navigation .menu li ul li a:hover {
+    background: rgb(82, 134, 181);
+    color: white;
+}
+
+.menu li.toplevel .title a  {
+    color: lightgrey;
+    float: left;
+}
+
+.menu li.toplevel:hover .title a  {
+    color: gray;
+}
+
+.menu li.toplevel .expand a {
+    color: #fff;
+    border-color: transparent;
+    text-decoration: none;
+    width: 0;
+}
+
+.menu li.toplevel ul li {
+    color: gray;
+}
+
+.menu li.toplevel .title {
+    font-weight: bold;
+}
+
+.menu li.toplevel ul {
+    font-size: 0.9em;
+    display: none;
+    z-index: 44;
+    padding: 0.1em 0.2em 0.5em 0.1em;
+    background: white;
+    border-top: 1px dotted lightgrey;
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.menu li.toplevel ul a {
+    width: 100%;
+    display: block;
+}
+/*
+.menu .open span.expand a {
+    background-image: url(/static/images/silk/bullet_arrow_up.png);
+}
+*/
+.menu span.expand a {
+    background: url(/static/images/silk/bullet_arrow_down.png) no-repeat center 0%;
+    border: 1px solid transparent;
+    color: white;
+    margin-left: 0.1em;
+    float: left;
+    padding-left: 14px;
+    min-height: 1em;
+}
+
+.menu li.toplevel:hover .expand a {
+    background-color: #fee9bd;
+    border-top: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+}
+
+.menu li.open a {
+    border-bottom-color: transparent;
+}
+
+.menu li.open, .menu li.closed:hover {
+    border-top: 1px solid lightgrey;
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid gray;
+    border-bottom-color: transparent;
+}
+
+.menu li.closed:hover {
+    border-bottom-color: gray;
+}
+
+.menu li.toplevel span.expand a:active {
+    border-top: 1px solid white;
+    border-left: 1px solid white;
+    border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+
+    position: relative;
+    top: 1px;
+    left: 1px;
+}
+
+.menu li ul li a {
+    padding: 0.1em 0 0.1em 0.1em;
+    text-decoration: none;
+}
+
+.menu li ul li {
+    padding: 0.1em;
+}
+
+.menu li.toplevel ul li a.separator {
+    border-top: 1px solid #ddd;
+    padding-top: 0.3em;
+    margin-top: 0.3em;
+}
+
+.menu li.toplevel ul li a.bseparator {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.3em;
+    margin-bottom: 0.3em;
+}
+
+/* for main nav */
+
+#navigation .menu li.toplevel {
+    border: none;
+}
+
+#navigation .menu li.toplevel .title {
+    font-weight: normal;
+}
+
+#navigation .menu li.toplevel ul {
+    border-top: none;
+    margin-left: 0.3em;
+}
+
+#navigation .menu span.expand a {
+    margin-right: -0.9em;
+}

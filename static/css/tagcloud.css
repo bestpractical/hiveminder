@@ -1,0 +1,188 @@
+#tagcloud .tagcloud {
+    margin: 0;
+}
+
+#tagcloud .title {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+#tagcloud .title h3 a.help {
+    position: absolute;
+    top: 0.2em;
+    right: 0.3em;
+}
+
+#tagcloud .links {
+    font-size: 0.9em;
+    text-align: right;
+    margin-top: -0.2em;
+}
+
+#tagcloud .links .active {
+    font-weight: bold;
+}
+
+#tagcloud :link,
+#tagcloud :visited
+{
+    text-decoration: none;
+}
+
+#tagcloud :link:hover,
+#tagcloud :visited:hover
+{
+    text-decoration: underline;
+}
+
+/* These have been generated... */
+.tagcloud span.tagcloud0 :link,
+.tagcloud span.tagcloud0 :visited
+{
+    color: #ccb662;
+    font-size: 90%;
+}
+.tagcloud span.tagcloud1 :link,
+.tagcloud span.tagcloud1 :visited
+{
+    color: #cbb45f;
+    font-size: 91.5%;
+}
+.tagcloud span.tagcloud2 :link,
+.tagcloud span.tagcloud2 :visited
+{
+    color: #cab25c;
+    font-size: 93%;
+}
+.tagcloud span.tagcloud3 :link,
+.tagcloud span.tagcloud3 :visited
+{
+    color: #c9b059;
+    font-size: 94.5%;
+}
+.tagcloud span.tagcloud4 :link,
+.tagcloud span.tagcloud4 :visited
+{
+    color: #c8ae56;
+    font-size: 96%;
+}
+.tagcloud span.tagcloud5 :link,
+.tagcloud span.tagcloud5 :visited
+{
+    color: #c7ac53;
+    font-size: 97.5%;
+}
+.tagcloud span.tagcloud6 :link,
+.tagcloud span.tagcloud6 :visited
+{
+    color: #c6aa4f;
+    font-size: 99%;
+}
+.tagcloud span.tagcloud7 :link,
+.tagcloud span.tagcloud7 :visited
+{
+    color: #c5a84b;
+    font-size: 100.5%;
+}
+.tagcloud span.tagcloud8 :link,
+.tagcloud span.tagcloud8 :visited
+{
+    color: #c4a647;
+    font-size: 102%;
+}
+.tagcloud span.tagcloud9 :link,
+.tagcloud span.tagcloud9 :visited
+{
+    color: #c3a443;
+    font-size: 103.5%;
+}
+.tagcloud span.tagcloud10 :link,
+.tagcloud span.tagcloud10 :visited
+{
+    color: #c2a23f;
+    font-size: 105%;
+}
+.tagcloud span.tagcloud11 :link,
+.tagcloud span.tagcloud11 :visited
+{
+    color: #c1a03b;
+    font-size: 106.5%;
+}
+.tagcloud span.tagcloud12 :link,
+.tagcloud span.tagcloud12 :visited
+{
+    color: #c09e37;
+    font-size: 108%;
+}
+.tagcloud span.tagcloud13 :link,
+.tagcloud span.tagcloud13 :visited
+{
+    color: #bf9c33;
+    font-size: 109.5%;
+}
+.tagcloud span.tagcloud14 :link,
+.tagcloud span.tagcloud14 :visited
+{
+    color: #be9a2f;
+    font-size: 111%;
+}
+.tagcloud span.tagcloud15 :link,
+.tagcloud span.tagcloud15 :visited
+{
+    color: #bd982b;
+    font-size: 112.5%;
+}
+.tagcloud span.tagcloud16 :link,
+.tagcloud span.tagcloud16 :visited
+{
+    color: #bc9627;
+    font-size: 114%;
+}
+.tagcloud span.tagcloud17 :link,
+.tagcloud span.tagcloud17 :visited
+{
+    color: #bb9423;
+    font-size: 115.5%;
+}
+.tagcloud span.tagcloud18 :link,
+.tagcloud span.tagcloud18 :visited
+{
+    color: #ba921e;
+    font-size: 117%;
+}
+.tagcloud span.tagcloud19 :link,
+.tagcloud span.tagcloud19 :visited
+{
+    color: #b99019;
+    font-size: 118.5%;
+}
+.tagcloud span.tagcloud20 :link,
+.tagcloud span.tagcloud20 :visited
+{
+    color: #b88e14;
+    font-size: 120%;
+}
+.tagcloud span.tagcloud21 :link,
+.tagcloud span.tagcloud21 :visited
+{
+    color: #b78c0f;
+    font-size: 121.5%;
+}
+.tagcloud span.tagcloud22 :link,
+.tagcloud span.tagcloud22 :visited
+{
+    color: #b68a0a;
+    font-size: 123%;
+}
+.tagcloud span.tagcloud23 :link,
+.tagcloud span.tagcloud23 :visited
+{
+    color: #b58805;
+    font-size: 124.5%;
+}
+.tagcloud span.tagcloud24 :link,
+.tagcloud span.tagcloud24 :visited
+{
+    color: #b38600;
+    font-size: 126%;
+}

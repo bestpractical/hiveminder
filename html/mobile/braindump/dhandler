@@ -1,0 +1,9 @@
+<&| ../_elements/wrapper, title => 'Create tasks' &>
+<h1>Create tasks</h1>
+<div class="basicpage">
+<% Jifty->web->form->start %>
+<& ../_elements/braindump, tokens => $m->dhandler_arg &>
+<% Jifty->web->form->submit( label        => "Create")%>
+<% Jifty->web->form->end %>
+</div>
+</&>

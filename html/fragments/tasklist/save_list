@@ -1,0 +1,71 @@
+<div class="tasklist_panel_wrapper">
+<div class="dropshadow_wrap1"><div class="dropshadow_wrap2"><div class="dropshadow_wrap3">
+<div class="tasklist_panel">
+<div id="tasklist_save_list">
+
+<div class="save_new_list">
+<strong>Save as new list</strong>
+<% $create->form_field('name') %>
+<% $create->form_field('tokens', default_value => $tokens, render_as => 'Hidden') %>
+<%
+$create->button(
+    label => "Save as new list",
+    onclick => {
+        submit          => $create,
+        replace_with    => '/__jifty/empty',
+        toggle          => 1,
+    }
+)
+%>
+</div>
+
+% if ( Jifty->web->current_user->user_object->lists->count ) {
+<div class="update_existing_list">
+<strong>Update existing list</strong>
+<%
+$update->form_field('id')
+%>
+<% $update->form_field('tokens', default_value => $tokens, render_as => 'Hidden') %>
+<%
+$update->button(
+    label => "Update existing list",
+    onclick => {
+        submit          => $update,
+        replace_with    => '/__jifty/empty',
+        toggle          => 1,
+    }
+)
+%>
+</div>
+% }
+
+<& /_elements/clear &>
+
+<div class="button_line">
+<%
+   Jifty->web->link(
+        label => "Cancel",
+        onclick => {
+            replace_with => '/__jifty/empty',
+            toggle       => 1,
+        },
+        class => "cancel",
+        as_button => 1,
+   )
+%>
+</div>
+
+</div>
+</div>
+</div></div></div>
+</div>
+<%args>
+$region
+</%args>
+<%init>
+my $tokens = join(' ', BTDT::Model::TaskCollection->split_tokens( $region->parent->argument('tokens') ));
+
+my $create = Jifty->web->new_action( class => 'CreateList', moniker => 'savelist' );
+my $update = Jifty->web->new_action( class => 'ChangeListTokens', moniker => 'updatelist' );
+</%init>
+

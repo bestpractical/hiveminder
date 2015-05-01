@@ -1,0 +1,126 @@
+<%init>
+my $top = Jifty->web->navigation;
+
+### Top
+my $lists  = $top->child("Home"     => label => "To Do", url => "/todo");
+my $groups = $top->child("Groups"   => url => "/groups");
+my $tools  = $top->child("Tools"    => url => '/tools');
+my $help   = $top->child("Help"     => link =>
+    Jifty->web->link(
+        url => '/help',
+        label => 'Help',
+        onclick => "return BTDT.Util.openHelpWindow(this.href)"
+    )
+);
+
+
+### Lists
+$lists->child("Search"  => label => 'Search...' => url => "/search" );
+
+my $savedlists = BTDT::Model::ListCollection->new;
+$savedlists->limit( column => 'owner', value => Jifty->web->current_user->id );
+$savedlists->order_by(function => qq{LOWER(name)});
+
+if ( $savedlists->count ) {
+    my $mylists = $lists->child(
+        "Lists",
+        label   => 'My Lists',
+        url     => "/lists",
+        render_children_inline => 1
+    );
+
+    # if there are no saved lists, we just don't ever run this loop
+    while ( my $list = $savedlists->next ) {
+        $mylists->child( $list->name => url => '/list/'.$list->tokens_as_url );
+    }
+}
+
+my $defaults = $lists->child("Defaults" => label => 'Lists', url => '/lists', render_children_inline => 1 );
+
+for (BTDT::Model::List->default_lists(Jifty->web->current_user->pro_account)) {
+    $defaults->child(
+        $_->{label},
+        url   => $_->{url}
+    );
+}
+
+
+### Groups
+my $mygroups = $groups->child(
+    'My groups',
+    url   => '/groups',
+    label => 'My groups',
+    render_children_inline => 1
+);
+
+$mygroups->child('Personal' => url => '/list/owner/me/not/complete/group/personal');
+
+my $collection = Jifty->web->current_user->user_object->groups;
+$collection->order_by( column => 'name', order => 'asc' );
+$collection->columns('id','name');
+
+while ( my $item = $collection->next ) {
+    $mygroups->child(
+        $item->name,
+        url   => "/groups/".$item->id."/my_tasks"
+    );
+}
+
+$groups->child('My invitations' => url => '/groups/invitations');
+$groups->child('New group'      => url => '/groups/create',    );
+
+
+### Tools
+$tools->child('Tools'           => url => "/tools" );
+$tools->child('Task History'    => url => "/on/today");
+$tools->child('Reports'         => url => "/reports")
+    if Jifty->web->current_user->pro_account;
+
+my $prefs = $tools->child('Preferences' => url => "/prefs", render_children_inline => 1);
+$prefs->child('About you'        => url => '/prefs');
+$prefs->child('Security'         => url => '/prefs/security');
+$prefs->child('Tasks by Email'   => url => '/prefs/addresses');
+$prefs->child('Tasks by IM'      => url => '/prefs/IM');
+$prefs->child('Tasks by Twitter' => url => '/prefs/twitter');
+
+$tools->child('Hiveminder Store'         => url => "/account");
+
+if ( Jifty->web->current_user->access_level eq "staff" ) {
+    $tools->child(
+        Admin =>
+            url        => "/admin/",
+            label      => _('Admin'),
+            sort_order => 997
+    );
+}
+
+
+### Help
+my $onlinehelp = Jifty->web->link(
+    url => '/help',
+    label => 'Online Help',
+    onclick => "return BTDT.Util.openHelpWindow(this.href)"
+);
+
+$help->child("Online Help"      => link => $onlinehelp);
+$help->child("Customer Support" => url => '/support')
+    if Jifty->web->current_user->pro_account;
+$help->child("FAQ"              => url => '/about/faq.html');
+$help->child("About"            => url => '/about');
+
+
+
+# Rename Jifty's (AdminMode) Administration tab to Jifty-Admin
+if (my $administration = $top->child("Administration")) {
+    $administration->label("Jifty-Admin");
+}
+
+# XXX: Hack to get the active menu item somewhat more right
+my $child = $top->child( $ARGS{title} );
+if ( defined $child ) {
+    $top->active_child->active(0) if $top->active_child;
+    $child->active(1);
+}
+
+return();
+</%init>

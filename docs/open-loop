@@ -1,0 +1,14 @@
+lists
+    things I'm waiting on
+    things I'm supposed to be replying to
+    things I don't own that people are waiting for me on
+    things I own that aren't waiting on somebody else
+    things I owe other people vs things I owe myself
+hide things you're waiting on (not a default for now)
+
+add a field to indicate responsible party
+
+no ui
+existence of different owners and requestors is sufficient
+
+pass the baton automatically on comment/reply

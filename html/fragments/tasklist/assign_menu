@@ -1,0 +1,79 @@
+<%args>
+$task_id
+$tokens
+$reassign => 0
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new;
+$task->load( $task_id );
+return unless $task->id;
+
+my $update = Jifty->web->new_action(
+    class   => "UpdateTask",
+    moniker => "edit-" . Jifty->web->serial,
+    record  => $task
+);
+return unless $update;
+
+# We need to clear the menu before refreshing/replacing the task region
+# Otherwise Jifty remembers the region state and pops up the menu the
+# next time the task region is loaded
+my $clear_menu = {
+    beforeclick => "YAHOO.widget.MenuManager.removeMenu(YAHOO.widget.MenuManager.getMenu('task-$task_id-assign-menu'));",
+    replace_with => '/fragments/tasklist/menu_button',
+    args => {
+        task_id  => $task_id,
+        tokens   => $tokens,
+        reassign => $reassign,
+    }
+};
+
+# This label is never seen as we only render the items
+my $assign = Jifty::Web::Menu->new( label => 'Assign to...' );
+
+if ( $task->__value('group') ) {
+    my @members = $task->group->cached_group_members;
+
+    while ( my $id = shift @members ) {
+        my $name = shift @members;
+        my $email = shift @members;
+
+        $assign->child(
+            $name,
+            link => $update->button(
+                label     => $name,
+                arguments => { owner_id => $email },
+                onclick   => [
+                    $clear_menu,
+                    {
+                        submit  => $update,
+                        refresh => Jifty->web->qualified_parent_region,
+                        args    => { maybe_view => 1 }
+                    },
+                ],
+                as_link => 1,
+            )
+        );
+    }
+}
+</%init>
+<& menu_button, %ARGS, menu_loaded => 1 &>
+<%
+    $assign->render_as_yui_menu(
+        id      => "task-".$task->id."-assign-menu",
+        button  => "task-".$task->id."-assign-submenu-toggle",
+        show    => 1,
+        options => {
+            context => ["task-".$task->id."-assign-menu-button", "tr", "br"],
+            constraintoviewport => \0,
+        },
+        beforeshow => <<"        END"
+            menu.subscribe("show", function() {
+                if (!this.parent) jQuery("#task-$task_id .assign-menu-region").css("visibility", "visible");
+            });
+            menu.subscribe("hide", function() {
+                if (!this.parent) jQuery("#task-$task_id .assign-menu-region").css("visibility", null);
+            });
+        END
+    )
+%>

@@ -1,0 +1,64 @@
+<div class="stopwatch-widget">
+  <% $region->render %>
+  <%
+    Jifty->web->link(
+        label   => 'Popout',
+        url     => '/stopwatch/task/'.$locator->encode($task_id),
+        onclick => qq[
+            var from = jQuery("$element input.hasStopWatch.argument-add_time_worked").val();
+            var sep  = this.href.match(/\\?/) ? '&' : '?';
+            var ret  = BTDT.Util.openStopWatch( this.href + sep + "from=" + from );
+            jQuery.modal.close();
+            return ret;
+        ],
+        class   => 'popout',
+        tooltip => 'Popout stopwatch into a new window'
+    )
+  %>
+</div>
+<script type="text/javascript"><!--
+  var ignore_confirm_close = false;
+  jQuery("<% $element %>").modal({
+      persist: true,
+      closeTitle: 'Cancel',
+      onClose: function(dialog) {
+          jQuery("<% $element %> input.hasStopWatch").StopWatch("destroy");
+          dialog.data.empty();
+          ignore_confirm_close = true;
+          jQuery.modal.close();
+      },
+      confirmClose: function(dialog) {
+          // avoid calling this twice
+          if (ignore_confirm_close) return true;
+
+          // did the user click update? if so, we don't want to ask
+          if (jQuery('#modalContainer input.stopwatch').attr('submittingForm'))
+              return true;
+
+          var time = jQuery("#modalContainer input.stopwatch").val();
+
+          // grace period: if you've worked for less than 1 min, don't even ask
+          if (time.substr && time.substr(0, 5) == '00:00')
+            return true;
+
+          return confirm("Really close the stopwatch? You've worked for " + time + ".");
+      }
+  });
+--></script>
+<%args>
+$task_id
+$element
+</%args>
+<%init>
+my $region = Jifty::Web::PageRegion->new(
+    name      => 'stopwatch'.Jifty->web->serial,
+    path      => '/fragments/stopwatch',
+    defaults  => {
+        task_id => $task_id,
+        element => $element,
+        type    => 'modal',
+    }
+);
+
+my $locator = Number::RecordLocator->new;
+</%init>

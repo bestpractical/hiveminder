@@ -1,0 +1,38 @@
+<&| /_elements/wrapper, title => "What's changed in the past week?", tag_collection => $tasks &>
+<p>
+Below, you'll see a list of everything that happened over the past week to
+the tasks you own or have requested.  Task creation, added notes, due date
+changes.  You name it, we got it.
+</p>
+
+% if ($tasks->count) {
+<ul class="feed-list">
+  <li><a class="ical" href="<% Jifty->web->url(scheme => "webcal") %>/<%$prefix%>/recent.ics">iCal</a></li>
+  <li><a class="atom" href="/<% $prefix %>/recent.atom">Atom</a></li>
+</ul>
+
+% while (my $task = $tasks->next) {
+<h2><%Jifty->web->link( url => "/task/".$task->record_locator, label =>  $task->summary )%></h2>
+% my $txns = $task->transactions;
+% $txns->limit( column => 'modified_at', operator => '>', value => DateTime->now->subtract( days => 7 ) );
+% $txns->order_by( column => 'modified_at', order => 'ASC' );
+<& /task/_elements/transactions, transactions => $txns &>
+% }
+% } else {
+<p>Nothing's happened in the past week. Perhaps it's time for a <%Jifty->web->link( url => "/review", label => "task review")%>?</p>
+% }
+
+</&>
+
+<%init>
+my $tasks = BTDT::Model::TaskCollection->new();
+$tasks->recent;
+$tasks->do_search;
+
+my $prefix = $tasks->join_tokens_url(
+    "feeds",
+    Jifty->web->current_user->user_object->auth_token,
+    Jifty->web->current_user->user_object->email,
+);
+
+</%init>

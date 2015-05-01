@@ -1,0 +1,143 @@
+<%args>
+$tokens => undef
+$searchpath => undef
+$region
+$refresh_list => 0
+$refresh_on_create => ''
+$item_path => '/fragments/tasklist/view'
+</%args>
+<%init>
+my $is_subtask =0;
+
+my $tasks = BTDT::Model::TaskCollection->new();
+if ($tokens =~ /^(depends_on|depended_on_by|and then|but first) ([A-Za-z\d]+) not complete$/) {
+    my ($key, $value) = ($1, $2);
+    if ( $value !~ /^(?:no|some)thing$/ ) {
+        my $id = $BTDT::Record::LOCATOR->decode($value)
+            if $key =~ /^(?:but first|and then)$/;
+
+        $is_subtask = 1;
+        my $task = BTDT::Model::Task->new;
+        $task->load($id);
+        
+        my @tokens;
+        push @tokens, depends_on     => $id if $key =~ /^(?:but first|depends_on)$/i;
+        push @tokens, depended_on_by => $id if $key =~ /^(?:and then|depended_on_by)$/i;
+
+        push @tokens, group => $task->group->id if $task->group->id;
+
+        # XXX TODO ACL
+        if ( Jifty->web->current_user->has_group_with_feature('Projects') ) {
+            push @tokens, project   => $task->project->record_locator   if $task->project->id;
+            push @tokens, milestone => $task->milestone->record_locator if $task->milestone->id;
+        }
+
+        push @tokens, owner => $task->owner->email if $task->owner->id;
+        push @tokens, priority => $task->priority;
+        push @tokens, tag => $task->tags;
+
+        # "but first"
+        if ($key =~ /(?:and then|depended_on_by)/) {
+            push @tokens, due => $task->due->ymd if $task->due;
+        }
+        # "and then"
+        else {
+            push @tokens, starts => $task->starts->ymd if $task->starts;
+        }
+
+        $tasks->from_tokens( @tokens );
+    }
+} else {
+    $tasks->from_tokens($tasks->split_tokens($tokens));
+}
+
+my $create = $tasks->create_from_defaults(Jifty->web->qualified_region . "_create");
+my $more = Jifty->web->serial;
+
+my %submit_args = (
+    label    => 'Create',
+    onclick  => [
+        {
+            region       => "tagcloud",
+            replace_with => "/fragments/tagcloud",
+        },
+    ],
+);
+
+# Other regions we want to refresh when creating a task
+for my $region ( split ' ', $refresh_on_create ) {
+    push @{ $submit_args{'onclick'} }, { refresh => $region };
+}
+
+if ( $refresh_list ) {
+    push @{ $submit_args{'onclick'} },
+        { refresh => $region->parent,
+          submit  => $create
+        };
+}
+else {
+    my $add_verb = Jifty->web->current_user->user_object->taskbar_on_bottom
+                 ? 'append'
+                 : 'prepend';
+
+    push @{ $submit_args{'onclick'} },
+        {   refresh_self => 1 },
+        {
+            element   => $region->parent->get_element('.tasklist'),
+            $add_verb => $item_path,
+            effect    => 'Appear',
+            args      => {
+                        tokens     => $tokens,
+                        searchpath => $searchpath,
+                        id         => { result_of => $create, name => 'id' },
+                        maybe_view => 1
+                      },
+            submit => $create,
+        };
+}
+
+</%init>
+% Jifty->web->form->print_action_registration($create->moniker);
+<div class="task create inline round">
+  <div class="line">
+%# defer the canonicalization notes until the next line so it doesn't break
+%# the layout
+% do { no warnings 'redefine';
+%      local *Jifty::Web::Form::Field::render_canonicalization_notes = sub {};
+%      $m->out($create->form_field('summary',label => '', placeholder => ($is_subtask ? 'Add a new task (or the #id of an old one)': 'Add a new task') ));
+% };
+
+    <% $create->form_field('tags', label => '', placeholder => 'tags') %>
+    <% Jifty->web->form->submit(%submit_args) %>
+    <a class="more" href="#" onclick="jQuery('#<% $more %>').toggle(500); this.innerHTML = this.innerHTML == 'more...' ? 'less...' : 'more...'; return false;">more...</a>
+    <br />
+    <% $create->form_field('summary')->render_canonicalization_notes %>
+    <div class="hidden clear"></div>
+  </div>
+  <div class="extra" style="display: none;" id="<% $more %>">
+    <div class="line">
+      <% $create->form_field('priority') %>
+      <% $create->form_field('starts') %>
+      <% $create->form_field('due') %>
+% if (Jifty->web->current_user->has_feature("TimeTracking")) {
+      <% $create->form_field('time_left') %>
+% }
+    </div><div class="line">
+      <% $create->form_field('description') %>
+    </div><div class="line">
+      <% $create->form_field('group_id') %>
+      <% $create->form_field('owner_id') %>
+    </div>
+% for my $field (grep {$_ !~ /^(?:priority|starts|owner_id|group_id|complete|summary|tags|due|description|time_(?:left|worked))$/} $create->argument_names) {
+    <% $create->form_field($field, render_as => 'Hidden') %>
+% }
+  </div>
+  <div class="hidden clear"></div>
+</div>
+<%doc>
+
+When you hit "save" and create a task, you want to put a fragment
+containing the new item in the associated tasklist and refresh this
+fragment.
+
+</%doc>

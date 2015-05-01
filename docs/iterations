@@ -1,0 +1,87 @@
+
+Project list
+
+    - project name
+    - group
+
+    - stories for this project that aren't yet complete
+
+Deadline list
+
+    - group
+    - related projects
+
+
+Deadline stories
+
+    - story
+    - project
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Need to track new fields:
+
+ time spent so far
+ time currently estimated left
+ time time initially estimated left
+
+need to create iterations with due dates
+
+need to add stories to an iteration
+
+need to add tasks to a story
+
+
+
+views we need:
+
+
+DONE "current projects"
+DONE "iterations on this project"
+
+TODO: 
+    "stories on this iteration"
+        + add a story 
+        + schedule an unscheduled story
+        + unschedule the story
+
+        for each story:
+            total estimated task time
+            total task time spent so far
+            total inital task estimate
+            
+
+
+
+    "tasks on this iteration"
+
+        read-only. "Want to modify what goes in this iteration? -> stories on iteration"
+
+    "tasks on this story"

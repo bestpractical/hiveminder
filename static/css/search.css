@@ -1,0 +1,276 @@
+.search_options legend {
+    font-weight: bold;
+}
+
+.search_options fieldset {
+    border-color: #ccc;
+    padding: 0.2em;
+}
+
+.search_options .basic_search_simple,
+.search_options .basic_search_group
+{
+    padding-bottom: 0.3em;
+}
+
+.search_options .basic_search_simple {
+    border-bottom: 1px solid #ddd;
+    background-image: url(/static/images/silk/page_white_text.png);
+}
+
+.search_options .basic_search_simple .label_is {
+    line-height: 1.1em;
+}
+
+.search_options .basic_search_simple .label_isnt {
+    width: auto;
+    padding-left: 0.5em;
+}
+
+.search_options .basic_search_group {
+    padding-top: 0.3em;
+    background-image: url(/static/images/silk/group.png);
+    background-position: 5px 0.7em !important;
+}
+
+.search_options .basic_options {
+    margin-bottom: 0.5em;
+}
+
+.search_options .advanced_options legend {
+    background-image: url(/static/images/silk/bullet_toggle_plus.png);
+    background-repeat: no-repeat;
+    background-position: -3px left;
+    padding-left: 16px;
+    color: #793300;
+    cursor: pointer;
+}
+
+.search_options .advanced_options legend.open {
+    background-image: url(/static/images/silk/bullet_toggle_minus.png);
+}
+
+.search_options .advanced_options .criteria {
+    display: none;
+}
+
+.search_options .button_line {
+    border-top: none;
+}
+
+form .search_options input.ajaxautocompletes {
+    background: #fff url(/static/images/css/fieldbg-autocomplete.gif) repeat-x top right;
+    padding-right: 0.2em;
+}
+
+.search_options .search_sort {
+    background: url(/static/images/silk/table_sort.png) no-repeat 5px 0.8em;
+    padding: 0.5em 0.5em 0.5em 25px;
+    border-top: 1px solid #ddd;
+}
+
+.search_options .search_sort .hints {
+    padding-left: 0;
+    font-size: 0.9em;
+    color: #777;
+}
+
+.search_options label {
+    font-size: 1em;
+    font-weight: normal;
+    line-height: 1.8em;
+}
+
+.search_options input.text,
+.search_options input.date
+{
+    width: 10em;
+}
+
+.search_options .inline label {
+        float: left;
+        width: 7em;
+        padding-left: 2px;
+}
+
+.search_options .search_status_checkboxes input {
+        float: left;
+        margin: 0.4em 0.2em;
+}
+
+.search_options .search_status_checkboxes label {
+    margin-top: 0.1em;
+}
+
+.search_options .search_complete_status {
+    clear: left;
+    display: block;
+    border-bottom: 1px solid #ddd;
+}
+
+.search_options .search_will_do_status,
+.search_options .search_accepted_status,
+.search_options .search_attachment_status {
+    float: left;
+    clear: left;
+}
+
+.search_options .search_accepted_status,
+.search_options .search_will_do_status {
+    border-bottom: 1px solid #ddd;
+}
+
+.search_options .search_will_do_status { padding-left: 25px }
+.search_options .search_will_do_status label.argument-will_complete { width: 10em }
+.search_options .search_will_do_status label.argument-will_complete_not { width: 9em }
+
+.search_options .search_attachment_status { padding-left: 25px }
+.search_options .search_attachment_status label.argument-has_attachment { width: 10em }
+.search_options .search_attachment_status label.argument-has_no_attachments { width: 9em }
+
+
+.search_options .label_is,
+.search_options .label_isnt
+{
+    display: block;
+    float: left;
+    text-align: right;
+    padding-right: 0.5em;
+    line-height: 2em;
+}
+
+.search_options .label_is {
+    width: 10em;
+    clear: left;
+}
+
+.search_options .label_isnt {
+    width: 6em;
+}
+
+.search_options .search_dates .label_isnt {
+    width: 6em;
+}
+.search_options .search_priority .label_isnt
+{
+    width: 2.5em;
+}
+
+.search_options .search_task_field input,
+.search_options .search_task_field select,
+.search_options .search_tags input,
+.search_options .search_dates input,
+.search_options .search_priority select,
+.search_options .search_times input,
+.search_options .search_dependencies input,
+.search_options .search_projects input,
+.search_options .basic_search_simple input,
+.search_options .basic_search_group select
+{
+    float: left;
+}
+
+.search_options .search_task_field,
+.search_options .search_tags,
+.search_options .search_dates,
+.search_options .search_priority,
+.search_options .search_times,
+.search_options .search_dependencies,
+.search_options .search_projects,
+.search_options .basic_search_simple,
+.search_options .basic_search_group
+{
+    clear: left;
+}
+
+.search_options .search_dates label {
+    display: none;
+}
+
+.search_options .search_accepted_status .label_is {
+        visibility: hidden;
+}
+
+.search_options .search_task_field {
+    padding-left: 25px;
+}
+
+.search_options .search_complete_status,
+.search_options .search_accepted_status,
+.search_options .search_tags,
+.search_options .search_dates,
+.search_options .search_priority,
+.search_options .search_times,
+.search_options .search_dependencies,
+.search_options .search_projects,
+.search_options .basic_search_simple,
+.search_options .basic_search_group
+{
+    background-position: 5px 3px;
+    background-repeat: no-repeat;
+    padding-left: 25px;
+}
+
+.search_options .search_dates {
+    background-image: url(/static/images/silk/date.png);
+    background-position: 5px 0.6em;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.2em;
+    padding-top: 0.4em;
+    margin-top: 0.3em;
+    margin-bottom: 0.5em;
+}
+
+.search_options .search_tags {
+    background-image: url(/static/images/silk/tag_blue.png);
+    padding-bottom: 0.3em;
+}
+
+.search_options .search_complete_status {
+    background-image: url(/static/images/silk/tick.png);
+}
+
+.search_options .search_accepted_status {
+    background-image: url(/static/images/silk/thumb_up.png);
+}
+
+.search_options .search_priority {
+    background-image: url(/static/images/silk/bullet_black.png);
+    background-position: 5px 2px;
+    padding-bottom: 0.3em;
+}
+
+.search_options .search_task {
+    clear: both;
+    border-top: 1px solid #ddd;
+    padding-top: 0.5em;
+}
+
+.search_options .button_line {
+    margin-top: 0.5em;
+}
+
+.search_options .search_times {
+    padding: 0.5em 0 0.5em 25px;
+    border-top: 1px solid #ddd;
+    background-image: url(/static/images/silk/time.png);
+    background-position: 5px 5px;
+}
+
+.search_options .search_dependencies,
+.search_options .search_projects
+{
+    border-top: 1px solid #ddd;
+    padding-top: 0.3em;
+    padding-bottom: 0.1em;
+}
+
+.search_options .search_times input {
+    width: 4em;
+}
+
+.search_options .search_times .label_isnt {
+    width: 9.5em;
+}
+

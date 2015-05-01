@@ -1,0 +1,29 @@
+<&| /_elements/wrapper, title => "Activate your Hiveminder account!" &>
+<p id="overview">
+By filling out this form, you can activate your Hiveminder account.
+Once you do, you'll be able to use our full web interface to manage
+stuff you need to do, keep track of things you've asked other people
+do and check off tasks they've asked you to do. 
+
+</p><p id="overview">
+Just set your password, fill in your name and you should be
+all ready to go. 
+
+</p><p id="overview">
+Your password should be at least six characters long, easy for you
+to remember and hard for somebody else to guess.  
+</p>
+  <% Jifty->web->form->start %>
+    <% Jifty->web->form->next_page( url => "/todo" )%>
+    <% $golegit->form_field('name') %>
+    <% $golegit->form_field('password') %>
+    <% $golegit->form_field('password_confirm') %>
+<div class="button_line">
+  <% Jifty->web->form->submit( label => "Let's go") %>
+</div>
+  <% Jifty->web->form->end %>
+</&>
+
+<%init>
+my $golegit = Jifty->web->new_action(class => 'GoLegit', moniker => 'golegit');
+</%init>

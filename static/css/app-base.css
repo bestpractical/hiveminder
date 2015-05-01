@@ -1,0 +1,141 @@
+/* HEY */
+body {
+    font-family: verdana, sans-serif;
+    font-size: 76%;
+    margin: 0;
+    padding: 0;
+}
+
+#body {
+    /*max-width: 880px; */
+    /*margin: 0 auto;*/
+}
+
+#main {
+    /*background: url(/static/images/vertical.flourish.flipped.png) no-repeat 195px 8em;*/
+}
+
+.large {
+    font-size: 1.4em;
+}
+
+/* Layout */
+
+#content-wrapper {
+    margin-top: 4em;
+    margin-left: -210px;
+    width: 100%;
+    float: right;
+    clear: right; 
+}
+
+.nonuser #content-wrapper {
+    margin-top: 1em;
+}
+
+#content-wrapper2 {
+    margin-left: 195px;
+    padding-right: 1em;
+}
+
+#content-wrapper2 .dropshadow_left_wrap1 {
+    width: 100%;
+}
+
+#content {
+    padding: 0 0.8em 0.8em 0.8em;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+}
+
+#info-wrapper {
+    width: 180px;
+    float: left; 
+    clear: left;
+}
+
+#info {
+    padding: 0.5em 0.2em 0.5em 1em;
+}
+
+.clear {
+    clear: both;
+    visibility: hidden;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    font-size: 1px;
+}
+
+.invisible { visibility: hidden; }
+
+/* Misc */
+
+#privacy_policy {
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    padding: 0 1em;
+    height: 25em;
+    overflow: auto;
+}
+
+/* Lists */
+
+dl.lists {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+dl.lists dt,
+div.lists a.list_title
+{
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+div.lists div.list_entry {
+    padding-bottom: 1em;
+}
+
+div.lists hr { visibility: hidden; }
+
+dl.lists dd {
+    margin: 0.2em 0 1em 1.5em;
+    padding-left: 0;
+    color: #333;
+}
+
+ul.about_pages {
+    margin-left: 0;
+    padding-left: 3em;
+    list-style: none;
+}
+
+ul.about_pages li {
+    font-size: 1.25em;
+    font-weight: bold;
+    padding: 0 0 0.5em 0;
+}
+
+ul.about_pages li a {
+    padding-left: 20px;
+    background: url(/static/images/silk/bullet_go.png) no-repeat left center;
+}
+
+/* usernames */
+
+span.username .pro_user {
+    padding-right: 34px;
+    background: transparent url(/static/images/pro.icon2.whitebg-75a.png) no-repeat center right;
+}
+
+/* popouts */
+.popout {
+    padding-right: 18px;
+    background: url(/static/images/silk-derived/window_popout.png) no-repeat center right;
+}
+
+/* action lists */
+ul.group_actions, ol.group_actions, dl.group_actions {
+    font-size: 1.2em;
+}

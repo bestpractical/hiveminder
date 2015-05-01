@@ -1,0 +1,39 @@
+<%once>
+ my %pro_features = (
+    'SSL encryption'          => undef,
+    'email client integration with IMAP'          => 'reference/IMAP',
+    'saved searches'          => 'how-to/save-searches.html',
+    'shiny graphical reports' => 'reference/reports.html',
+    'attachments'        => 'reference/tasks/attachments.html',
+    'task assignment by email' => undef,
+    '"open loop" tracking'               => 'reference/tasks/open-loop.html',
+);
+my @features = keys %pro_features;
+</%once>
+<%init>
+return if Jifty->web->current_user->pro_account;
+return if rand(10) > 1; # 10% chance
+
+my $feature = $features[rand @features];
+</%init>
+
+<div id="pro-pitch">
+    <% Jifty->web->link(
+        target => "_blank",
+        label => "Hiveminder Pro",
+        url => "/pro",
+        class => 'pro_link'
+    ) %>
+
+    offers great features like
+
+    <% $pro_features{$feature}
+        ? Jifty->web->link(
+                target => "_blank",
+                label  => $feature,
+                url    => "/help/$pro_features{$feature}",
+            )
+        : $feature
+    %>!
+</div>
+

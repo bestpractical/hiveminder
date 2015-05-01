@@ -1,0 +1,15 @@
+<div class="edit_news">
+<% $update_news->form_field('title') %>
+<% $update_news->form_field('content') %>
+
+<div class="button_line">
+<% Jifty->web->link( label => 'Save', onclick => {submit => $update_news, replace_with => '/fragments/no_auth/news/view' } )%>
+</div>
+</div>
+<%args>
+$id
+</%args>
+<%init>
+my $update_news = Jifty->web->new_action(class => 'UpdateNews', moniker => "updatenews", arguments => { id => $id } );
+Jifty->web->form->next_page( url => "/news" );
+</%init>

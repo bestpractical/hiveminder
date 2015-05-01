@@ -1,0 +1,85 @@
+<%init>
+if (   Jifty->web->request->continuation
+    && Jifty->web->request->continuation->request->path !~ qr{^/(?:todo)?$}) {
+    my $message = Jifty::Result->new();
+    $message->message("Please sign in so that we know you're you.");
+    $message->action_class('Jifty::Action');    # Needed because some things will choke if this is undef
+    Jifty->web->response->result('redirect-after-login', $message);
+}
+</%init>
+
+<&| /_elements/splash_wrapper, title => 'Get busy!', render_messages => 0, slim_splash => 0 &>
+
+  <div id="minitour_wrapper">
+  <div id="minitour">
+    <div id="minitour_create" class="minitour_step">
+      <span class="number">1.</span><h2>Create</h2>
+      <p><i>Braindump</i> your tasks, tag them, set due dates, and attach notes</p>
+    </div>
+
+    <div id="minitour_assign" class="minitour_step">
+      <span class="number">2.</span><h2>Share</h2>
+      <p>Set up reminders for yourself, create groups, and share tasks with others</p>
+    </div>
+
+    <div id="minitour_review" class="minitour_step">
+      <span class="number">3.</span><h2>Review</h2>
+      <p>Check out your tasks, set priorities, and make decisions</p>
+    </div>
+
+    <div id="minitour_puns" class="minitour_step">
+      <span class="number">4.</span><h2>Bee productive!</h2>
+      <p>(Get used to the bee puns.)</p>
+    </div>
+
+    <hr class="hidden clear" />
+    <div id="minitour_to_fulltour">
+      <a href="/tour/">Take the full tour!</a> <span>&raquo;</span>
+    </div>
+  </div>
+  </div>
+  
+  <div id="frontpage_wrapper">
+  <div id="frontpage">
+    <div id="current_user">
+    <p id="existinguser">
+% # nagios is using the string "in below." to check for the
+% # front page existing.  If you change it, change
+% # private.bestpractical.com:/opt/nagios/etc/services.cfg
+% # as well
+      Already have an account?  Sign in below.
+    </p>
+
+    <% Jifty->web->render_messages %>
+    
+    <& /_elements/login_box &>
+
+    <p id="lostpass">
+      Forgot your password?
+      <% Jifty->web->link( url => 'lostpass.html',
+		           label => 'Get it reset.' ) %>
+    </p>
+    </div>
+    
+    <div id="new_user">
+    <p id="signup">
+      Don't have an account?
+      <% Jifty->web->link( label => 'Sign up', url => '/splash/signup/' ) %>!
+    </p>
+
+    <p id="needhelp">
+      Need a new activation link?
+      <% Jifty->web->link( label => 'Go have one resent', url => '/splash/resend' ) %>.<br />
+      Need more help? <% Jifty->web->link( label => 'Send us feedback', url => '/splash/feedback.html' ) %>.
+    </p>
+    </div>
+  </div>
+  </div>
+
+    <p id="social_links">
+      <a href="http://digg.com/submit?phase=2&amp;url=http://hiveminder.com"
+         target="_blank" id="digg_this">Digg this</a>
+      <a href="http://del.icio.us/post?v=2;url=http://hiveminder.com;title=Hiveminder - Get busy!"
+         target="_blank" id="delicious_this">Add to del.icio.us</a>
+    </p>
+</&>

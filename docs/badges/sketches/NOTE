@@ -1,0 +1,22 @@
+= size
+
+                        | monthly | weekly
+--------------------------------------------
+total                   | 90x75   | 90x75
+line                    | 90x10   | 40x10
+bar chart               | 90x40   | 40x40
+bar width               | 2       | 5
+spacing between bars    | 2       | 2
+
+= font
+
+8px silkscreen ( http://www.kottke.org/plus/type/silkscreen/ )
+
+= color
+
+font: #000000
+line: #333333
+(bar) personal: #6883A7
+(bar) for others: #257324
+(bar) delegated: #B12926
+

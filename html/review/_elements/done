@@ -1,0 +1,16 @@
+<script>
+Jifty.KeyBindings.reset();
+jQuery("#keybindings").html("").removeClass("keybindings-written");
+</script>
+<p>Nice work.</p>
+  <p>You've just looked at every single thing in that list in <%$duration%>.  Now you're a little bit more organized and ready to actually get some stuff done.</p>
+
+
+<%INIT>
+use Time::Duration;
+my $started  = Jifty->web->get_variable('started');
+my $duration = duration(time - $start, 1);
+</%INIT>
+<%args>
+$start => undef
+</%args>

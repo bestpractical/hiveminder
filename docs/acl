@@ -1,0 +1,25 @@
+Out of the box Jifty-based applications have an ACL system.  The system 
+automatically validates ACLs on Jifty::Record objects by calling the method
+C<current_user_can> before any create, read, update, or delete operation.
+In all cases, the arguments passed to the CRUD operation are passed as 
+extra arguments to current_user_can.
+
+On C<create()>, we reject the operation if C<current_user_can('create')>
+returns FALSE.
+
+On C<_value()> or C<I<somefieldname>>, we reject the operation  if C<current_user_can('read')> returns false.
+
+On C<_set()> or C<I<set_somefieldname>>, we reject the operation  if C<current_user_can('write')> returns false.
+
+
+On C<delete()>, we reject the operation  if C<current_user_can('delete')> returns false.
+
+Out of the box, C<current_user_can> returns 1. When you want to actually check ACLs, you'll need to override C<current_user_can()> in your C<Jifty::Record> subclass.
+
+It's likely that at some point, you'll decide you want to ask other
+questions on certain types of operation.  Say, you only want to let
+administrators update the C<paid_account> field. In that case, you'd override
+C<check_update_rights() to look for the C<admin> right rather than the C<update> right, if the C<column> is C<paid_account>.
+
+
+

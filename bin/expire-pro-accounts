@@ -1,0 +1,75 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+
+use DateTime;
+use BTDT::CurrentUser;
+use BTDT::Model::UserCollection;
+
+sub send_notifications {
+    my $users = shift;
+    while ( my $user = $users->next ) {
+        eval {
+            BTDT::Notification::Expiration->new( to => $user )->send;
+        };
+        warn $@ if $@;
+    }
+}
+
+my $users = BTDT::Model::UserCollection->new( current_user => BTDT::CurrentUser->superuser );
+
+# Accounts about to expire
+$users->limit(
+    column      => 'pro_account',
+    value       => 't'
+);
+$users->limit(
+    column      => 'paid_until',
+    value       => "current_date + interval '1 month'",
+    quote_value => 0
+);
+$users->limit(
+    column      => 'paid_until',
+    value       => "current_date + interval '1 week'",
+    quote_value => 0
+);
+send_notifications( $users );
+
+
+# Accounts expired 3 days ago
+$users->unlimit;
+$users->limit(
+    column      => 'was_pro_account',
+    value       => 't'
+);
+$users->limit(
+    column      => 'paid_until',
+    value       => "current_date - interval '2 days'",
+    quote_value => 0
+);
+send_notifications( $users );
+
+
+# Accounts expiring NOW
+$users->unlimit;
+$users->limit(
+    column  => 'pro_account',
+    value   => 't'
+);
+$users->limit(
+    column      => 'paid_until',
+    value       => 'current_date',
+    quote_value => 0
+);
+
+while ( my $user = $users->next ) {
+    Jifty->log->debug("Expiring pro features for user @{[$user->email]}");
+    $user->set_was_pro_account('t');
+    $user->set_pro_account('f');
+}
+
+
+1;

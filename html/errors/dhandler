@@ -1,0 +1,20 @@
+<&|/_elements/wrapper, title => $title &>
+
+<p>
+Sorry, chief!  We can't seem to find what you're looking for.  Here's what's wrong:</p>
+<blockquote>
+<b><%$m->dhandler_arg%></b>
+</blockquote>
+
+<p>We've logged the error, and we're working on it!  For now,  <% Jifty->web->link(  url =>"/todo", label => 'head on back to your To Do list')%>.</p>
+
+</&>
+<%init>
+my $title = 'Huh.';
+if ( $m->dhandler_arg eq "404" ) {
+    Jifty->web->response->header( Status => '404 Not Found' );
+} else {
+    Jifty->log->error("Unhandled web error ". $m->dhandler_arg);
+}
+
+</%init>

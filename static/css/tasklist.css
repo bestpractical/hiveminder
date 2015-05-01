@@ -1,0 +1,596 @@
+dl.tasklist {
+    clear: both;
+    margin-top: 2.5em;
+}
+
+.tasklist .edittags {
+    color: gray;
+}
+
+.tasklist dd.task_description p {
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 0.2em;
+}
+
+.tasklist .task {
+    clear: left;
+}
+
+.tasklist .task_container {
+    padding-top: 0.75em;
+    min-height: 12px;
+}
+
+
+.argument-complete,
+.argument-complete_not,
+.argument-select,
+.schedule-task,
+.task_summary {
+    float: left;
+}
+
+.argument-complete, .argument-complete_not {
+    margin-right:7px;
+}
+
+.argument-select {
+    margin-right: 10px;
+}
+
+.tasklist .task .task_summary {
+    max-width: 75%;
+    height: 1.3em; /* ~line height */
+
+    color: #333;
+    font-size: 1.2em;
+    font-weight: bold;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tasklist .task .task_summary a {
+    color: #333;
+    text-decoration: none;
+}
+#taskpage-dependencies .tasklist .task .task_summary a {
+    font-size: 1.1em;
+    line-height: 1.3em;
+}
+
+.tasklist .task_container:hover {
+    /* todo, fix the priority widgets so we can set the background color */
+}
+
+.tasklist .task .task_summary a:hover {
+    text-decoration: underline;
+}
+
+.tasklist .complete, .tasklist .complete a {
+    color: gray;
+} 
+
+.tasklist .complete .task_summary a {
+    color: gray;
+    text-decoration: line-through;
+}
+
+.tasklist .related_tasks {
+    clear: both;
+    color: #777;
+    padding-left: 46px;
+    padding-bottom: 0.2em;
+}
+
+.tasklist .related_tasks a { color: #777; }
+.tasklist .related_tasks a:hover { color: #444; }
+
+.tasklist .complete .related_tasks a {
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.tasklist .complete .related_tasks a:hover {
+    text-decoration: underline;
+}
+
+.tasklist .complete .metadata {
+    display: none;
+}
+
+.tasklist .metadata {
+    padding-left: 43px;
+    clear: left;
+}
+
+.tasklist span.task_group a {
+    background: url(/static/images/silk/group.png) no-repeat top left;
+    padding-left: 20px;
+    margin-left: 1em;
+    padding-bottom: 2px;
+}
+
+.tasklist span.record_locator {
+    float: right;
+    clear: right;
+    text-align: right;
+    margin-right: 2em;
+}
+
+.tasklist span.record_locator a,
+.tasklist span.record_locator a:visited {
+    color: #ccc;
+}
+.tasklist span.record_locator a:hover {
+    color: #999;
+}
+
+.tasklist span.task_by span.unaccepted {
+    background: url(/static/images/silk/hourglass.png) no-repeat center left;
+    padding-left: 20px;
+    padding-bottom: 2px;
+}
+
+.tasklist span.task_by span.declined {
+    background: url(/static/images/silk/cross.png) no-repeat center left;
+    padding-left: 20px;
+    padding-bottom: 2px;
+}
+
+.tasklist span.tags {
+    background: url(/static/images/silk/tag_blue.png) no-repeat center left;
+    padding-left: 20px;
+    margin-left: 1em;
+    padding-bottom: 2px;
+}
+
+.tasklist span.attachments a {
+    background: url(/static/images/silk/attach.png) no-repeat center left;
+    padding-left: 20px;
+    margin-left: 1em;
+    padding-bottom: 2px;
+}
+
+.tasklist span.time_tracking span.notimer,
+.tasklist span.time_tracking a
+{
+    background: url(/static/images/silk-derived/time-70a.png) no-repeat center left;
+    padding-left: 20px;
+    padding-bottom: 2px;
+    color: #777;
+}
+
+.tasklist span.repeat a{
+    background: url(/static/images/silk-derived/arrow_repeat_gray.png) no-repeat center left;
+    padding-left: 20px;
+    margin-left: 1em;
+    padding-bottom: 2px;
+}
+.tasklist span.repeat a {
+    overflow : hidden; /* opera */
+}
+
+.tasklist .metadata a {
+    text-decoration: none;
+    color: #777;
+}
+
+.tasklist .metadata a:hover {
+    color: #444;
+    text-decoration: underline;
+}
+
+.tasklist .metadata .task_for,
+.tasklist .metadata .task_by,
+.tasklist .metadata .task_project,
+.tasklist .metadata .task_milestone
+{
+    padding-left: 0.8em;
+}
+
+.tasklist .metadata .task_for,
+.tasklist .metadata .task_by,
+.tasklist .metadata .task_project,
+.tasklist .metadata .task_milestone
+{
+    color: #777;
+}
+
+.tasklist .metadata .task_project span,
+.tasklist .metadata .task_milestone span
+{
+    font-weight: bold;
+}
+
+.tasklist .metadata .task_project .jifty-region,
+.tasklist .metadata .task_project .jifty-region select,
+.tasklist .metadata .task_milestone .jifty-region,
+.tasklist .metadata .task_milestone .jifty-region select
+{
+    display: inline;
+}
+
+.tasklist .metadata .task_project .jifty-region .hidden,
+.tasklist .metadata .task_milestone .jifty-region .hidden
+{
+    display: inline;
+    visibility: hidden;
+}
+
+.tasklist .priority {
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+.tasklist .task_description {
+    clear: both;
+    color: #666;
+    font-size: 0.9em;
+    padding-bottom: 0.5em;
+    margin-top: 0.5em;
+    margin-right: 15px;
+    margin-left: 40px;
+    border-bottom: 1px solid #ededed;
+}
+
+.tasklist .task_description .short * {
+    display: inline;
+}
+
+.tasklist .description_view_link a {
+    color: #444;
+}
+
+
+.tasklist .due {
+    color: #777;
+    background: url(/static/images/silk/date.png) no-repeat center left;
+    padding-left: 20px;
+    padding-bottom: 2px;
+    margin-left: 1em;
+}
+
+.tasklist .overdue {
+    color: #a00000;
+}
+
+
+.tasklist-fragment .tasklist-fragment {
+    font-size: 0.9em;
+}
+
+/* at 4 deep, stop doing that */
+
+
+.tasklist-fragment .tasklist-fragment .tasklist-fragment .tasklist-fragment {
+    font-size: 1.0em;
+}
+
+/* compact tasklist */
+
+.brief_tasklist.tasklist .task_container {
+    padding-top: 0em;
+}
+
+.brief_tasklist .metadata ,
+.brief_tasklist .task_description {
+    margin: 0;
+    border: 0;
+    height: 0;
+    padding: 0;
+}
+
+.brief_tasklist .metadata *,
+.brief_tasklist .task_description *{
+    display: none;
+}
+
+/* tasklist create widget */
+
+.tasklist .create,
+.tasklist .bulk_edit,
+.tasklist .update
+{
+    background: #eee;
+    padding: 0.5em;
+    margin: 0 0 0.4em 3.5em;
+    clear: both;
+}
+
+.tasklist .create {
+    width: 80%;
+}
+
+.tasklist .bulk_edit {
+    width: 90%;
+}
+
+.tasklist .create .button {
+    margin-top: 0.2em;
+}
+
+.tasklist .update .button_line {
+    padding-bottom: 1em;
+}
+
+.tasklist .bulk_edit {
+    margin-top: 10px;
+}
+
+.tasklist .bulk_edit .button_line {
+    margin-top: 0.3em;
+}
+
+.tasklist .bulk_edit .delete_tasks {
+    direction: ltr;
+}
+
+.tasklist .bulk_edit .delete_tasks input.button {
+    margin-top: 0.3em;
+}
+
+.tasklist .create .extra {
+    padding: 0;
+}
+
+.tasklist .create .argument-summary .hints,
+.tasklist .update .argument-summary .hints
+{
+    display: none;
+}
+
+.tasklist .create input.argument-summary {
+    width: 20em;
+}
+
+.tasklist .create .argument-tags input {
+    width: 10em;
+}
+
+.tasklist .create .more, .tasklist .bulk_edit .more {
+    text-align: right;
+    display: inline;
+}
+
+.tasklist .create .submit_button,
+.tasklist .bulk_edit .submit_button {
+    display: inline;
+}
+
+.tasklist .create .canonicalization_note {
+    clear: both;
+    display: block;
+}
+
+.tasklist .update .button {
+    margin-top: 0.5em;
+}
+
+.tasklist .update .extra {
+    padding-left: 3.9em;
+}
+
+.tasklist .update input.argument-summary {
+    font-size: 1.3em;
+    width: 98%;
+}
+
+.tasklist .update div.argument-summary {
+    width: 60%;
+}
+
+.tasklist .update div.argument-tags {
+    width: 25%;
+}
+
+.tasklist .update input.argument-tags {
+    width: 100%;
+}
+
+.tasklist .update div.argument-description,
+.tasklist .update div.argument-comment,
+.tasklist .create div.argument-description
+{
+    width: 97%;
+}
+
+.tasklist .update textarea.argument-description,
+.tasklist .update textarea.argument-comment,
+.tasklist .create textarea.argument-description
+{
+    height: 5.1em;
+    width: 100%;
+}
+
+.tasklist .update .record_locator {
+    display: block;
+    text-align: right;
+}
+
+/* tasklist actions */
+
+#actions_container {
+    clear: left;
+    float: left;
+}
+
+ul.actions {
+    list-style: none;
+    margin: 0 0 0 2em;
+    padding: 0;
+    color: #888;
+}
+
+ul.actions li {
+    display: inline;
+    padding: 0 0.2em;
+}
+
+ul.actions li a {
+    text-decoration: none;
+/*    font-family: "Trebuchet MS", Arial;*/
+    font-family: Verdana, sans-serif;
+    font-weight: bold;
+}
+
+ul.actions li a:hover {
+    text-decoration: underline;
+}
+
+ul.actions li.active {
+    background: rgb(82, 134, 181);
+}
+
+ul.actions li.active a {
+    color: white;
+}
+
+.tasklist .zilch_message {
+    clear: both;
+    margin: 0.5em 0 0 1em;
+}
+
+/* task panels */
+
+.tasklist_panel_wrapper {
+    clear: both;
+    position: absolute;
+    z-index: 43;
+}
+
+.tasklist_panel {
+    background: #f0f0f0;
+    padding: 1em;
+    border: 1px solid #888;
+    width: 43em;
+}
+
+.tasklist_panel p {
+    margin-top: 0;
+}
+
+.tasklist_panel textarea.bigbox {
+    width: 98%;
+    height: 12em;
+}
+
+.tasklist_panel .hints {
+    padding-left: 0;
+    font-size: 0.9em;
+    color: #777;
+}
+
+.tasklist_panel .hints ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tasklist_panel .hints li {
+    display: inline;
+}
+
+.tasklist_panel .hints code.keystroke {
+    font-size: 1.4em;
+    border: 2px outset #aaa;
+    padding: 0 0.2em;
+    background: white;
+}
+
+.tasklist_panel .hints li.priority_key {
+    display: block;
+    margin-top: 0.5em;
+}
+
+.tasklist_panel div.button_line {
+    margin-top: 0.3em;
+}
+
+.bulk-select {
+    clear: both;
+}
+
+.task-review-braindump {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.task-review-braindump  p{
+    font-size: 120%;
+}
+
+/* Saved lists panel */
+
+.save_new_list {
+    float: left;
+    width: 49%;
+}
+
+.update_existing_list {
+    float: right;
+    width: 49%;
+}
+
+.save_new_list .label,
+.update_existing_list .label
+{
+    width: auto;
+}
+
+.save_new_list strong,
+.update_existing_list strong
+{
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.brief_tasklist .task .task_summary a,
+.schedule_tasklist .task .task_summary a
+{
+    font-weight: normal;
+    font-size: 1em;
+}
+
+dl.brief_tasklist,
+dl.schedule_tasklist
+{
+    margin-top: 0;
+    padding-top: 0.25em;
+}
+
+dl.schedule_tasklist .edit_context_menu {
+    visibility: hidden;
+}
+
+dl.schedule_tasklist .task_container:hover .edit_context_menu {
+    visibility: visible;
+}
+
+.dashboard-tasklist .brief_tasklist .task_summary {
+    float: none;
+}
+
+.dashboard-tasklist .brief_tasklist .priority {
+    margin-right: 2px;
+}
+
+.schedule_tasklist .task_summary {
+    padding-top: 0.1em;
+}
+
+a.schedule-task {
+    background: url(/static/images/silk/calendar_add.png) no-repeat center left;
+    width: 0;
+    display: block;
+    padding-left: 23px;
+    min-height: 16px;
+    text-indent: -9999em;
+}
+

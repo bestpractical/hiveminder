@@ -1,0 +1,38 @@
+<%args>
+$render_messages => 1
+$slim_splash => 1
+</%args>
+<& /_elements/header, %ARGS &>
+  <body id="splash">
+    <% Jifty->web->link( label  => '<h1>Hiveminder</h1>',
+                         url    => '/',
+                         escape_label => 0 ) %>
+
+    <h2 class="tagline">Collaborative todo lists that work the way you do.</h2>
+
+% if ($slim_splash) {
+    <div id="slim_splash">
+% }
+
+% if ($render_messages) {
+    <% Jifty->web->render_messages %>
+% }
+
+    <% $m->content |n %>
+% if ($slim_splash) {
+    </div>
+% }
+
+    <& /_elements/clear &>
+    <& /_elements/footer, logo => 'bp_logo_small.png' &>
+
+    <div id="jifty-wait-message" style="display: none;">&nbsp;</div>
+% if (BTDT->is_production) {
+<script type="text/javascript">
+_uacct = "UA-937869-1";
+urchinTracker();
+</script>
+% }
+  </body>
+</html>
+

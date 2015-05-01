@@ -1,0 +1,52 @@
+<%args>
+$dates => undef
+$starting => undef
+$ending => undef
+$today => undef
+</%args>
+<&|/mini/_elements/wrapper, 
+    title => _('What happened on %1 %2, %3', $starting->month_name, $starting->day, $starting->year),
+    hide_title => 1 &>
+
+<h1>
+<% _('What happened on <span class="date">%1 %2, %3</span>', $starting->month_abbr, $starting->day, $starting->year) | n %>
+</h1>
+
+<div class="datenav">
+% my $earlier = $starting->clone->subtract(days => 1);
+<% Jifty->web->link( label => '&#171; Earlier', class =>"prev", url => '/mini/history/'.$earlier->ymd, escape_label => 0)%>
+% if ( $starting < $today ) {
+% my $later = $starting->clone->add(days => 1);
+<% Jifty->web->link( label => 'Later &#187;', class => 'next', url => '/mini/history/'.$later->ymd, escape_label => 0)%>
+% }
+</div>
+
+% foreach my $date (sort keys %$dates) {
+<ul class="tasklist">
+% foreach my $t (values %{$dates->{$date}->{'tasks'}}) { 
+<& /mini/_elements/radar_entry, task => $t &>
+
+
+
+% my @txns = @{ $dates->{$date}->{'txns'}->{$t->id}};
+<dl>
+% foreach my $txn (@txns) { 
+% next unless $txn->summary_comment;
+<div class="transaction">
+<dt><% sprintf('%02d:%02d', $txn->modified_at->hour, $txn->modified_at->minute)%> <span class="created_by"><& /_elements/username, user => $txn->created_by &></span> <% $txn->summary_comment %></dt>
+% if ($txn->type eq "update" and $txn->visible_changes->count > 1) {
+%     my $changes = $txn->visible_changes;
+%     while (my $c = $changes->next) {
+  <dd><%$c->as_string%></dd>
+%     }
+% }
+
+</div>
+% }
+</dl>
+
+
+% } 
+</ul>
+% }
+</&>

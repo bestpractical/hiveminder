@@ -1,0 +1,45 @@
+<&| /_elements/wrapper, title => "Got anything to add?", logo => 'mind', group_id => $group &>
+
+% if(Jifty->web->caller->argument('task_review')) {
+  <div class="task-review-braindump">
+  <p>Thanks for the braindump! However, we're not going to let you get
+    out of your task review that easily! Back to work, soldier.
+    <% Jifty->web->form->start %>
+    <% Jifty->web->return(label     => "Back to Task Review",
+			  as_button => 1) %>
+    <% Jifty->web->form->end %>
+  </div>
+
+% }
+
+<& /_elements/tasklist, tokens => $tokens, ids => [map {$_->id} @created], group_id => $group &>
+
+</&>
+<%args>
+</%args>
+<%init>
+
+my @created = ();
+my $tokens = [];
+my $group;
+
+if (Jifty->web->request->action('quickcreate')) {
+  @created = @{
+    Jifty->web->response->result('quickcreate')
+    ? (Jifty->web->response->result('quickcreate')->content("created") || [])
+    : []
+  };
+
+  $tokens = [BTDT::Model::TaskCollection->split_tokens(
+		Jifty->web->request->action('quickcreate')->argument('tokens') || "")];
+
+  if ((Jifty->web->request->action('quickcreate')->argument('tokens') || "") =~ /\bgroup (\S+)\b/) {
+    $group = $1;
+    my $obj = BTDT::Model::Group->new;
+    $obj->load( $group );
+    BTDT::Dispatcher::_setup_groupnav($obj);
+  }
+
+}
+
+</%init>

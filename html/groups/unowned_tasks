@@ -1,0 +1,22 @@
+<&| /_elements/wrapper, title => "Group ".$group->name,
+                        subtitle => "Up for grabs",
+                        group_id => $group->id,
+                        tag_collection => $unowned,
+                        logo => 'hivemind' &>
+
+<& /_elements/tasklist,
+    collection => $unowned,
+    name => 'unownedtasks',
+    hide_if_empty => 0
+    &>
+
+</&>
+
+<%init>
+my $unowned = BTDT::Model::TaskCollection->new();
+$unowned->from_tokens(qw/owner nobody not complete but_first nothing starts before tomorrow group/, $group->id);
+
+</%init>
+<%args>
+$group
+</%args>

@@ -1,0 +1,110 @@
+#!/usr/bin/env hmperl
+
+use strict;
+use warnings;
+use Getopt::Long;
+use LWP::UserAgent;
+use Pod::Usage;
+use Jifty::YAML;
+
+# Option parsing
+my %opts;
+GetOptions( \%opts, "address=s", "url=s", "timeout=i", "sender=s", "help" )
+  or pod2usage( -exitval => 1, -verbose => 1 );
+pod2usage( -exitval => 1, -verbose => 1 ) if $opts{help} or not $opts{url};
+
+# Where the email was sent to
+my $address = $opts{address} || $ENV{RECIPIENT};
+warn("$0: No --address argument, and RECIPIENT env variable is empty!\n") && exit(100)
+  unless $address;
+
+# Who sent it?
+my $sender = $opts{sender} || $ENV{SENDER};
+warn("$0: No --sender argument, and SENDER env variable is empty!\n") && exit(100)
+  unless $sender;
+
+# Grab the message from STDIN
+my $body = do { local (@ARGV, $/); <> };
+warn("$0: No message passed on STDIN\n") && exit(100)
+  unless $body =~ /\S/;
+
+# Set up POST parameters
+my %args = ( "J:A-dispatch" => "BTDT::Action::EmailDispatch",
+             "J:A:F-address-dispatch" => $address,
+             "J:A:F-envelope_sender-dispatch" => $sender,
+             "J:A:F-email-dispatch" => $body
+             );
+
+# Send 'er away!
+my $ua = LWP::UserAgent->new();
+$ua->timeout( $opts{timeout} || 300 ); # wait 5 minutes for a response
+my $r = $ua->post("$opts{url}/__jifty/webservices/yaml", { %args });
+if ($r->is_success) {
+    my $data = Jifty::YAML::Load($r->content);
+    warn $data->{dispatch}{_content}{"Message-ID"}. " from $sender to $address: ".$data->{dispatch}{error}."\n" if $data->{dispatch}{error};
+    warn $data->{dispatch}{_content}{"Message-ID"}. " from $sender to $address: $_ error is ".$data->{dispatch}{field_errors}{$_}."\n" for keys %{$data->{dispatch}{field_errors} || {}};
+    exit( $data->{dispatch}{failure} ? 100 : 0 );
+} else {
+    warn "HTTP timeout";
+    exit 1;
+}
+
+=head1 SYNOPSIS
+
+    mailgate --help       # This text
+
+    mailgate --url http://hiveminder.com/
+
+=head1 OPTIONS
+
+=over 3
+
+=item --url
+
+The only required parameter; this specifies the complete base URL to
+the Hiveminder server that the mail is destined for.
+
+=item --address
+
+Specifies the published address that the mail is destined for.  If
+this option is omitted, C<mailgate> looks at the C<RECIPIENT>
+environment variable.  The address determines what will be done with
+the email when it is received.
+
+=item --timeout
+
+Sets the timeout before the connection aborts.  The default is three
+minutes, which should be more than sufficient.
+
+=item --sender
+
+Sets the envelope sender of the message. This will be pulled from the
+C<SENDER> environment variable if not specified.
+
+=back
+
+=head1 EXIT CODES
+
+=over
+
+=item 0
+
+The message was delivered successfully.
+
+=item 1
+
+There was a temporary failure.  The only temporary failure at the
+moment is a lack of a C<--url> parameter; every other error has very
+little likelyhood of getting any better with a retry.
+
+=item 100
+
+Permanent failure; a reason will often be printed to standard error.
+This includes lack of C<--address> or C<RECIPIENT> env variable, lack
+of C<--sender> or C<SENDER> env variable, lack of body, HTTP timeout,
+or any error message from the C<EmailDispatch> action.
+
+=back
+
+=cut
+

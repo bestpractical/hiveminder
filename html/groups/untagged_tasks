@@ -1,0 +1,21 @@
+<&| /_elements/wrapper, title => "Group ".$group->name,
+                        subtitle => "Untagged",
+                        group_id => $group->id,
+                        tag_collection => $untagged,
+                        logo => 'hivemind' &>
+
+<& /_elements/tasklist,
+    collection => $untagged,
+    name => 'untaggedtasks',
+    hide_if_empty => 0
+    &>
+
+</&>
+
+<%init>
+my $untagged = BTDT::Model::TaskCollection->new();
+$untagged->from_tokens(qw/untagged not complete group/, $group->id);
+</%init>
+<%args>
+$group
+</%args>

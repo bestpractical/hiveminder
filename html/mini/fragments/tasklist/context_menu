@@ -1,0 +1,304 @@
+<%args>
+$id
+$tokens
+$current_mode => 'view'
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load($id);
+return unless $task->id;
+
+my ( $edit_link, $context, $take, $untake, $defer, $delete );
+
+# This label gets replaced with the first link in the menu
+$context = Jifty::Web::Menu->new( label => 'Context menu' );
+
+if ( $task->owner->id == Jifty->web->current_user->id
+    and not $task->accepted() )
+{
+    my $accept
+        = Jifty->web->new_action( class => "AcceptTask", record => $task );
+    $context->child(
+        "Accept" => link => $accept->button(
+            label     => "Accept",
+            arguments => { accepted => 1 },
+            onclick   => [
+                {   submit       => $accept,
+                    refresh_self => 1,
+                    args         => { maybe_view => 1, },
+                },
+                {   region       => "notices",
+                    replace_with => "/mini/fragments/notices",
+                },
+            ],
+            as_link => 1,
+            class   => 'suggested_option',
+        )
+    );
+    $context->child(
+        "Decline" => link => $accept->button(
+            label     => "Decline",
+            arguments => { accepted => 0 },
+            onclick   => [
+                {   submit       => $accept,
+		    confirm => 'Really decline this task?',
+                    refresh_self => 1,
+                    args         => { maybe_view => 1, },
+                },
+            ],
+            as_link => 1
+        )
+    );
+}
+if ($current_mode ne 'details') {
+
+$context->child(
+    Details => link => Jifty->web->link(
+        label   => "Details",
+        onclick => {
+            replace_with => "/mini/fragments/tasklist/details",
+            args         => { tokens => $tokens },
+        }
+    )
+);
+}
+
+if ($current_mode ne 'edit') {
+$context->child(
+    Edit => link => Jifty->web->link(
+        label   => "Edit",
+        onclick => {
+            replace_with => "/mini/fragments/tasklist/edit",
+            args         => { tokens => $tokens },
+        }
+    )
+);
+}
+
+$context->child(
+    'Add comment' => link => Jifty->web->link(
+        label   => 'Add comment',
+        onclick => { element => "#add-comment-" . Jifty->web->current_region->qualified_name,
+                     replace_with => '/mini/fragments/tasklist/comment',
+                     toggle       => 1,
+                     effect       => 'BlindDown',
+                     args         => { id => $task->id },
+                   }
+    )
+);
+
+$context->child(
+    'And then' => link => Jifty->web->link(
+        label   => 'And then...',
+        onclick => [
+            {   element      => "#and-then-" . Jifty->web->current_region->qualified_name,
+                replace_with => '/mini/fragments/tasklist/list',
+                toggle       => 1,
+                effect       => 'BlindDown',
+                args         => {
+                    tokens    => 'but first ' . $task->record_locator . " not complete",
+                    brief     => 1,
+                    parent_id => $task->id,
+                    title     => 'And then...',
+                    new_item_path => '/mini/fragments/tasklist/new_item_expands',
+                    item_path     => '/mini/fragments/tasklist/view',
+                },
+            },
+            ]
+
+    )
+);
+$context->child(
+    'But first...' => link => Jifty->web->link(
+        label => 'But first...',
+
+        onclick => [
+            {   element      => "#but-first-" . Jifty->web->current_region->qualified_name,
+                replace_with => '/mini/fragments/tasklist/list',
+                effect       => 'BlindDown',
+                toggle       => 1,
+                args         => {
+                    tokens => 'and then ' . $task->record_locator . " not complete",
+                    brief  => 1,
+                    parent_id     => $task->id,
+                    title         => 'But first...',
+                    new_item_path => '/mini/fragments/tasklist/new_item_expands',
+                    item_path     => '/mini/fragments/tasklist/view',
+                },
+            },
+            ]
+
+    )
+);
+
+my $search = BTDT::Model::TaskCollection->new;
+$search->{'arguments'} = [$search->scrub_tokens( $search->split_tokens($tokens) )];
+my %defaults = $search->new_defaults;
+
+if($defaults{depends_on} || $defaults{depended_on_by}) {
+    my $rel = BTDT::Model::TaskDependency->new;
+    if($defaults{depends_on}) {
+        $rel->load_by_cols(task_id => $id, depends_on => $defaults{depends_on});
+    } else {
+        $rel->load_by_cols(task_id => $defaults{depended_on_by}, depends_on => $id);
+    }
+    
+    my $remove = Jifty->web->new_action(
+        class  => 'DeleteTaskDependency',
+        record => $rel);
+
+    my $title = "Remove link to #" .
+      $BTDT::Record::LOCATOR->encode($defaults{depends_on} || $defaults{depended_on_by});
+    $context->child(
+        $title => link => $remove->button(
+            label     => $title,
+            onclick   => { submit => $remove, replace_with => '/__jifty/empty' },
+            as_link   => 1
+          )
+
+       );
+}
+
+$take = Jifty->web->new_action(
+    class     => "TakeTask",
+    arguments => { id => $task->id }
+);
+$context->child(
+    'Take' => link => $take->button(
+        label   => "Take",
+        onclick => {
+            submit       => $take,
+            refresh_self => 1,
+            args         => { maybe_view => 1 }
+        },
+        as_link => 1
+    )
+    )
+    if (defined $task->owner_id and
+    $task->owner_id == BTDT::CurrentUser->nobody->id
+    and $task->current_user_can('update') );
+
+$untake = Jifty->web->new_action(
+    class     => "UpdateTask",
+    arguments => { id => $task->id },
+);
+$context->child(
+    'Give away' => link => $untake->button(
+        label   => 'Give away',
+        onclick => {
+            submit       => $untake,
+            refresh_self => 1,
+            args         => { maybe_view => 1 },
+        },
+        arguments => { owner_id => 'nobody' },
+        as_link   => 1,
+    )
+    )
+    if ($task->group->id
+    and $task->owner->id == Jifty->web->current_user->id
+    and $task->accepted );
+
+
+$defer = Jifty->web->new_action(
+    class     => "UpdateTask",
+    arguments => { id => $task->id }
+);
+
+if ( $task->starts and $task->starts->epoch > DateTime->now->epoch ) {
+    $context->child(
+        Unhide => link => $defer->button(
+            label   => 'Do this today',
+            onclick => {
+                submit       => $defer,
+                refresh_self => 1,
+                args         => { maybe_view => 1 },
+            },
+            arguments => { starts => "today" },
+            as_link => 1
+        )
+    );
+}
+
+$context->child( "Hide..." => label => "Hide..." );
+
+$context->child(
+    "Hide until tomorrow" => link => $defer->button(
+        label   => "...until tomorrow",
+        onclick => {
+            submit       => $defer,
+            refresh_self => 1,
+            args         => { maybe_view => 1 }
+        },
+        arguments => { starts => "tomorrow" },
+        as_link   => 1,
+    )
+);
+
+for my $day (qw(Saturday Monday)) {
+    $context->child(
+        "Hide until $day" => link => $defer->button(
+            label   => "...until $day",
+            onclick => {
+                submit       => $defer,
+                refresh_self => 1,
+                args         => { maybe_view => 1 }
+            },
+            arguments => { starts => "next $day" },
+            as_link   => 1,
+        )
+    );
+}
+
+$context->child(
+    "Hide for a month" => link => $defer->button(
+        label   => "...for a month",
+        onclick => {
+            submit       => $defer,
+            refresh_self => 1,
+            args         => { maybe_view => 1 }
+        },
+        arguments => { starts => "in 1 month" },
+        as_link   => 1,
+    )
+);
+
+$context->child(
+    "Hide for a year" => link => $defer->button(
+        label   => "...for a year",
+        onclick => {
+            submit       => $defer,
+            refresh_self => 1,
+            args         => { maybe_view => 1 }
+        },
+        arguments => { starts => "in 1 year" },
+        as_link   => 1,
+    )
+);
+
+if ( $task->current_user_can('delete') ) {
+    $delete = Jifty->web->new_action( class  => 'DeleteTask',
+                                      record => $task );
+
+    $context->child(
+        'Delete' => link => $delete->button(
+            label   => "Delete",
+            class   => "separator",
+            onclick => [
+                {
+                    confirm      => _('Really delete this task?'),
+                    submit       => $delete,
+                    refresh_self => 1,
+                    args         => { maybe_view => 1 },
+                },
+            ],
+            as_link => 1,
+        )
+    );
+}
+
+my $first = ($context->children)[0];
+$context->label( $first->label );
+$context->link( $first->link );
+</%init>
+
+<% $context->render_as_context_menu %>					  

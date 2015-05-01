@@ -1,0 +1,5 @@
+<%init>
+    $m->comp('/prefs/_elements/prefs_nav');
+    $m->call_next();
+    return();
+</%init>

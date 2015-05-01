@@ -1,0 +1,10 @@
+<%args>
+$format
+$tokens
+</%args>
+<%init>
+my $collection = BTDT::Model::TaskCollection->new();
+my @tokens = $collection->split_tokens($tokens);
+$collection->from_tokens(@tokens);
+$m->comp("/feeds/_elements/$format", collection => $collection);
+</%init>

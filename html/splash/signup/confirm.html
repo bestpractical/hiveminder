@@ -1,0 +1,74 @@
+<&| /_elements/splash_wrapper, title => "Confirm Your Address" &>
+
+% if (Jifty->web->current_user->id) {
+  <p>
+    You're already logged in as <& /_elements/username, user => Jifty->web->current_user->user_object &>. You only need to jump through 
+    this hoop if you're a new user. If you're not <& /_elements/username, user => Jifty->web->current_user->user_object, showtype => 0 &>, <%Jifty->web->
+    link( url => "/logout", label => 'log out')%> so you can confirm your email address.  If you've signed up,
+    we've sent a confirmation email to the address with which you signed up.
+  </p>
+% } else {
+<p id="overview">
+  <p>Before you can use Hiveminder, we need to make sure that we can
+  send you email at the address you gave us.  Have a look in your
+  inbox. You should have received a welcome message titled
+  <em>Welcome to Hiveminder!</em> including a link you can click on
+  to confirm your address.</p>
+</p>
+
+<p>If you've waited for an invitation for a while and nothing has
+  shown up in your inbox, we can <% Jifty->web->link(url =>
+  '/splash/resend', label => 'send you another one') %>. Sometimes spam
+  filters can catch automatic email like our confirmations, so be sure
+  to check your spam folder, too.</p>
+
+<div class="pro-pitch">
+  <p class="first">
+    <a href="/pro">Hiveminder Pro</a> offers a whole slew of useful features. When you
+    <strong>go Pro</strong>, these are just a few of the features you get:
+  </p>
+
+  <ul>
+    <li><strong>IMAP</strong> &mdash; Update tasks offline from your mail client!</li>
+    <li><strong>Reports</strong> &mdash; See how much you're getting done</li>
+    <li><strong>Attachments</strong> &mdash; Store and share documents, spreadsheets, and more with tasks</li>
+    <li><strong>with.hm</strong> &mdash; Assign tasks to anybody with an email address</li>
+    <li>...and more!</li>
+  </ul>
+
+  <p>All for only <strong>$30 a year</strong>.  (That's less than ten cents a day!)</p>
+  <p>
+    You can <a href="/pro">learn more about pro accounts</a>
+    
+% if ($pro_url) {
+    or <a href="<% $pro_url %>">get one now!</a>
+% } else {
+    but you'll have to wait until you're logged in before you can get one.
+% }
+  </p>
+</div>
+
+% }
+
+</&>
+
+<%INIT>
+
+my $pro_url;
+
+my $result = Jifty->web->response->result('signupform');
+
+if (    defined $result
+    and $result->success
+    and $result->content('record') )
+{
+    my $email = $result->content('record')->email;
+    my $letme = Jifty::LetMe->new();
+    $letme->email($email);
+    $letme->path('pro_signup'); 
+    $pro_url = $letme->as_url;
+    $pro_url =~ s{http://}{https://} unless Jifty->config->app('SkipSSL');
+}
+
+</%INIT>
+

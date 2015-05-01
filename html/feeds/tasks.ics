@@ -1,0 +1,6 @@
+<%args>
+$collection
+</%args>
+<%init>
+$m->comp('_elements/ical', collection => $collection);
+</%init>

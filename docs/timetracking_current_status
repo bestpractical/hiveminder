@@ -1,0 +1,37 @@
+So, here's a brain dump of what's left for the time tracking branch.
+
+- Reports
+   - Take a collection of tasks ("any tasklist/project/deadline")
+     and report:
+       - total estimated time
+       - total time worked
+       - total time left (based on original estimates - worked)
+       - total estimated time left (based on estimates of time left)
+       - time over/under estimate(s)
+       - average estimated time per task
+       - possibly graphs like time worked over time, or estimate changes
+         these would require going through task transactions/histories
+
+     This is probably accomplished with a custom Report subclass that
+     takes tokens or a collection and runs a couple SQL statements.
+
+     All of this would ideally also be limited to a time period, which
+     will require going through task transactions/histories to find
+     changes to time tracking fields.  (And be more complex, obviously.)
+
+   - User help for all of this
+
+- Possibly rethink the UI for setting / updating times
+   (although it works pretty well now)
+
+
+Right now, time tracking is a pro feature.  Some of the ACLs would 
+require some redoing if we wanted to make it something able to be turned 
+on for specific groups regardless of pro status.
+
+It could probably always use some kicking of the tires of course before 
+a mergedown.
+
+
+Tom
+

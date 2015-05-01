@@ -1,0 +1,53 @@
+<%args>
+$group_id
+$created_by => undef
+$starting => undef
+$ending => undef
+$show => 3
+$show_all => 0
+</%args>
+<%init>
+my $group = BTDT::Model::Group->new;
+$group->load($group_id);
+
+my $txns = $group->transactions;
+
+if (defined $created_by) {
+    $txns->limit(
+        column => 'created_by',
+        value  => $created_by,
+    );
+}
+
+if (defined $starting) {
+    $txns->limit(
+        column           => 'modified_at',
+        case_sensitive   => 1,
+        operator         => '>=',
+        value            => $starting,
+        entry_aggregator => 'AND',
+    );
+}
+
+if (defined $ending) {
+    $txns->limit(
+        column           => 'modified_at',
+        case_sensitive   => 1,
+        operator         => '<=',
+        value            => $ending,
+        entry_aggregator => 'AND',
+    );
+}
+
+$txns->order_by(
+    column => 'modified_at',
+    order  => 'desc',
+);
+
+</%init>
+
+<& /task/_elements/transactions,
+    transactions => $txns,
+    show         => ($show_all ? undef : $show),
+    show_task    => 1,
+&>

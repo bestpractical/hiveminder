@@ -1,0 +1,229 @@
+<&| /_elements/wrapper, title    => "Group " . $group->name,
+                        subtitle => ( $group->current_user_can('manage')
+                                        ? "Manage" : "Members" ),
+                        logo     => 'hive' &>
+
+
+% if ( not $group->current_user_can('manage') ) {
+<ul class="group_members">
+% while (my $member = $members->next) {
+  <li>
+    <span class="group_role_<% $member->role %> group_member">
+      <& /_elements/username, user => $member->actor &>
+    </span>
+    <span class="group_member_email"><% $member->actor->email %></span>
+    <span class="member_role">(<% $member->role %>)</span>
+  </li>
+% }
+</ul>
+% }
+
+
+% if ( $group->current_user_can("manage") ) {
+<div class="group-manage">
+<h2>Edit this group</h2>
+% my $group_update = Jifty->web->new_action(class => 'UpdateGroup', moniker => 'groupupdate', record => $group);
+<% Jifty->web->form->start %>
+  <% $group_update->form_field('name') %>
+  <% $group_update->form_field('description') %>
+  <% $group_update->form_field('broadcast_comments') %>
+  <% $group_update->form_field('never_email') %>
+<div class="button_line">
+<% Jifty->web->form->submit( label => "Update") %>
+</div>
+<% Jifty->web->form->end %>
+</div>
+
+% my $invite = Jifty->web->new_action(class => 'InviteToGroup', moniker => 'invite', arguments => { group => $group->id } );
+<div id="invite">
+<h2>Invite somebody into this group</h2>
+
+<% Jifty->web->form->start %>
+<% $invite->form_field('email') %>
+<% $invite->form_field('role',
+                       hints => 'How much control should this person have? '
+                               .'<a href="/help/reference/groups.html" onclick="return BTDT.Util.openHelpWindow(this.href)" target="help_system" class="help">'
+                               .'More information on roles'
+                               .'</a>.' )
+         %>
+       
+<div class="button_line"><% Jifty->web->form->submit( label => "Send an invitation") %></div>
+<% Jifty->web->form->end()%>
+</div>
+
+<h2>Manage group members</h2>
+<% Jifty->web->form->start %>
+
+<ul class="group_members">
+% while (my $i = $invited->next) {
+% my $cancel_invite = Jifty->web->new_action(class => "UpdateGroupInvitation", moniker => "invite".$i->id, arguments => {id => $i->id});
+<li>
+  <div>
+    <span class="group_member">
+% if ( $i->recipient->name ) {
+      <& /_elements/username, user => $i->recipient &> (<% $i->recipient->email %>)
+% } else {
+      <% $i->recipient->email %>
+% }
+    </span>
+<span class="member_role">(invited as <span class="group_role_<% $i->role %>"><% $i->role %></span>
+by <& /_elements/username, user => $i->sender &>)</span></div>
+<% $cancel_invite->hidden(cancelled => 1) %>  
+<% $cancel_invite->button(label => 'Cancel invitation', class => 'cancel') %></li>
+% }
+% my @updates;
+% while (my $member = $members->next) {
+% my $member_update = Jifty->web->new_action(class => "UpdateGroupMember", moniker => "member".$member->id, record => $member);
+% push @updates, $member_update;
+% my $member_delete = Jifty->web->new_action(class => "DeleteGroupMember", moniker => "delete".$member->id, record => $member);
+<li><div><span class="group_role_<% $member->role %> group_member"><& /_elements/username, user => $member->actor &></span>
+<span class="group_member_email"><% $member->actor->email %></span>
+<span class="member_role">(<% $member->actor->id == Jifty->web->current_user->id ? $member->role : $member_update->form_field('role')->render_widget %>)</span></div>
+% if ( $member->actor->id != Jifty->web->current_user->id ) {
+    <% $member_delete->button( label    => 'Delete member',
+                               class    => 'delete',
+                               onclick  => qq|return confirm('Really delete this group member?');| ) %>
+% }
+</li>
+% }
+<hr class="hidden clear" />
+</ul>
+<div class="button_line"><% Jifty->web->form->submit(label => 'Update', onclick => { submit => \@updates }) %></div>
+<% Jifty->web->form->end %>
+
+<h2>Incoming addresses <% BTDT->contextual_help("how-to/create-tasks-by-email") %></h2>
+<% Jifty->web->form->start %>
+<dl class="email_addresses">
+% while (my $addr = $published_addresses->next) { 
+<& /fragments/published_addr/view.region, id => $addr->id &>
+% } 
+</dl>
+
+<div class="button_line">
+<% $create_address->button(
+        arguments => { group_id => $group->id },
+        onclick => {
+            element => 'dl.email_addresses',
+            append => '/fragments/published_addr/view.region',
+            effect => 'Appear',
+            disable => 0,
+            args   => {
+                        id         => { result_of => $create_address, name => 'id' },
+                      },
+            submit => $create_address,
+
+    },
+    label => 'Add a new address',
+    ) %>
+</div>
+<% Jifty->web->form->end %>
+
+% }
+
+
+<h2>Leave the group</h2>
+
+%# They can't manage or they're not the only organizer
+% if ( not $group->current_user_can('manage')
+%       or $group->organizers->count > 1 )
+% {
+%   my $usermem = BTDT::Model::GroupMember->new;
+%   $usermem->load_by_cols(group_id => $group->id, actor_id => Jifty->web->current_user->id);
+
+If you no longer wish to be
+<% $usermem->role eq 'organizer' ? "an organizer" : "a " . $usermem->role %>
+of this group, you may leave using the button below.
+
+<% Jifty->web->form->start %>
+%   my $self_delete = Jifty->web->new_action(class => "DeleteGroupMember", moniker => "delete".$usermem->id, record => $usermem);
+<% $self_delete->button( label    => 'Leave the group ' . $group->name,
+                         class    => 'delete',
+                         url      => '/groups',
+                         onclick  => qq|return confirm('Really leave this group?');| ) %>
+<% Jifty->web->form->end %>
+% } else {
+<p class="note">
+  You cannot leave this group because you are the only organizer.  To leave,
+  please give another person the helm before you go.
+</p>
+% }
+
+
+% if ( $group->current_user_can('manage') ) {
+<h2>Delete group</h2>
+
+<p>Deleting a group will permanently remove the group itself.
+   Make sure this is what you want to do.</p>
+
+% if ( not $group->current_user_can('manage')
+%       or $membercount > 1
+%       or $taskcount > 0
+%       or $invitationcount > 0
+%       or $addresscount > 0 )
+% {
+
+<div class="note">
+  You cannot delete this group because:
+
+  <ul>
+% if ( $taskcount > 0 ) {
+    <li>There are still tasks in this group.  Please use bulk update
+        to delete all of the
+        <% Jifty->web->link( url => '/list/group/' . $group->id
+                                  . '?J:V-region-tasklist.page=-1'
+                                  . ';J:V-region-tasklist.bulk_edit=1',
+                             label => 'remaining tasks' ) %>
+        or move them to another group.</li>
+% }
+% if ( $membercount > 1 ) {
+    <li>You are not the only member in the group.
+        Please remove all members on the
+        <% Jifty->web->link( url => 'manage', label => 'management tab' ) %>.</li>
+% }
+% if ( $invitationcount > 0 ) {
+    <li>There are outstanding group invitations.
+        Please cancel all outstanding invitations on the
+        <% Jifty->web->link( url => 'manage', label => 'management tab' ) %>.</li>
+% }
+% if ( $addresscount > 0 ) {
+    <li>There are still incoming email addresses for this group.
+        Please delete all incoming addresses you see above.</li>
+% }
+  </ul>
+</div>
+
+% }
+% else {
+    If you no longer wish to use this group, you may delete it using the button
+    below.
+
+<% Jifty->web->form->start %>
+%   my $delete_group = Jifty->web->new_action(class => "DeleteGroup", moniker => "deletegroup", record => $group);
+<% $delete_group->button( label    => 'Delete the group ' . $group->name,
+                          class    => 'delete',
+                          url      => '/groups',
+                          onclick  => qq|return confirm('Really delete this group?');| ) %>
+<% Jifty->web->form->end %>
+% }
+% }
+
+</&>
+
+<%init>
+my $members = $group->group_members;
+my $invited = $group->invitations;
+my $published_addresses = $group->published_addresses;
+
+my $group_tasks = BTDT::Model::TaskCollection->new;
+$group_tasks->group( $group->id );
+
+my $taskcount       = $group_tasks->count;
+my $membercount     = $members->count;
+my $invitationcount = $group->invitations->count;
+my $addresscount    = $published_addresses->count;
+my $create_address = Jifty->web->new_action( class=> 'CreatePublishedAddress', moniker => 'createaddr');
+
+</%init>
+<%args>
+$group
+</%args>

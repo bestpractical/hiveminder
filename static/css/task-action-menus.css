@@ -1,0 +1,128 @@
+/* Positioning and the button */
+
+.task_container { position: relative; }
+
+.task_container .tools{
+    display: block;
+    position: absolute;
+    background-color: #ffc;
+    padding-left: 1em;
+    left: 8em;
+    margin-top: -0.5em;
+    border-top: none;
+    -webkit-border-bottom-right-radius: 0.5em;
+    -moz-border-radius-bottomright: 0.5em;
+    -webkit-border-bottom-left-radius: 0.5em;
+    -moz-border-radius-bottomleft: 0.5em;
+    z-index: 40;
+}
+
+.brief_tasklist .task_container .tools {
+    margin-top: -0.2em;
+}
+
+.task_container .tools div.tool {
+    margin-right: 0.5em;
+    display: inline-block;
+    padding: 0.25em;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+}
+
+html.ie .task_container .tools div.tool {
+    display: inline;
+}
+
+.task_container:hover {
+    background-color: #ffc;
+
+}
+
+.task_container.opened:hover {
+    background-color: #fff;
+}
+
+.task_container.opened:hover > .tools {
+    display: none;
+}
+
+
+.task_container:hover .tools,
+.task_container:hover .tools .tool {
+    filter:alpha(opacity=80);
+    -moz-opacity:0.8;
+    -khtml-opacity: 0.8;
+    opacity: 0.8;
+    margin-bottom:0;
+    padding-bottom: 0.25em;
+}
+
+.task_container .tools:hover { 
+
+}
+
+
+
+.task_container .tools:hover ,
+.task_container .tools:hover .tool
+ { 
+    filter: none;
+    -moz-opacity:1;
+    -khtml-opacity: 1;
+    opacity: 1;
+}
+.task_container .tools:hover .tool
+ { 
+}
+
+
+.task_container .tools div.tool div.jifty-region {
+}
+
+.task_container .tools { display: none;} 
+.task_container:hover > .tools { display: inline-block;}
+
+
+
+.task_container.complete:hover .tools { display: none; }
+.task_container .action-menu-region .suggested_option { visibility: visible; }
+.task_container .assign-menu-region .suggested_option { visibility: visible; }
+
+
+.task_container .tools a, .task_container .tools span {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+.task_container .tools div.tool:hover > a,
+.task_container .tools div.tool:hover a.submenu-toggle {
+    text-decoration: underline;
+}
+
+.task_container .tools .yuimenu .yuimenuitemlabel-selected,
+.task_container .tools .yuimenu h6:hover span
+{
+    color: #fff;
+}
+
+.action-menu-button .suggested_option,
+.assign-menu-button .suggested_option {
+    color: rgb(82, 134, 181);
+}
+
+.action-menu-button .submenu-toggle,
+.assign-menu-button .submenu-toggle {
+    background: url(/static/images/silk/bullet_arrow_down.png) no-repeat;
+    background-position: center right;
+    display: inline-block;
+    padding-right: 16px;
+}
+
+.action-menu-button span.open .submenu-toggle,
+.assign-menu-button span.open .submenu-toggle {
+    background-image: url(/static/images/silk/bullet_arrow_up.png);
+}
+
+.assign-menu-region .yuimenu {
+    min-width: 10em;
+}

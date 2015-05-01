@@ -1,0 +1,57 @@
+<% Jifty->web->form->start %>
+<dt>
+%     if ($pro) {
+        <% $update->form_field('address') %>
+%     } else {
+        <a href="mailto:<%$addr->address%>@my.hiveminder.com">
+        <%$addr->address%>@my.hiveminder.com</a>
+%     }
+</dt>
+    <dd>
+    <% $update->form_field('auto_attributes') %>
+    <% $addr->user_id ? $update->form_field('auto_accept') : '' %>
+    <div class="button_line">
+
+    <%
+    Jifty->web->form->submit(
+        label    => 'Save',
+        onclick => [
+            { submit => $update },
+            {   replace_with => '/fragments/published_addr/view',
+                args         => { id => $addr->id }
+            }
+        ]) %>
+
+    <%
+    Jifty->web->form->submit(
+        label    => 'Cancel',
+        onclick => [
+            {   replace_with => '/fragments/published_addr/view',
+                args         => { id => $addr->id }
+            } ])%>
+    <% 
+    $delete->button( label    => 'Delete',
+    class    => 'delete',                               
+    onclick => [
+   {  confirm => qq|Really delete this address? You won't be able to get the same one back later!| ,
+    submit => $delete }, { replace_with => '/__jifty/empty' }]
+    ) 
+    %>
+    </div>
+    </dd>
+<% Jifty->web->form->end %>
+
+<%init>
+my $addr = BTDT::Model::PublishedAddress->new();
+$addr->load($id);
+ my $update = Jifty->web->new_action(class => 'UpdatePublishedAddress', record => $addr);
+ my $delete = Jifty->web->new_action(class => 'DeletePublishedAddress', record => $addr);
+
+# XXX: staff only for now
+my $pro = Jifty->web->current_user->id
+      #&& Jifty->web->current_user->user_object->pro_account;
+       && Jifty->web->current_user->user_object->access_level eq 'staff';
+</%init>
+<%args>
+$id => undef
+</%args>

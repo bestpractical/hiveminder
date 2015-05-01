@@ -1,0 +1,48 @@
+.attachment_list hr {
+    display: none;
+    width: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.attachment_list .page-count {
+    display: block;
+    margin-bottom: 1em; 
+}
+
+.attachment_list div.item, div.attachment {
+    clear: both;
+    margin-bottom: 1em;
+    padding-left: 20px;
+}
+
+.attachment_list div.read, div.attachment {
+    background-repeat: no-repeat;
+    background-position: top left;
+}
+div.content_type_unknown { background-image: url(/static/images/silk/page_white.png); }
+div.content_type_image { background-image: url(/static/images/silk/page_white_picture.png); }
+div.content_type_text  { background-image: url(/static/images/silk/page_white_text.png); }
+div.content_type_html  { background-image: url(/static/images/silk/page_white_code.png); }
+div.content_type_pdf   { background-image: url(/static/images/silk/page_white_acrobat.png); }
+div.content_type_archive { background-image: url(/static/images/silk/page_white_compressed.png); }
+div.content_type_excel { background-image: url(/static/images/silk/page_white_excel.png); }
+div.content_type_ppt   { background-image: url(/static/images/silk/page_white_powerpoint.png); }
+div.content_type_vector { background-image: url(/static/images/silk/page_white_vector.png); }
+div.content_type_msword { background-image: url(/static/images/silk/page_white_word.png); }
+
+.attachment_list div.item span.name, div.attachment span.name {
+    display: block;
+    font-weight: bold;
+}
+
+.attachment_list div.item span.name span.filename, div.attachment span.name span.filename {
+    font-weight: normal;
+    color: #777;
+}
+
+.attachment_list .crud-column-header {
+    display: none;
+}
+

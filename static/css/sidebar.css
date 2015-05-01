@@ -1,0 +1,29 @@
+#greeting {
+    margin-top: 0;
+}
+
+#greeting .user {
+    font-weight: bold;
+}
+
+#info textarea {
+    width: 100%;
+}
+
+#info .submit_button .button {
+    margin-top: 0;
+    margin-right: 0.2em;
+    float: right;
+    font-size: 0.9em;
+}
+
+#invite_new_user div.argument-email,
+#invite_new_user input.argument-email
+{
+    width: 98%;
+}
+
+#invite_new_user .error {
+    font-size: 0.9em;
+    margin-bottom: 0.2em;
+}

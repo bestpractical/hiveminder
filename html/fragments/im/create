@@ -1,0 +1,32 @@
+    <% Jifty->web->form->start %>
+    <dd>
+    <% $create->form_field('screenname', size => 20) %>
+    on <% $create->form_field('protocol') %>
+    <% $create->form_field('auth_token') %>
+    <div class="button_line">
+
+    <%
+    Jifty->web->form->submit(
+        label    => 'Add',
+        onclick => [
+            { submit => $create },
+            {   replace_with => '/fragments/im/view',
+                args         => { id => $im->id }
+            }
+        ]) %>
+
+    <%
+    Jifty->web->form->submit(
+        label    => 'Cancel',
+        onclick => [
+            {   replace_with => '/fragments/im/view',
+                args         => { id => $im->id }
+            } ])%>
+    </div>
+    </dd>
+    <% Jifty->web->form->end %>
+
+<%init>
+my $im = BTDT::Model::UserIM->new(current_user => Jifty->web->current_user);
+my $create = Jifty->web->new_action(class => 'CreateUserIM');
+</%init>

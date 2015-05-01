@@ -1,0 +1,21 @@
+<&| /_elements/wrapper, title => "Braindump" , hide_braindump => 1 &>
+
+% if ($normal_user and not $unaccepted_eula ) {
+        <& /_elements/quick_create, task_review => $task_review &>
+% }
+
+</&>
+
+<%args>
+$hide_braindump => 1
+$task_review => 0  
+</%args>
+<%init>
+my $normal_user =    Jifty->web->current_user->id
+                  && Jifty->web->current_user->user_object->access_level ne 'nonuser';
+
+my $unaccepted_eula =    $normal_user 
+                      &&   Jifty->web->current_user->user_object->accepted_eula_version
+                         < BTDT->current_eula_version;
+
+</%init>

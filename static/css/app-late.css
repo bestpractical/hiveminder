@@ -1,0 +1,5 @@
+/* Avoid obscuring the search box */
+#jGrowl.top-right {
+    top: 2.2em;
+}
+

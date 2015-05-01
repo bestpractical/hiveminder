@@ -1,0 +1,10 @@
+  <div id="taskpage-comments">
+    <h2>Add a comment</h2>
+    <% $update_task->form_field('comment')->render_widget %>
+    <div class="hint"><small>You can also add comments to this task by sending email to <a href="mailto:<%$task->comment_address%>"><%$task->comment_address%></a>.</small></div>
+  </div>
+
+<%args>
+$task
+$update_task
+</%args>

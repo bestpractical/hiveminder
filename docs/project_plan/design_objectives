@@ -1,0 +1,22 @@
+Interface:
+
+ * Should provide finite-length, readable URLS whenever possible; all
+   URLs should be lower-case, descriptive names
+
+ * Should provide basic functionality on downscale, non-JS enabled
+   browsers; it is acceptable that some more advanced features not
+   work.  It is also acceptible to provide an alternate downlevel view
+   for some features.
+
+ * Should make use of one (or more?) centralized CSS style sheets,
+   with as much presentation and style information embedded therein as
+   possible.
+
+Implementation
+
+ * Should not include inline style and presentation information
+ 
+ * Using Module::Pluggable, Module::Refresh, UNIVERSAL::require, etc is a whole
+   lot easier if no modules do anything special for ->import, so don't do anything
+   special on ->import.  (ie, the only difference between 'use' and 'require' should
+   be when it happens.)

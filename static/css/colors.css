@@ -1,0 +1,26 @@
+/* All color properties should go here.
+   Currently, there are still MANY color props in other CSS files. */
+
+body,
+#info
+{
+    background-color: #f6f6f6;
+}
+
+body#splash,
+body#help-system,
+body#tour,
+body#protour
+{
+    background-color: white;
+}
+
+#content {
+    background-color: white;
+    border: 1px solid #aaa;
+}
+
+:link, :visited {
+    color: #793300;
+}
+

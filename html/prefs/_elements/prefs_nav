@@ -1,0 +1,8 @@
+<%init>
+my $nav = Jifty->web->page_navigation;
+$nav->child("About you"          => url => "/prefs");
+$nav->child("Security"           => url => "/prefs/security");
+$nav->child("Tasks by email"     => url => "/prefs/addresses");
+$nav->child("Tasks by IM"        => url => "/prefs/IM");
+$nav->child("Tasks by Twitter"   => url => "/prefs/twitter");
+</%init>

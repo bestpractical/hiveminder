@@ -1,0 +1,148 @@
+Jesse's repetition notes:
+
+
+Buy milk:
+    
+    1 week after the last time I buy milk
+
+Clean cat box
+
+    1 week after the last time I did it
+
+
+Go to church
+
+    Every week on sunday
+
+Pay the rent
+
+    Every month on the first of the month
+
+
+Do my laundry
+
+    7 days after the last time I did it.
+
+
+Pay the cleaners
+
+    Every two weeks on monday
+
+Find out what $employee is doing
+
+
+
+
+Repeat every n periods, 
+    due on the mth day of the period, 
+    starting on the date this task starts on
+
+Repeat no sooner than every n periods,  
+    due on the mth day of the period
+    starting on the date this task is completed on.
+
+
+
+
+Due n days after the last one was due
+
+
+
+Pay the cleaners on monday 2 january 2006
+    due exactly
+        two weeks later on the same day of the period.
+
+
+    take 2 january. add two weeks. subtract dates to get us back to monday if we're not on monday
+
+    appear: 3 days early.
+
+
+
+Pay the rent on 1 february 2006
+    due exactly one month later on the same day of the period.
+
+    add one month. subtract days to get to the first day of the period
+
+
+
+
+# you recalculate "starts/create" dates:
+
+    * when a task with repeat_by_calendar is due
+    * when a task without repeat_by_calendar is resolved
+
+
+
+Create a new task:
+
+    due exactly $n $periods after the due date of the previous task
+    due exactly $n periods after the completion date of the previous task
+
+    Actually perform the "create" operation "n" days before the new due date.
+
+
+
+
+Feature: Repeating events
+August 16, 2006
+
+Users want to be able to set up repeating events: "do this every _____".
+The iCal standard supports truly ridiculous repetitions, but here are
+the minimal ones HM should implement:
+
+- every week on $day (@days, later?)
+- on the Nth day of every month
+- every N days (maybe)
+- on the Nth $day of every month (probably not)
+
+In practice, we can implement this with hide-untils, I think, so that
+a task, when completed, automatically creates the next occurrence as
+a separate task. It's not exactly a chain of butfirst/andthens, but it's close.
+With calendar events, "rollout"--- generating the list of occurrences---
+is a hard problem, but I think we can punt it for now. We'll need
+good documentation about how this works, but it seems like the right way.
+
+UI:
+
+If we know that task A was hidden until 8/12/06 (a Saturday) and 
+due on 8/16/06, a Wednesday, then we can make several possible 
+assumptions about when the user might want to repeat it, and offer smart
+UI based on it. In an appropriate UI element (pulldown?) offer these choices:
+
+Repeat:
+- Never (default)
+- every week on Wednesday
+- every 2 weeks on Wednesday
+- every month on the 16th
+- every month on the third Wednesday
+
+What we're not saying is that we'll also set the hide-until dates of the
+repeated instances in a corresponding way, so that the user starts seeing
+the task 4 days before it's due when it next comes around. But maybe that's
+being too clever; I'm not sure.
+
+If we decide to do more complicated UI, we might consider a separate
+"Repeat" tab on the task edit page, particularly if we roll out multiple
+instances of tasks in advance. I don't think that's necessary now, but
+it might be useful to reduce clutter on the edit screen.
+
+Database/Model:
+
+Task needs a new field to hold information about the repeat rule. It wouldn't
+hurt to have fields to track the repeat-instance-before and repeat-instance-after
+tasks. Or maybe what we want is a RepeatedTask model that holds this information
+and relates tasks together.
+
+Known issues/questions:
+
+- How do we handle changes to repeated tasks, and the UI for "change just this
+task or change all tasks in the future"? I think we're assuming, if we adopt a
+chain model of repeated tasks, that all future tasks will adopt changes to the
+current task. Is that a problem?
+
+The Future:
+
+One enhancement is that it might be nice to recognize month names in
+monthly-repeated tasks, so that "pay august power bill", repeated the next month,
+is automatically "pay september power bill." But that's chrome.

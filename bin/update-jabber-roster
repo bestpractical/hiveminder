@@ -1,0 +1,38 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+use BTDT::CurrentUser;
+use BTDT::Model::User;
+use BTDT::Model::UserIM;
+use DBD::SQLite;
+
+my $ims = BTDT::Model::UserIMCollection->new( current_user => BTDT::CurrentUser->superuser );
+$ims->limit( column => 'protocol', value => 'Jabber');
+$ims->limit( column => 'confirmed', value => 1 );
+warn "Got $ims\n";
+
+my $dbh = DBI->connect("dbi:SQLite:dbname=var/roster","","",{RaiseError => 1});
+warn "Connected to $dbh\n";
+
+while (my $im = $ims->next) {
+    my $email = $im->screenname;
+
+    my $email_exists = $dbh->selectall_arrayref("SELECT jidid FROM jidmap WHERE jid = ?", {}, $email);
+    my $id;
+    if (not $email_exists or not @{$email_exists}) {
+        warn "Inserting $email into jidmap\n";
+        $dbh->do("INSERT INTO jidmap(jid) VALUES(?)", {}, $email);
+        $id = $dbh->func('last_insert_rowid');
+    } else {
+        $id = $email_exists->[0][0];
+    }
+
+    my $roster_exists = $dbh->selectall_arrayref("SELECT userid, contactid FROM roster WHERE contactid = ?", {}, $id);
+    if (not $roster_exists or not @{$roster_exists}) {
+        warn "Inserting $email into roster\n";
+        $dbh->do("INSERT INTO roster(userid, contactid, subscription) VALUES(3, ?, 2)", {}, $id);
+    }
+}

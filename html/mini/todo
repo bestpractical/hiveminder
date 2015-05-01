@@ -1,0 +1,19 @@
+<%args>
+$date => undef;
+</%args>
+<%init>
+my @tokens = qw(not complete owner me starts before tomorrow accepted but_first nothing);
+
+if ($date) {
+    my $next_day = $date->add(days => 1);
+    push @tokens, 'due', 'before', $next_day->ymd;
+}
+
+my $open = BTDT::Model::TaskCollection->new();
+$open->from_tokens(@tokens);
+
+
+</%init>
+<&| /mini/_elements/wrapper, title => "To Do", tag_collection => $open &>
+<& /mini/_elements/tasklist, collection => $open &>
+</&>

@@ -1,0 +1,19 @@
+<&| /_elements/wrapper, title => "Upload" &>
+
+<p>If you previously downloaded your tasks as a textfile this is where you can upload them to let
+Hiveminder know what has changed.</p>
+
+<% Jifty->web->form->start %>
+% Jifty->web->form->next_page( url => "/create/upload" );
+<% $action->hidden(format => 'sync') %>
+<p>Upload a file:</p>
+<% $action->form_field('file', label => '') %>
+<p>Or the text itself:</p>
+<% $action->form_field('content', label => '') %>
+<% Jifty->web->form->submit( label => "Update it!") %>
+<% Jifty->web->form->end %>
+
+</&>
+<%init>
+my $action = Jifty->web->new_action(class => "UploadTasks", moniker => "uploadtasks");
+</%init>

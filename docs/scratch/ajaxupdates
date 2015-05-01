@@ -1,0 +1,67 @@
+%# two independently paging tasklists on one page.
+
+<html>...<body>
+
+<& /region, 
+    path => '/fragments/tasklist',  # this is just a default
+                                    # If someone specified Jifty-Fragment-Path-For-/my_tasks = /fragments/other_tasklist
+    name => 'my_tasks', 
+    args => { search => qq(owner me) }
+&>
+
+
+</body>
+
+
+# /fragments/tasklist
+
+<%args>
+$search
+</%args>
+<%init>
+# What we get because we're in a region
+
+# namespace
+# contiguious replacable block.
+# path for all my parents!
+
+my $tasks = BTDT::Model::TaskCollection->new();
+$tasks->from_tokens(split(/\s+/, $search));
+</%init>
+
+<ul>
+% while ( my $task = $tasks->next) {
+
+
+<% region(    
+        path => 'show_item', # just a default. overridable via request args
+                             # cgi form field looks more like this: 
+                             # Jifty-Fragment-Path-For-/tasklist/task-23 = show_item (or edit_item)
+        name => "task-".$task->id, 
+        args => { task_id => $task->id }
+        )
+        %>
+
+% }
+
+
+
+# /fragments/tasklist-kids/show_item
+
+<%args>
+$task_id => undef
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load(id => $task_id);
+</%init>
+<% make_link( label => $task->summary,
+              region => $REGION, # current region instance, lexically scoped?
+              replace_fragment => SELF(CONSTANT), # if we want to replace something other than ourself, we specify it.
+                                                    # we get constants for self, parent, page
+                                                    # can we kill the word fragment?
+            )
+
+%>
+
+

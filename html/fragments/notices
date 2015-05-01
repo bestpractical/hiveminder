@@ -1,0 +1,51 @@
+<div id="notices">
+% if (my $n = $news->first) {
+    <p class="message notice_news">
+      News: <% Jifty->web->link( label => $n->title,
+                                 url   => $n->url ) %>
+    </p>
+% }
+
+% if ($unaccepted->count) {
+%     my $link = 'unaccepted task';
+%        $link .= $unaccepted->count == 1 ? '' : 's';
+    <p class="message notice_unaccepted_tasks">
+      You have <% $unaccepted->count %>
+      <% Jifty->web->link( label => $link, 
+                           url => "/list/owner/me/unaccepted/not/complete" ) %>.
+    </p>
+% }
+
+% if ($invites->count) {
+%     my $link = 'invitation';
+%        $link .= $invites->count == 1 ? '' : 's';
+    <p class="message notice_invitations">
+      You have <% $invites->count %>
+      <% Jifty->web->link( label => $link, 
+                           url => "/groups/invitations" ) %>
+      awaiting your answer.
+    </p>
+% }
+</div>
+<%init>
+return unless Jifty->web->current_user->id
+  and Jifty->web->current_user->user_object->access_level ne "nonuser";
+
+my $unaccepted = BTDT::Model::TaskCollection->new();
+$unaccepted->from_tokens( qw( not complete owner me unaccepted ) );
+
+my $invites = Jifty->web->current_user->user_object->group_invitations;
+
+my $news = BTDT::Model::NewsCollection->new();
+$news->order_by( column => 'created', order => 'desc' );
+$news->columns('id','title');
+$news->limit( column    => 'created',
+              operator  => '>',
+              case_sensitive => 0,
+              value     => ( Jifty->web->current_user
+                                       ->user_object
+                                       ->last_visit || DateTime->now->ymd )
+             );
+
+$news->set_page_info( per_page => 1, current_page => 1);
+</%init>

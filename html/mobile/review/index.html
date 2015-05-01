@@ -1,0 +1,74 @@
+<&|/mobile/_elements/wrapper, title => 'Task review' &>
+<h1>Task review</h1>
+<div class="basicpage">
+% if ( $total ) {
+<p>Buckle up, because you're about to head into the "Review" process.</p>
+
+<p>We're going to show you every task in this list. All <% $total %>  of them.  
+We're going to give you <strong>very few</strong> options:</p>
+
+<ul>
+<li>Comment on the task</li>
+<li>Say you're already done</li>
+<li>Say you want somebody else to do it (and pick [on] them).</li>
+<li>Say you'll do it today</li>
+<li>Ask not to see it until Saturday, until Monday, or for a month.</li>
+</ul>
+
+<%perl>
+my $form = Jifty->web->form;
+$form->start;
+$form->next_page( url => '/mobile/review/task' );
+$form->submit( label => q{Okay!}, preserve_state => 1);
+$form->end;
+</%perl>
+% }
+% else {
+<div class="zilch_message">
+<p>
+  You've escaped the task review this time! There's nothing on this list.
+</p>
+</div>
+% }
+</div>
+</&>
+
+
+<%args>
+$tasks => undef
+</%args>
+<%init>
+
+my $total;
+unless ($tasks) {
+    my $week = Jifty::DateTime->now->add(days =>7);
+    my $now = Jifty::DateTime->now();
+
+    my $due = BTDT::Model::TaskCollection->new();
+    $due->limit( column => 'due',		   operator => '<',      value => $week->ymd, case_sensitive => 1 );
+    $due->limit( column => 'complete',		                         value => 0 );
+    $due->limit( column => 'owner_id',					 value => Jifty->web->current_user->id );
+    $due->limit( column => 'accepted',					 value => 1 );
+    my $open = BTDT::Model::TaskCollection->new();
+    $open->limit( column => 'complete',		                         value => 0 );
+    $open->limit( column => 'owner_id',					 value => Jifty->web->current_user->id );
+    $open->limit( column => 'depends_on_count',    operator => '=',      value => 0);
+    $open->limit( column => 'accepted',					 value => 1 );
+    $open->limit( column => 'starts',		   operator => 'IS',     value => 'NULL',    entry_aggregator => 'OR');
+    $open->limit( column => 'starts',              operator => '<=',     value => $now->ymd, entry_aggregator => 'OR');
+    # XXX TODO, uniquify
+
+    my %task_ids = ();
+    for ( @{ $due->items_array_ref }, @{ $open->items_array_ref } ) { $task_ids{$_->id} = 1  } 
+
+    $tasks = join( ',', (sort keys %task_ids ));
+    $total = scalar keys %task_ids;
+} else {
+    my @tasks = split ',', $tasks;
+    $total = scalar @tasks;
+}
+Jifty->web->set_variable( tasks => $tasks );
+Jifty->web->set_variable( total => $total );
+
+</%init>
+

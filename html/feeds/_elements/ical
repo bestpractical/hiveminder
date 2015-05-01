@@ -1,0 +1,27 @@
+<%init>
+my $feed = Data::ICal->new();
+my $feed_name = "Hiveminder Tasks";
+my $feed_desc = "Exported tasks from http://hiveminder.com";
+my $feed_tz =  Jifty->web->current_user->user_object->time_zone;
+
+# See webcal://www.dnalounge.com/calendar/dnalounge.ics for a calendar
+# that google calendar likes. This emulates that.
+$feed->add_properties('x-wr-calname' => [$feed_name => {value => 'TEXT'}]);
+$feed->add_properties('x-wr-caldesc' => [$feed_desc => {value => 'TEXT'}]);
+$feed->add_properties('x-wr-timezone' => [$feed_tz => {value => 'TEXT'}]);
+$feed->add_properties('calscale' => ['gregorian']);
+$feed->add_properties('method' => ['publish']);
+$feed->add_properties('prodid' => ['-//hiveminder.com//']);
+
+foreach (@{$collection->items_array_ref}) {
+    $feed->add_entry($_->as_ical_todo()) ;
+    my $event = $_->due_as_ical_event;
+    $feed->add_entry($event) if ($event);
+}
+Jifty->web->response->content_type('text/calendar; charset=utf-8');
+$m->out( $feed->as_string() );
+$m->abort();
+</%init>
+<%args>
+$collection
+</%args>

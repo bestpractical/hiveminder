@@ -1,0 +1,21 @@
+<%args>
+$show => 3
+$show_all => 0
+$task => undef
+$id => undef
+</%args>
+<%init>
+if ($id) {
+    $task = BTDT::Model::Task->new();
+    $task->load($id);
+}
+</%init>
+  <div id="taskpage-history">
+% if ( $show and not $show_all ) {
+    <h2>Last <% $show %> changes</h2>
+% } else {
+    <h2>History</h2>
+% }
+    <& /task/_elements/transactions, task => $task, show => ( $show_all ? undef : $show ) &>
+  </div>
+

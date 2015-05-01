@@ -1,0 +1,279 @@
+<%args>
+$task_id
+$tokens
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new;
+$task->load( $task_id );
+return unless $task->id;
+
+my $update = Jifty->web->new_action(
+    class   => "UpdateTask",
+    moniker => "edit-" . Jifty->web->serial,
+    record  => $task
+);
+return unless $update;
+
+# We need to clear the menu before refreshing/replacing the task region
+# Otherwise Jifty remembers the region state and pops up the menu the
+# next time the task region is loaded
+my $clear_menu = {
+    beforeclick => "YAHOO.widget.MenuManager.removeMenu(YAHOO.widget.MenuManager.getMenu('task-$task_id-action-menu'));",
+    replace_with => '/fragments/tasklist/menu_button',
+    args => {
+        task_id => $task_id,
+        tokens => $tokens
+    }
+};
+
+# This label is never seen as we only render the items
+my $context = Jifty::Web::Menu->new( label => 'Context menu', class => "task_edit_menu" );
+
+if ( $task->owner->id == Jifty->web->current_user->id and not $task->accepted() ) {
+    $context->child(
+        "Accept" => link => $update->button(
+            label   => "Accept",
+            onclick => [
+                $clear_menu,
+                {   submit => {
+                        action    => $update,
+                        arguments => { accepted => 1 },
+                    },
+                    refresh      => Jifty->web->qualified_parent_region,
+                    args         => { maybe_view => 1, },
+                },
+                {   region       => "notices",
+                    replace_with => "/fragments/notices",
+                },
+            ],
+            as_link => 1,
+            class   => 'suggested_option',
+        )
+    );
+    $context->child(
+        "Decline" => link => $update->button(
+            label   => "Decline",
+            class   => "separator-bottom",
+            onclick => [
+                $clear_menu,
+                {   submit => {
+                        action    => $update,
+                        arguments => { accepted => 0 },
+                    },
+                    confirm      => 'Really decline this task?',
+                    refresh      => Jifty->web->qualified_parent_region,
+                    args         => { maybe_view => 1, },
+                },
+                {   region       => "notices",
+                    replace_with => "/fragments/notices",
+                },
+            ],
+            as_link => 1
+        )
+    );
+}
+
+
+
+
+# We cache the default in a per-request stash, as it can be expensive to compute
+unless (Jifty->handler->stash->{search_defaults}{$tokens}) {
+    my $search = BTDT::Model::TaskCollection->new;
+    $search->{'arguments'} = [$search->scrub_tokens( $search->split_tokens($tokens) )];
+    Jifty->handler->stash->{search_defaults}{$tokens} = {$search->new_defaults};
+}
+my %defaults = %{Jifty->handler->stash->{search_defaults}{$tokens}};
+
+if ( $defaults{depends_on} || $defaults{depended_on_by} ) {
+    my $rel = BTDT::Model::TaskDependency->new;
+    if ( $defaults{depends_on} ) {
+        $rel->load_by_cols( task_id    => $task->id, depends_on => $defaults{depends_on});
+    } else {
+        $rel->load_by_cols( task_id    => $defaults{depended_on_by}, depends_on => $task->id);
+    }
+
+    if ($rel->id) {
+        my $remove = Jifty->web->new_action(
+            class  => 'DeleteTaskDependency',
+            record => $rel
+        );
+
+        my $title = "Remove link to #" . $BTDT::Record::LOCATOR->encode( $defaults{depends_on}
+                || $defaults{depended_on_by} );
+        $context->child(
+            $title => link => $remove->button(
+                label => $title,
+                onclick => {
+                    submit => $remove,
+                    region => Jifty->web->qualified_parent_region,
+                    replace_with => '/__jifty/empty'
+                },
+                as_link => 1
+           )
+        );
+    }
+}
+
+$context->child(
+    'Give away' => link => $update->button(
+        label   => 'Give away',
+        onclick => [ $clear_menu, {
+            submit => {
+                action    => $update,
+                arguments => { owner_id => 'nobody' },
+
+            },
+            refresh      => Jifty->web->qualified_parent_region,
+            args         => { maybe_view => 1 },
+        }],
+        as_link => 1,
+    )
+    )
+    if ($task->group->id
+    and $task->owner->id == Jifty->web->current_user->id
+    and $task->accepted );
+
+if ( $task->starts and $task->starts->epoch > DateTime->now->epoch ) {
+    $context->child(
+        Unhide => link => $update->button(
+            label   => 'Do this today',
+            onclick => [ $clear_menu, {
+                submit => {
+                    action    => $update,
+                    arguments => { starts => "today" },
+                },
+                refresh      => Jifty->web->qualified_parent_region,
+                args         => { maybe_view => 1 },
+            }],
+            as_link => 1
+        )
+    );
+}
+
+my $hide = $context->child( "Hide", label => "Hide...", class => "jifty-menu-item-label", render_children_inline => 1 );
+
+$hide->child(
+    "Hide until tomorrow" => link => $update->button(
+        label   => "...until tomorrow",
+        onclick => [ $clear_menu, {
+            submit       => $update,
+            refresh      => Jifty->web->qualified_parent_region,
+            args         => { maybe_view => 1 }
+        }],
+        arguments => { starts => "tomorrow" },
+        as_link   => 1,
+    )
+);
+
+for my $day (qw(Saturday Monday)) {
+    $hide->child(
+        "Hide until $day" => link => $update->button(
+            label   => "...until $day",
+            onclick => [ $clear_menu, {
+                submit       => $update,
+                refresh      => Jifty->web->qualified_parent_region,
+                args         => { maybe_view => 1 }
+            }],
+            arguments => { starts => "next $day" },
+            as_link   => 1,
+        )
+    );
+}
+
+$hide->child(
+    "Hide for a week" => link => $update->button(
+        label   => "...for a week",
+        onclick => [ $clear_menu, {
+            submit       => $update,
+            refresh      => Jifty->web->qualified_parent_region,
+            args         => { maybe_view => 1 }
+        }],
+        arguments => { starts => "in 1 week" },
+        as_link   => 1,
+    )
+);
+
+$hide->child(
+    "Hide for a month" => link => $update->button(
+        label   => "...for a month",
+        onclick => [ $clear_menu, {
+            submit       => $update,
+            refresh      => Jifty->web->qualified_parent_region,
+            args         => { maybe_view => 1 }
+        }],
+        arguments => { starts => "in 1 month" },
+        as_link   => 1,
+    )
+);
+
+$hide->child(
+    "Hide for a year" => link => $update->button(
+        label   => "...for a year",
+        onclick => [ $clear_menu, {
+            submit       => $update,
+            refresh      => Jifty->web->qualified_parent_region,
+            args         => { maybe_view => 1 }
+        }],
+        arguments => { starts => "in 1 year" },
+        as_link   => 1,
+    )
+);
+
+$hide->child(
+    "Hide forever" => link => $update->button(
+        label   => "...forever",
+        onclick => [ $clear_menu, {
+            submit       => $update,
+            refresh      => Jifty->web->qualified_parent_region,
+            args         => { maybe_view => 1 }
+        }],
+        arguments => { will_complete => '0' },
+        as_link   => 1,
+    )
+);
+
+if ( $task->current_user_can('delete') ) {
+    my $delete = Jifty->web->new_action(
+        class  => 'DeleteTask',
+        record => $task
+    );
+
+    $context->child(
+        'Delete' => link => $delete->button(
+            label   => "Delete",
+            #class   => "separator", # not needed if we render the "hide..." submenu inline
+            onclick => [
+                {   confirm      => _('Really delete this task?'),
+                    submit       => $delete,
+                    refresh      => Jifty->web->qualified_parent_region,
+                    args         => { maybe_view => 1 },
+                },
+            ],
+            as_link => 1,
+        )
+    );
+}
+</%init>
+<& menu_button, task_id => $task_id, tokens => $tokens, menu_loaded => 1 &>
+<%
+    $context->render_as_yui_menu(
+        id      => "task-".$task->id."-action-menu",
+        button  => "task-".$task->id."-action-submenu-toggle",
+        show    => 1,
+        options => {
+            context => ["task-".$task->id."-action-menu-button", "tr", "br"],
+            # If there are submenus not rendered inline, see commit 5940397 for
+            # the JS to put in beforeshow below so that all submenus ARE
+            # constrained to the viewport
+            constraintoviewport => \0,
+        },
+        beforeshow => <<"        END"
+            menu.subscribe("show", function() {
+                if (!this.parent) jQuery("#task-$task_id .action-menu-region").css("visibility", "visible");
+            });
+            menu.subscribe("hide", function() {
+                if (!this.parent) jQuery("#task-$task_id .action-menu-region").css("visibility", null);
+            });
+        END
+    )
+%>

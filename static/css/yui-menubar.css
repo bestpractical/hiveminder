@@ -1,0 +1,86 @@
+#navigation .yuimenubar {
+    background: #fedc91 url(/static/images/nav.gradient.png) repeat-x left bottom;
+    font-size: 1.4em;
+    padding-left: 0.5em;
+}
+
+#navigation .yuimenubar .yuimenubaritemlabel {
+    padding: 0.5em 0.5em;
+    border-style: dotted;
+    border-color: #fedc91;
+}
+
+#navigation .yuimenubar .yuimenubaritem-hassubmenu {
+    padding-right: 1em;
+    background-position: right 0.8em;
+}
+
+#navigation .yuimenubar li.active a.yuimenubaritemlabel-hassubmenu,
+#navigation .yuimenu li.active a,
+#navigation .yuimenu h6.active a
+{
+    font-weight: bold;
+}
+
+#navigation .yuimenubar .yuimenu {
+    background: white;
+}
+
+#navigation .yuimenubar .yuimenu ul {
+    padding: 1px;
+}
+
+#navigation .yuimenubar .yuimenu .yuimenuitemlabel {
+    padding: 0.2em 2.7em 0.2em 0.25em;
+    font-size: 0.75em;
+}
+
+#navigation div.yuimenubar li.yuimenubaritem-selected {
+    background-color: #fedc91;
+}
+
+#navigation div.yuimenu li.yuimenuitem-selected {
+    background-color: rgb(82, 134, 181);
+}
+
+#navigation div.yuimenu li.yuimenuitem-selected a.yuimenuitemlabel-selected {
+    color: white;
+    text-decoration: none;
+}
+
+#navigation .yuimenubar .yuimenu h6 {
+    padding: 0.15em 0 0.2em 0.25em;
+    border-left: 1px solid white;
+    margin: 0;
+    font-size: 0.75em;
+    color: #444;
+}
+
+#navigation .yuimenubar .yuimenu h6:hover {
+    background-color: rgb(82, 134, 181);
+}
+
+#navigation .yuimenubar .yuimenu h6:hover :link,
+#navigation .yuimenubar .yuimenu h6:hover :visited
+{
+    color: white;
+}
+
+#navigation .yuimenubar .yuimenu h6 :link,
+#navigation .yuimenubar .yuimenu h6 :visited
+{
+    display: block;
+    text-decoration: none;
+}
+
+* html #navigation .yuimenubar .yuimenu h6 :link,
+* html #navigation .yuimenubar .yuimenu h6 :visited
+{
+    width: 100%;
+    white-space: nowrap;
+}
+
+#navigation .yuimenubar .yuimenu ul.hastitle li {
+    padding-left: 0.7em;
+}
+

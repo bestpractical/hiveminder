@@ -1,0 +1,50 @@
+<&| /help/_elements/prowrapper, title => 'Time tracking' &>
+
+<p>
+Hiveminder Pro users can track the time associated with tasks.  With time tracking, you can estimate the time left on a task and record how long you've worked on it.  To keep time tracking simple, Hiveminder assumes the first estimated time left for the task is also your initial estimate and preserves that value.  As you work on a task, the time you work is subtracted from the current time left.  (You are, of course, always able to change these fields yourself.)
+</p>
+
+<p>
+Time tracking can be very useful in groups and with shared tasks so everyone has a quick status indicator of task completion.  It can also be helpful to keep track of the billable hours you spend on a client.  Keeping track of time worked is easy with real-time stopwatches <img src="/static/images/silk/time.png" alt="[stopwatch icon]" /> for each task.
+</p>
+
+<p>
+For individual tasks and any task list, we provide time tracking <% Jifty->web->link( label => 'reports', url => '/help/reference/reports.html') %> which show you how much time each person has spent on the task, and how much time is left.  Additional information is provided for tasklists, such as average time worked per task.
+</p>
+
+<p>
+For you and the members of your groups, we also provide <% Jifty->web->link( label => 'reports', url => '/help/reference/reports.html') %> showing how historically well you and the members of your groups estimate time.
+</p>
+
+<p>
+Time durations can be specified in many ways, from formats like "1 hour and 30 minutes" to "1h30m" to "01:30", and there are many ways to set and update time tracking information.
+</p>
+
+<ul>
+  <li>
+    When creating a task via
+    <% Jifty->web->link( label => 'braindump', url => '/help/reference/tasklists/braindump.html' ) %>,
+    specify the time left using <code>[estimate: 2h]</code>.  Add to the time worked using <code>[worked: 30m]</code>.
+  </li>
+  <li>
+    When creating a task with the new task widget at the bottom of every tasklist,
+    enter the appropriate time in the "Time Left" field.
+  </li>
+  <li>
+    When viewing a tasklist, click on the time tracking information for any task
+    to start a stopwatch where you can update time worked and time left.
+  </li>
+  <li>
+    You can also use the Edit button of any task in a tasklist to enter time durations into
+    the "Time Left" and "Add time worked" fields.  (Add time worked will automatically record time worked
+    and subtract time from time left.)
+  </li>
+  <li>
+    The IM interface also provides time tracking commands. <b>estimate</b> lets
+    you set the estimated time left (<i>estimate #3 takes 4h</i>) and <b>worked</b>,
+    like "Add time worked" on the web, tells us you spent time on a task (<i>worked 30m on #5</i>).
+  </li>
+</ul>
+
+</&>
+

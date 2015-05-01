@@ -1,0 +1,41 @@
+/*#tagcloud div.tagcloud h3,
+#braindump h3,
+#invite_new_user h3,*/
+h2
+{
+     -moz-border-radius: 7px 7px 0 0;
+     -webkit-border-radius: 7px 7px 0 0;
+     padding-top: 0.5em;
+}
+
+/*#feedback,*/
+#signupplea,
+div.round
+{
+     -moz-border-radius: 8px;
+     -webkit-border-radius: 8px;
+     padding-top: 0.5em;
+     padding-bottom: 0.5em;
+}
+
+#actions_container ul {
+     -moz-border-radius: 8px 8px 0 0;
+     -webkit-border-radius: 8px 8px 0 0;
+}
+
+#page_nav ul.menu li {
+     /* works great in ff3, looks poor in ff2 */
+     -moz-border-radius: 8px 8px 0 0;
+     -webkit-border-top-left-radius: 8px;
+     -webkit-border-top-right-radius: 8px;
+}
+
+.task .yuimenu {
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+}
+
+.task .yuimenu li.yuimenuitem-selected {
+     -moz-border-radius: 2px;
+     -webkit-border-radius: 2px;
+}

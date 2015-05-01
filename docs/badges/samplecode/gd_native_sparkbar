@@ -1,0 +1,341 @@
+package BTDT::Chart;
+
+use Data::Dumper;
+use warnings;
+use strict;
+use Jifty;
+use GD;
+use YAML;
+use base 'Class::Accessor';
+
+use List::Util qw(max sum);
+
+__PACKAGE__->mk_accessors(
+    qw/image user start end dates cursor created completed_at x_size y_size colors totals/);
+
+Jifty->new();
+
+my $chart = BTDT::Chart->new({x_size => 150, y_size => 500,
+
+
+}
+);
+$chart->run();
+
+sub run {
+    my $self = shift;
+
+    $self->user(
+        BTDT::CurrentUser->new( email => 'jesse@bestpractical.com' ) );
+
+    $self->get_metrics();
+    $self->get_metrics_dates();
+    $self->_image_init();
+    $self->colors( {
+            mfm => $self->image->colorAllocate(  255,0,0 ),
+            mfo => $self->image->colorAllocate(  0,255,0),
+            ofm => $self->image->colorAllocate( 0,0,255),
+            chartjunk => $self->image->colorAllocate(0,0,0)
+             
+        } );
+
+    $self->draw();
+
+}
+
+
+=head2 get_metrics_dates
+
+Sets $self->dates to an array ref of ISO8601 dates for the full period of our query
+
+=cut
+
+
+sub get_metrics_dates {
+    my $self = shift;
+    my $period = DateTime::Duration->new( days => 1 );
+    my @keys;
+    for ( my $current = $self->start; $current <= $self->end; $current += $period) {
+        push @keys, $current->ymd;
+    }
+
+    $self->dates( \@keys );
+
+}
+
+sub get_metrics {
+    my $self = shift;
+
+    my $duration = DateTime::Duration->new( months => 1 );
+
+    my $user = $self->user;
+    my $UID  = $user->id;
+
+    $self->end( DateTime->now( time_zone => $user->user_object->time_zone ) );
+    $self->start( $self->end - $duration );
+
+    $self->start->set_time_zone('GMT');
+    $self->end->set_time_zone('GMT');
+    my %queries = (
+        ofm => "requestor_id != $UID AND owner_id = $UID",
+        mfo => "requestor_id = $UID AND owner_id != $UID",
+        mfm => "requestor_id = $UID AND owner_id = $UID"
+
+    );
+
+    my $totals = {};
+    foreach my $grouping (qw(created completed_at)) {
+        my $results = {};
+        foreach my $query ( keys %queries ) {
+
+                my $fetched =     $self->count_aggregate_values(
+                group_by => $grouping,
+                query    => $queries{$query},
+                start    => $self->start->ymd . " " . $self->start->hms,
+                end      => $self->end->ymd . " " . $self->end->hms,
+                offset   => _pg_offset( $user->user_object->time_zone )
+                );
+            map {
+                my $date = substr( $_->[0], 0, 10 );
+                $totals->{$grouping}->{$query} += $_->[1];
+                $results->{$date }{$query}
+                    = $_->[1];
+                } @$fetched;
+
+        }
+            $self->$grouping($results);
+
+    }
+
+    $self->totals($totals);
+}
+
+sub draw {
+    my $self = shift;
+    my $keys       = shift;
+    $self->cursor(0);
+
+    my @types =qw(mfm ofm mfo);
+    foreach my $key (@{$self->dates}) {
+        $self->draw_plus_values(
+            values     => 
+            { map {$_ =>  $self->created->{$key}->{$_} } @types} ,
+        );
+        $self->draw_minus_values(
+            values     =>
+                         {map {$_ =>  $self->completed_at->{$key}->{$_} } @types },
+        );
+        $self->cursor( $self->cursor + $self->line_width + 1 );
+
+    }
+
+        $self->draw_line( ( 0, $self->y_center ) => ( ($self->cursor - ($self->line_width +1)) => ( $self->y_center ) ), $self->colors->{'chartjunk'});
+
+    my $ptsize = 12; 
+    my $angle = 0;
+    my                @bounds = $self->image->stringFT($self->colors->{'chartjunk'} ,'/Users/jesse/cambria.ttf',$ptsize,$angle,0,12, 'Added');
+    warn "My bounds were ".YAML::Dump(\@bounds);
+    $bounds[1]+3
+
+
+
+    
+
+    sub print_string {
+        my $self = shift;
+        my %args = ( color => undef,
+                     string => undef,
+                     y_start => undef,
+                     @_);
+
+
+    @bounds = $self->image->stringFT($args{'color'} ,'/Users/jesse/cambria.ttf',$ptsize,$angle,0,$args{'y_start'},'Added');
+    return ($bounds[1]);
+
+
+
+                       $self->image->string(gdSmallFont,2,25,"Personal: ". $self->totals->{created}->{mfm} ,$self->colors->{'mfm'});
+                       $self->image->string(gdSmallFont,2,40,"By others: ". $self->totals->{created}->{mfo} ,$self->colors->{'mfo'});
+                       $self->image->string(gdSmallFont,2,55,"For others: ". $self->totals->{created}->{ofm} ,$self->colors->{'ofm'});
+                       $self->image->string(gdSmallFont,2,($self->y_size-15),"Finished",$self->colors->{'chartjunk'});
+                       $self->image->string(gdSmallFont,2,($self->y_size-30),"Personal: ". $self->totals->{completed_at}->{mfm} ,$self->colors->{'mfm'});
+                       $self->image->string(gdSmallFont,2,($self->y_size-45),"By others: ". $self->totals->{completed_at}->{mfo} ,$self->colors->{'mfo'});
+                       $self->image->string(gdSmallFont,2,($self->y_size -60),"For others: ". $self->totals->{completed_at}->{ofm} ,$self->colors->{'ofm'});
+    $self->write_image();
+
+    print scalar Data::Dumper::Dumper($self->totals);
+}
+
+sub y_scale {
+    my $self = shift;
+    return $self->y_center() / $self->max_value();    #
+
+}
+
+sub max_value {
+my  $self = shift;
+    # That zero is in case theres' nothign there.
+    my $extreme = max( map( { sum( 0, values %$_ ) } values %{$self->created}, values %{$self->completed_at}));
+    return $extreme;
+}
+
+sub y_center {
+    my $self = shift;
+    $self->y_size  / 2 
+    }
+
+sub line_width {
+    my $self = shift;
+    my $count = $#{@{$self->dates}};
+    my $width = int( ($self->x_size-$count) /$count) ; # that additional -$count is for spacing between
+    return $width;
+
+}
+
+sub write_image {
+    my $self = shift;
+    my $im   = $self->image;
+
+    # make sure we are writing to a binary stream
+    binmode STDOUT;
+
+    # Convert the image to PNG and print it on standard output
+    my $name = '/tmp/image' . time . ".png";
+    open( my $file, ">$name" ) || die;
+    print $file $im->png;
+    close $file;
+    `open $name`;
+}
+
+sub draw_minus_values {
+    my $self   = shift;
+    my %args   = ( values => undef, @_ );
+    my %values = %{ $args{'values'} };
+    my $y_min  = $self->y_center() + 1;
+
+    my ( $x_min, $x_max )
+        = ( $self->cursor, ( $self->cursor + $self->line_width));
+
+    foreach my $key ( keys %values ) {
+        my $val = $values{$key} || next;
+        my $height = int( $values{$key} * $self->y_scale() ) || 1;
+        $self->draw_line(
+            ( $x_min, $y_min ) => ( $x_max => ( $y_min + $height ) ),
+            $self->colors->{$key}
+        );
+        $y_min += ( $height + 1 );
+    }
+
+}
+
+sub draw_plus_values {
+    my $self   = shift;
+    my %args = (values=>undef, @_);
+    my %values = %{ $args{'values'} };
+    my $y_min  = $self->y_center() - 1;
+
+    my ( $x_min, $x_max )
+        = ( $self->cursor, ( $self->cursor + $self->line_width ) );
+
+    foreach my $key ( keys %values ) {
+        my $val = $values{$key} || next;
+        my $height = int( $values{$key} * $self->y_scale() ) || 1;
+        $self->draw_line(
+            ( $x_min, $y_min ) => ( $x_max => ( $y_min - $height ) ),
+            $self->colors->{$key}
+        );
+        $y_min -= ( $height + 1 );
+    }
+
+}
+=head2 query routines
+
+=cut
+
+sub _pg_offset {
+    my $zone = shift;
+
+    # HORRIBLE HACK TO GET A POSTGRES GMT+4:30  style offset
+    my $dt     = DateTime->now();
+    my $tz     = DateTime::TimeZone->new( name => $zone );
+    my $offset = $tz->offset_for_datetime($dt);
+    $offset = $offset / 3600;
+    $offset = "GMT" . ( $offset > 0 ? "+" : "" ) . $offset;
+    $offset =~ s/\.5$/:30/;
+    return $offset;
+}
+
+sub count_aggregate_values {
+    my $self = shift;
+    my %args = (
+        group_by => undef,
+        query    => undef,
+        start    => undef,
+        end      => undef,
+        offset   => undef,
+        @_
+    );
+
+    my $stamp = _pg_timestamp_in_timezone( $args{'group_by'}, $args{offset} );
+
+    my $query = join(
+        ' ',
+        "SELECT", $stamp . ",", "COUNT(id)",    'FROM',
+        'tasks',  'WHERE',      $args{'query'}, 'AND',
+        $args{'group_by'}, '>=', Jifty->handle->dbh->quote( $args{start} ),
+        'AND',
+        $args{'group_by'}, '<=', Jifty->handle->dbh->quote( $args{end} ),
+
+        'GROUP BY', $stamp
+    );
+
+    my $rv     = Jifty->handle->simple_query($query);
+    my $result = $rv->fetchall_arrayref();
+    return $result;
+}
+
+sub _pg_timestamp_in_timezone {
+    my $col    = shift;
+    my $offset = shift||'';
+
+    return "date_trunc('day', $col at time zone '$offset')";
+
+}
+
+=head2 drawing routines
+
+=cut
+
+sub draw_line {
+    my $self  = shift;
+    my $x_min = shift;
+    my $y_min = shift;
+    my $x_max = shift;
+    my $y_max = shift;
+    my $color = shift;
+    if ( $y_min > $y_max ) {
+        ( $y_min, $y_max ) = ( $y_max, $y_min );
+    }
+
+    my @coords = ( ( $x_min, $y_min ) => ( $x_max, ($y_max) ) );
+    $self->image->filledRectangle( @coords, $color );
+}
+
+
+sub _image_init {
+    my $self = shift;
+    my $x    = shift;
+    my $y    = shift;
+
+    # create a new image
+    my $im = new GD::Image( $self->x_size => $self->y_size );
+
+    # allocate some colors
+
+    # make the background transparent and interlaced
+    my $white = $im->colorAllocate( 255, 255, 255 );
+    $im->transparent($white);
+    $im->interlaced('true');
+    $self->image($im);
+}
+

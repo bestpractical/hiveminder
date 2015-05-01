@@ -1,0 +1,8 @@
+<&| /help/_elements/wrapper, %ARGS &>
+
+<& /help/_elements/proheader, section => "page" &>
+
+<% $m->content |n %>
+
+</&>
+

@@ -1,0 +1,12 @@
+
+<span class="task-description"><%$task->description%></span>
+<span class="pagenav-wrapper">
+<ul class="tasknav">
+    <li><% Jifty->web->link( label => _('Basics'), url => '/mobile/task/'.$task->record_locator)%></li>
+    <li><% Jifty->web->link( label => _('Update'), url => '/mobile/task_update/'.$task->record_locator)%></li>
+    <li><% Jifty->web->link( label => _('History'), url => '/mobile/task_history/'.$task->record_locator)%></li>
+</ul>
+</span>
+<%args>
+$task
+</%args>

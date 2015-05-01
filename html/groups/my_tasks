@@ -1,0 +1,20 @@
+<&| /_elements/wrapper, title => "Group ".$group->name,
+                        subtitle => "My tasks",
+                        group_id => $group->id,
+                        tag_collection => $mine &>
+
+<& /_elements/tasklist,
+    collection => $mine,
+    name => 'mygrouptasks',
+    hide_if_empty => 0
+    &>
+
+</&>
+
+<%init>
+my $mine = BTDT::Model::TaskCollection->new();
+$mine->from_tokens(qw/owner me not complete starts before tomorrow accepted but_first nothing group/, $group->id);
+</%init>
+<%args>
+$group
+</%args>

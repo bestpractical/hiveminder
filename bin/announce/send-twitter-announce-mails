@@ -1,0 +1,21 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+
+use BTDT::Model::UserCollection;
+
+die "Already done.\n";
+
+my $users = BTDT::Model::UserCollection->announce_to;
+while (  my $user = $users->next ) {
+    print $user->email,"\n";
+    eval {
+        BTDT::Notification::LaunchTwitter->new( to => $user )->send;
+    };
+    warn $@ if $@;
+}
+
+1;

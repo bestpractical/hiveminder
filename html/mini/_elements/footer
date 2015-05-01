@@ -1,0 +1,10 @@
+<%args>
+$logo => 'hmlogo/default.email.png'
+</%args>
+  <div id="mini-footer">
+    <div id="bpslogo">
+      <a href="http://hiveminder.com/">
+        <img src="/static/images/<% $logo %>" alt="Hiveminder logo" />
+      </a>
+    </div>
+  </div>

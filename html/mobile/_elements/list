@@ -1,0 +1,90 @@
+<%args>
+$tokens => undef
+$ids => undef
+$page => undef
+</%args>
+<%init>
+my $per_page = 15;
+
+my $collection = BTDT::Model::TaskCollection->new();
+my @tokens = $collection->split_tokens($tokens);
+if ($ids) {
+    for (split ' ', $ids) {
+        my $item = BTDT::Model::Task->new;
+        $item->load($_);
+        $collection->add_record($item);
+    }
+} else {
+
+    $collection->from_tokens(@tokens);
+
+    if ($page == '0') {
+    } else {
+        $collection->set_page_info(
+                                   current_page => $page,
+                                   per_page     => $per_page
+                                  );
+    }
+}
+
+my $nothing_to_do = ($collection->pager->total_entries == 0 && $collection->count == 0);
+
+my $searchpath = BTDT::Model::TaskCollection->join_tokens_url("", "mobile", "search", @tokens);
+
+my $base = "/mobile/search/".join("/",$collection->tokens)."/page/";
+
+</%init>
+<h1>Tasks</h1>
+% Jifty->web->form->start;
+<ul class="tasklist">
+%while ( my $item = $collection->next ) {
+% my $a = Jifty->web->new_action(class => 'UpdateTask', record => $item );
+<li><%$a->form_field('complete')->render_widget%>
+<% Jifty->web->link(label =>$item->summary, url => '/mobile/task/'.$item->record_locator)%>
+<div class="details">
+% if ( my @taglist = $item->tag_array ) {
+<span title="Tags" class="tags">
+% for my $tag (@taglist) {
+%   my $thistag = BTDT::Model::TaskCollection->add_tag_tokens($searchpath, $tag);
+    <span class="tag"><%Jifty->web->link( url => $thistag, label => $tag ) %></span>
+% }
+</span>
+% }
+% if ( $item->due ) {
+<span class="due <% $item->overdue ? 'overdue' : '' %>" title="Due date">[Due <% $item->due->friendly_date %>]</span>
+% }
+</div>
+</li>
+% }
+</ul>
+<div class="braindump-to-list">
+<h3>Add tasks to this list</h3>
+<& braindump, tokens => $tokens, next_page => $base.'1' &>
+</div>
+<span class="save"><% Jifty->web->form->submit( label =>  "Update") %></span>
+% Jifty->web->form->end;
+% if ($collection->count != 0) {
+<div id="paging">
+% if ($page != 0 ) {
+page <%$page%>
+% } else {
+all tasks
+<br/><br/>
+ <span class="prev-page"><% Jifty->web->link( label => "show page 1", url => $base. '1', keybinding => '1' ) %></span>
+% }
+% if ($collection->pager->previous_page) {
+<span class="prev-page"><% Jifty->web->link( label => "prev", url => $base. $collection->pager->previous_page, keybinding => '1' ) %></span>
+% }
+% if ($collection->pager->next_page) {
+<span class="next-page"><% Jifty->web->link( label => "next", url => $base.$collection->pager->next_page, keybinding => '3'  ) %></span>
+% }
+
+% if ($collection->pager->next_page || $collection->pager->previous_page) {
+<br/><br/>
+<span class="all-tasks"><% Jifty->web->link( label => "show all tasks", url => $base.'0', keybinding => '2'  ) %></span>
+% }
+
+
+</div>
+% }
+

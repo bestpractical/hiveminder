@@ -1,0 +1,25 @@
+<&| /_elements/wrapper, title => $task->summary, subtitle => "#".$task->record_locator &>
+
+<p>Clicking the button below will permanently blow away this
+task. You'll never see it again. We won't be able to get it back for
+you. Make sure you know what you're doing before clicking it!</p>
+  
+<% Jifty->web->form->start %>
+<div class="button_line">
+<% 
+Jifty->web->new_action(
+    class   => 'DeleteTask',
+    moniker => 'mainlist' . Jifty->web->serial,
+    record  => $task
+    )->return( to => "/todo", label => "Delete this task", class => 'delete' )
+
+%>
+<% Jifty->web->return( to => "/todo", label => "Cancel", submit => [], as_button => 1, class => 'cancel') %>
+</div>
+<% Jifty->web->form->end %>
+
+</&>
+
+<%args>
+$task
+</%args>

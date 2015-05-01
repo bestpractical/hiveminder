@@ -1,0 +1,51 @@
+/* 
+ * Consolidate all of the priority bullet CSS here so changing them doesn't
+ * require changing them in many scattered files.
+ *
+ * The order of each selector is: priority menu (3), mini, IE fixes
+ *
+ * Note: You still need to change them in ONE MORE FILE: forms.css
+ * for the priority form <select>
+ *
+ */
+
+.task .priority .toplevel .submenu.highest_priority a,
+.task .priority.highest_priority  .toplevel  .expand span a,
+span.highest_priority  ul.context_menu span.expand a,
+span.highest_priority_icon,
+body#mini .task .priority.highest_priority,
+* html .tasklist span.highest_priority
+{ background-image: url(/static/images/silk-derived/priorities/bullet_arrow_up_red-whitebg.png); }
+
+.task .priority .toplevel .submenu.high_priority a,
+.task .priority.high_priority  .toplevel   .expand span a,
+span.high_priority  ul.context_menu span.expand a,
+span.high_priority_icon,
+body#mini .task .priority.high_priority,
+* html .tasklist span.high_priority
+{ background-image: url(/static/images/silk/ie/bullet_orange.png); }
+
+.task .priority .toplevel .submenu.normal_priority a,
+.task .priority.normal_priority  .toplevel   .expand span a,
+span.normal_priority  ul.context_menu span.expand a,
+span.normal_priority_icon,
+body#mini .task .priority.normal_priority,
+* html .tasklist span.normal_priority
+{ background-image: url(/static/images/silk-derived/priorities/bullet_green_square-whitebg.png); }
+
+.task .priority .toplevel .submenu.low_priority a,
+.task .priority.low_priority  .toplevel   .expand span a,
+span.low_priority  ul.context_menu span.expand a,
+span.low_priority_icon,
+body#mini .task .priority.low_priority,
+* html .tasklist span.low_priority
+{ background-image: url(/static/images/silk/ie/bullet_blue.png); }
+
+.task .priority .toplevel .submenu.lowest_priority a,
+.task .priority.lowest_priority  .toplevel   .expand span a,
+span.lowest_priority  ul.context_menu span.expand a,
+span.lowest_priority_icon,
+body#mini .task .priority.lowest_priority,
+* html .tasklist span.lowest_priority
+{ background-image: url(/static/images/silk-derived/priorities/bullet_arrow_down_purple-whitebg.png); }
+

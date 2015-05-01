@@ -1,0 +1,20 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+use Number::RecordLocator;
+
+my $g = Number::RecordLocator->new;
+my $id = shift;
+
+unless ($id) {
+    print "Usage: $0 id\n";
+    exit;
+}
+
+if ($id !~ /^[a-z0-9]+$/i) {
+    die "$id is not a valid id\n";
+}
+
+print "encode $id => ".$g->encode($id)."\n";
+print "decode $id => ".$g->decode($id)."\n";
+

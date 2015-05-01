@@ -1,0 +1,203 @@
+.task h2.inline .hidden {
+    display: inline;
+    visibility: hidden;
+}
+
+.task .taskpage-complete-button,
+.task .taskpage-incomplete-button
+{
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+.task h2.inline .taskpage-complete-button input,
+.task h2.inline .taskpage-incomplete-button input
+{
+    text-indent: 18px;
+    background-repeat: no-repeat;
+    background-position: 0.5em center;
+    text-align: left;
+    width: auto;
+}
+
+.task h2.inline .taskpage-complete-button input {
+    background-image: url(/static/images/silk/tick.png);
+}
+
+.task .button_line .taskpage-complete-button input {
+    direction: ltr;
+}
+
+.task h2.inline .taskpage-incomplete-button input {
+    background-image: url(/static/images/silk/cross.png);
+}
+
+.task .button_line .taskpage-incomplete-button input {
+    direction: ltr;
+}
+
+.task h2.inline input.argument-summary {
+    width: 93%;
+    font-size: 1.3em;
+    font-weight: normal;
+    font-variant: normal;
+}
+
+.task #taskpage-basics {
+    width: 50%;
+    background: #eee;
+    float: left;
+}
+
+.task #taskpage-basics textarea {
+    width: 65%;
+}
+
+#taskpage-basics label, #taskpage-basics .label {
+    padding-left: 20px;
+    min-height: 20px;
+}
+
+#taskpage-basics .inline label, #taskpage-basics .inline .label {
+    padding-left: 0;
+    min-height: 0;
+    font-weight: normal;
+}
+
+#taskpage-basics .inline div.argument-time_worked {
+    padding-left: 2.5em;
+}
+
+/* Field icons */
+
+#taskpage-basics label.argument-tags {
+    background: url(/static/images/silk/tag_blue.png) no-repeat 4px 0;
+}
+
+#taskpage-basics label.argument-group_id {
+    background: url(/static/images/silk/group.png) no-repeat 4px 0;
+}
+
+#taskpage-basics label.argument-due {
+    background: url(/static/images/silk/date.png) no-repeat 4px 0;
+}
+
+#taskpage-basics label.argument-priority {
+    background: url(/static/images/silk/bullet_black.png) no-repeat 4px 0;
+}
+
+/* end field icons */
+
+.task #taskpage-dependencies h2,
+.task #taskpage-comments h2,
+.task #taskpage-history h2
+{
+    font-size: 1.15em;
+    margin-bottom: 0.3em;
+}
+
+.task #taskpage-comments,
+.task #taskpage-history
+{
+    width: 47%;
+    float: right;
+    clear: right;
+}
+
+.task #taskpage-history { padding-top: 0.3em; }
+
+.task #taskpage-history .transactions {
+    overflow: auto;
+    height: 30em;
+    padding: 0.5em;
+    border: 1px solid #aaa;
+    margin-top: 0;
+}
+
+.task #taskpage-history .transactions .transaction {
+    overflow: visible;
+}
+
+.task #taskpage-depends-on {
+    width: 48.5%;
+    float: left;
+}
+
+.task #taskpage-depended-on {
+    width: 48.5%;
+    float: right;
+}
+
+.task #taskpage-dependencies {
+    padding-top: 1.5em;
+    clear: both;
+}
+
+.task #taskpage-dependencies .create {
+    margin: 0;
+}
+
+.task #taskpage-dependencies .create input.argument-summary {
+    width: 12em;
+}
+
+.task #taskpage-dependencies .create input.argument-tags {
+    width: 5em;
+}
+
+/*
+.task #taskpage-dependencies .create textarea.argument-description {
+    width: 20em;
+}
+*/
+
+#taskpage-dependencies .tasklist .create {
+    width: auto;
+}
+
+.task #taskpage-comments h2 {
+    background-image: url(/static/images/silk/comment_add.png);
+    margin-bottom: 0.5em;
+    margin-top: 0;
+}
+
+.task #taskpage-comments p {
+    font-size: 0.9em;
+    margin: 0.5em 0;
+}
+
+.task #taskpage-comments textarea {
+    width: 98%;
+}
+
+.task .button_line {
+    clear: both;
+    border-top: 1px solid #aaa;
+    position: relative;
+    top: 0.5em;
+}
+
+.task #taskpage-depends-on h2,
+.task #taskpage-depended-on h2,
+.task #taskpage-comments h2
+{
+    background-repeat: no-repeat;
+    background-position: 3px center;
+    padding-left: 25px;
+    padding-bottom: 0.2em;
+}
+
+
+.task #taskpage-depends-on h2 {
+    background-image: url(/static/images/silk/arrow_join.png);
+}
+
+.task #taskpage-depended-on h2 {
+    background-image: url(/static/images/silk/arrow_divide_rotated.png);
+}
+
+.accept_or_decline .line .button {
+    margin-left: 5em;
+}
+

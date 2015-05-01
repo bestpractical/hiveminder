@@ -1,0 +1,31 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new() }
+use BTDT::CurrentUser;
+use BTDT::Model::User;
+use Getopt::Long;
+my $email;
+my $type = 'guest';
+my $name = 'admin';
+GetOptions(
+    'email=s' => \$email,
+    'type=s'  => \$type,
+    'name=s'  => \$name
+);
+
+my $u
+    = BTDT::Model::User->new( current_user => BTDT::CurrentUser->superuser );
+
+my ( $id, $msg ) = $u->create(
+    name                  => $name,
+    email                 => $email,
+    password              => 'password',
+    email_confirmed       => 1,
+    access_level          => $type,
+    accepted_eula_version => Jifty->config->app('EULAVersion'),
+);
+
+print $msg unless ($id);

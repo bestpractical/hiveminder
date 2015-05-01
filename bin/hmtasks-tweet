@@ -1,0 +1,15 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+use BTDT::IM::TwitterREST;
+
+my $tweet = "@ARGV";
+die "Tweet too long - " . length($tweet) . " chars" if length($tweet) > 140;
+
+my $twitter = BTDT::IM::TwitterREST->create_twitter_handle;
+
+$twitter->update($tweet);
+

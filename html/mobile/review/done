@@ -1,0 +1,9 @@
+<&|/mobile/_elements/wrapper, title=> 'Task review: All done' &>
+<div class="basicpage">
+  <p>That wasn't so bad, now was it?</p>
+
+  <p>You've just looked at every single thing in that list. 
+  You can head back to your <%Jifty->web->return( to => "/mobile/", label
+=> 'homepage')%>, and get cracking or search for a new list and review it as well.</p>
+</div>
+</&>

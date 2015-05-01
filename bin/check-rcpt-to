@@ -1,0 +1,23 @@
+#!/usr/bin/env hmperl
+use warnings;
+use strict;
+
+# If the domain is a with.hm domain, accept it...
+if ( defined $ARGV[1] and $ARGV[1] =~ /(?:^|.\.)with\.hm$/ ) {
+    exit 0;
+}
+# ...else let vail-chkuser handle it
+else {
+    system '/usr/sbin/vail-chkuser', @ARGV;
+    my $ret = $?;
+
+    if ( $ret == -1 ) {
+        warn "failed to execute: $!\n";
+    }
+    elsif ( $ret & 127 ) {
+       warn sprintf "child died with signal %d, %s coredump\n",
+                    ($ret & 127), ($ret & 128) ? 'with' : 'without';
+    }
+    exit $ret >> 8;
+}
+

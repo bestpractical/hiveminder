@@ -1,0 +1,23 @@
+<&| /help/_elements/wrapper, title => 'Bulk Update' &>
+
+<p>Bulk Update allows you to update several tasks at the same time. Use the
+"Search" function to narrow down the list down to the tasks you want to update,
+and then use the "Not this" links to remove tasks you weren't able to sort out
+of your list using "Search." You can now change the due date, the tags, the
+priority or any other task detail on all of those tasks all at once.</p>
+
+%# we already have help on how to rename a tag. maybe this should change.
+
+<p>You can use Bulk Update to, for example, change the tag "money" to "spending":</p>
+
+<ol>
+    <li>Go to your <% Jifty->web->link(url => '/todo', label => 'todo list') %>.</li>
+    <li>Click the <tt>money</tt> tag in your tag cloud.</li>
+    <li>Click <tt>Bulk Update</tt> at the top of the task list.</li>
+    <li>Click <tt>All</tt> at the top right to show all tasks instead of just the current page.</li>
+    <li>Put "spending" into <tt>Add Tags</tt> in the Bulk Update window.</li>
+    <li>Put "money" into <tt>Remove Tags</tt> in the Bulk Update window.</li>
+    <li>Click <tt>Save Changes</tt>.</li>
+</ol>
+
+</&>

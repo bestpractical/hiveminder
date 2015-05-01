@@ -1,0 +1,33 @@
+<%init>
+
+my $date = DateTime->from_epoch( epoch=> time );
+my $feed = Data::ICal->new();
+$feed->add_properties('x-wr-calname' => 'Hiveminder');
+
+my $history_date = $date->clone->subtract(years =>1);
+for(1..720) {
+    my $next_date = $history_date->clone->add(days =>1);
+           my $vevent = Data::ICal::Entry::Event->new();
+           $vevent->add_properties(
+                summary => "Hiveminder",
+                class => 'PUBLIC',
+                TRANSP => 'OPAQUE',
+                STATUS =>, 'CONFIRMED',
+                dtstart   => [ $next_date->ymd(''), { VALUE => 'DATE' } ],
+                dtend   => [ $history_date->ymd(''), { VALUE => 'DATE' } ],
+                'x-google-calendar-content-title' => 'Hiveminder for '.$next_date->ymd,
+                'x-google-calendar-content-icon' => Jifty->web->url( path => '/static/images/bee-favicon.png' ),
+                'x-google-calendar-content-url' => Jifty->web->url( path => '/mini/date/'.$next_date->ymd ),
+                'x-google-calendar-content-type' => 'text/html',
+                'x-google-calendar-content-height' => '330',
+                'x-google-calendar-content-width' => '330'
+           );
+    $feed->add_entry($vevent);
+    $history_date=$next_date;
+}
+
+Jifty->web->response->content_type('text/calendar');
+$m->out( $feed->as_string() );
+$m->abort();
+</%init>
+

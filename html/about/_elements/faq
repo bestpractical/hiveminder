@@ -1,0 +1,454 @@
+<div class="faq_heading">
+Definitions <small>(what is...?)</small>
+</div>
+
+<div class='faq_question'>
+What is Hiveminder?
+</div>
+<div class='faq_answer'>
+Hiveminder is a webservice that helps you keep track of all of your to
+do lists in one convenient place. It's easy to make new lists quickly
+or to share tasks with anyone in your hive of friends, family, and
+co-workers. Hiveminder makes it easy to see only the tasks you're
+looking for and to sync your lists with your life.  Whether you're
+planning your honeymoon, streamlining your business, or just trying to
+make it through the semester, Hiveminder has the tools you need to get
+busy!
+</div>
+
+<div class="faq_question">
+What is a "braindump?"
+</div>
+<div class="faq_answer">
+We realize that no to do list springs fully-formed from your head,
+like Athena from Zeus'.  We provide the opportunity to spit the things
+you have to do into Hiveminder quickly and painlessly on pretty much
+every page.  These "braindump" boxes allow you to quickly type out
+tasks as they occur to you so that you don't forget them, and the
+tasks are then added to your To Do list.  You can always add
+information to or organize them later, but at least they're out of
+your head.
+</div>
+
+<div class="faq_question">
+What is this "5H4" thing?
+</div>
+<div class="faq_answer">
+When you're trying to talk about tasks with other people, it can be
+hard to be clear which task you're talking about.  To help make things
+clearer, we created 'Task IDs' like the ones used in airline
+ticketing, composed of numbers and letters (i.e.  "5H4") to make it
+easier to get specific.  These identifiers are unique across all of
+Hiveminder, so no two tasks in our entire system will have the same
+Task ID.  They may take a little getting used to, but you'll thank us
+later.
+</div>
+
+<div class="faq_question">
+What are "tags?"
+</div>
+<div class="faq_answer">
+
+<p>Tags are a really great way to label your tasks.  They're just a
+list of words you choose to associate with a task.  This makes it
+easier to find your tasks and to find tasks that are alike or in the
+same category.  If you are trying to file anything, say your DVDs, you
+instantly run into some issues with how to categorize things.  Does
+the 1974 TV thriller <i>Killer Bees</i> go under 'K?' Or '1970s?'  Or
+'Television Thrillers?'  Maybe it should go under 'Gloria Swanson?'
+With tags, you could file it under all of those categories.</p>
+
+<p>Let's say you have a task called "Take the camera to work for
+Frank's going-away party."  You could tag it with [work] because
+you're going to the office and [home] because that's where the camera
+is.  You can also tag it with [camera], [Frank] and [parties].  If you
+search for any of those tags, or make a list using them, that task
+will show up.  Then you'll remember to take the camera to work, and
+you won't miss the opportunity to get pictures of Frank in a paper
+hat.</p>
+
+<p>In other words, tags will give your tasks context.  You can apply
+[phone] to all of the phone calls you need to make.  Likewise, you can
+imagine how tags like [shopping], [bills], [car], [kids], ["book
+club"] etc. might be used.  If you wanted to include [shopping] and
+[bills] in a larger [money] category, then you can apply [money] to
+all of those tasks.  You can then search for the broader context or
+the narrower context.  If you have a project, say to build a
+clubhouse, attach [clubhouse] to all of those tasks.  Then you can get
+increasingly specific for each part of the larger project - for
+example:
+<ul>
+<li>find a tree [clubhouse planning]
+<li>create plans [clubhouse planning design]</li> 
+<li>create a budget [clubhouse planning money]</li>
+<li>buy materials [clubhouse shopping money]</li>
+</ul>
+You can then find all of those tasks by searching for [clubhouse], the
+first three by searching for [clubhouse planning], the last two by
+searching for [clubhouse money] and so on and so forth.  Use however
+many tags you need to create as specific a context for your task as
+you wish.</p>
+</div>
+
+<div class='faq_question'>
+What is the "tag cloud" and how does it work?
+</div>
+<div class='faq_answer'>
+The tag cloud shows you which tags you're using, and how much you're
+using them.  It indicates how much you use a tag by making that tag
+bigger or smaller, relative to the other tags, so if your "work" tag
+is bigger than your "fun" tag, we would suggest you find more fun
+things to do.  If you select "all," the tag cloud will reflect the
+tags of all your tasks in Hiveminder.  If you select "page," then the
+tag cloud will reflect only the tags for the tasks on that page.
+Similarly, selecting "group" will show the tags for everyone's tasks
+in only that group.
+</div>
+
+<div class="faq_question">
+What are groups and how do they work?
+</div>
+<div class="faq_answer">
+Groups allow you to share tasks for a given project, party or anything
+else you're doing with a group of people.  Groups are created by an
+'Organizer' who has the power to add and delete members of the group.
+Groups can also have more than one Organizer.  'Members' have the
+ability to change tasks (add them, cross them off, commenting on them
+etc.), as do Organizers.  'Guests' can see what goes on in a group,
+but they have no ability to change anything.
+</div>
+
+<div class='faq_question'>
+What are "unaccepted" tasks?
+</div>
+<div class='faq_answer'>
+Unaccepted tasks are tasks which someone else has assigned to you that
+you haven't accepted or declined yet. Make a decision about whether
+you're willing to do somebody a favor and accept or decline them.
+</div>
+
+<div class="faq_heading">
+Procedures <small>(how do i...?)</small>
+</div>
+<p>Many of these answers to these procedural questions are very well
+documented in our <% Jifty->web->link( url => '/help', label =>
+'help', onclick => 'return BTDT.Util.openHelpWindow(this.href)' ) %>
+page, but if you can't find an answer there or here in the FAQ, please
+write us at <a
+href="mailto:support@hiveminder.com">support@hiveminder.com</a>, and
+we'll try to get you what you need ASAP.</p>
+
+<div class='faq_question'>
+What do I do if I get an email saying I have a task?
+</div>
+<div class='faq_answer'>
+Lucky you!  You have several choices to make.  First, you must decide
+whether to accept the task or refuse it.  There should be links in the
+email that allow you to choose.  If you would like to become a member
+of Hiveminder, you can do that by going to our
+<%Jifty->web->link( url => '/splash/signup', label => 'sign up' ) %>
+page and following the directions there.  You don't have to become a
+member of Hiveminder to accept the task, though.  You can accept the
+task with the link in the email you received, and you can let the
+person know that you have completed the task by replying to that email
+when you're done.  If you would like us to buzz off, follow the
+opt-out link in the email or on the task's page.
+</div>
+
+<div class='faq_question'>
+What if I change my email address?
+</div>
+<div class='faq_answer'>
+Like bees, Hiveminder users may need to migrate from time to time. We've made
+it easy for you. When logged in, pick "tools" from the menu bar, then click
+"preferences." On the preferences screen, change your email address. When
+you're sure it's correct, hit "save." You're done!
+</div>
+
+<div class='faq_question'>
+Why can't I sort my tasks by hand?
+</div>
+<div class='faq_answer'>
+Part of our philosophy with Hiveminder was that everything should be a
+search, not a sort.  Our Searches are extremely powerful and allow you
+to reorder your To Do list constantly to see all of the
+<em>different</em> lists in your life.  You can be looking at all of
+your high priority tasks one moment, everything due tomorrow the next,
+and soon again after that you're looking at all of the tasks you have
+tagged "work" to get the big picture of where things are going at the
+office (or wherever).  If you need a really specific order, you can use
+all of the pieces of info Hiveminder lets you attach to your tasks
+to get the list you need.
+</div>
+
+<div class='faq_question'>
+How can I sync my tasks outside of Hiveminder?
+</div>
+<div class='faq_answer'>
+<p>You can subscribe to an Atom feed of your tasks by clicking the
+feed icon <img src="/static/images/silk/feed.png" width="16" height="16" alt="[feed]" />.  Right now,
+Hiveminder only supports one-way syncing with your iCalendar
+applications like Apple's iCal or Google Calendar <img
+src="/static/images/ical.new.png" width="16" height="16" alt="[iCal]" />, but we've got a couple aces up
+our sleeve and should be able to support round-trip iCalendar syncing
+in the near future. We do provide full round-trip to text files for
+all you lifehackers - just click on the page icon <img
+src="/static/images/silk/page_white_text.png" width="16" height="16" alt="[text]" />.  If you're a little
+more old-school and would rather have a paper list to work from during
+the day, click the printer icon <img
+src="/static/images/silk/printer.png" width="16" height="16" alt="[print]" />. Your printed list will
+include a URL so you can get back to that same list later on and check
+stuff off for good.</p>
+
+<p>Your iCalendar and Atom feeds work something like a saved list.  If
+you search for a list by a tag, then all future tasks with that tag
+will be sent to the feed you generate from that list.  It is important
+to keep the feed URLs private though, because otherwise people can see
+your tasks.  If you run into that situation however, we have given you
+an out.  You can go to the "<a href="/prefs/security">Security</a>"
+tab on the <a href="/prefs">Preferences page</a>.  By pushing the
+"Generate new feed links" button, you can destroy all of your feeds.
+You'll have to re-create all of your feeds, but the compromised feeds
+will go away.</p> </div>
+
+<div class="faq_question">
+How do I use email to create tasks?
+</div>
+<div class="faq_answer">
+To begin, go to the "<a href="/prefs/addresses">Tasks by email</a>" tab
+under "<a href="/prefs">Preferences</a>" (under "Tools" in the top
+bar).  Here, you can get a Hiveminder email address, where you or
+anyone else can send you a task.  If there's not an address provided,
+click "add a new address."  Just write the summary of the task in the
+subject line and the full description of the task in the body of the
+email, and then send it!  You can hand that address (or other randomly
+generated addresses) to other people so they can send you tasks, too.
+Each email address can also add arbitrary tags, due dates, and the
+like - so you can have one address which tags incoming emails with
+[work], and another which tags them with [home].
+</div>
+
+<div class='faq_question'>
+How do I find tasks?
+</div>
+<div class='faq_answer'>
+Always start with "Search," in the top bar, or with the "Search" link
+at the top of task lists.  If you're still having trouble, there may be
+a "But First" task (another task that must be completed before the task
+you are looking for) in the way.  If your task is next in line, there
+will be a hyperlink reference to your task on that task labeled, "And
+Then..." It's also possible that your task is hidden until some date
+in the future, so make sure you work with the date fields in "Search."
+</div>
+
+<div class='faq_question'>
+How do I send a task to someone else? Do they need to have a Hiveminder account for me to do that?
+</div>
+<div class='faq_answer'>
+First of all, the people you are sharing tasks with don't have to have
+Hiveminder account.  They will receive an email that explains the
+task, and they can accept the task, refuse it, and otherwise
+manipulate it via email.  To send a task, just enter the email address
+of the person you're sending the task to into the "owner" field when
+you're creating it, or change the address in the "owner" field of an
+already existing task and then save the change.  The task will then be
+emailed to that address.
+</div>
+
+<div class='faq_question'>
+Can I send a task to more than one person?
+</div>
+<div class='faq_answer'>
+No, you can't.  This is a feature, not a bug, though.  We believe in
+getting these tasks accomplished, and if more than one person is
+responsible for a task, then neither one is necessarily responsible.
+We allow only one owner for a task so that no one can use that
+ambiguity to hide from responsibility.  If you want to give the same
+task to a bunch of people, send it to each of them and then they can
+all work in series (or even better, compete!) to finish your task.  If
+you want to let them know that they are sharing the task, you can do
+so in the notes.  If the task is for a group, you can create tasks
+with no owner ("nobody"), and the task will wait for someone who to
+pick it up from the "Up for grabs" tab.
+</div>
+
+<div class='faq_question'>
+I marked a task as done, but now I want it back.  How do I find it? 
+</div>
+<div class='faq_answer'>
+Use the "Search" tool, and check off the "Done" box.  This will show
+you all of the tasks that you have marked as "done."  Uncheck the
+checkbox, and you should be all set.
+</div>
+
+<div class='faq_question'>
+How do I change my timezone?
+</div>
+<div class='faq_answer'>
+It's located on the "<a href="/prefs">Preferences</a>" page, which is
+under "Tools" on the top bar.  Go to the "about me" tab, and find your
+matching timezone in the dropdown menu.
+</div>
+
+<div class='faq_question'>
+Can I use SMS or my PDA to add new tasks?
+</div>
+<div class='faq_answer'>
+If you can send email from those devices, then absolutely.  The person
+you're trying to send a task to will need to have a Hiveminder account
+though so that they can have a "Tasks by email" address.
+</div>
+
+<div class='faq_question'>
+Can I do recurring tasks?
+</div>
+<div class='faq_answer'>
+Yes! All you need to do is to click on a task's title from the
+tasklist and set the appropriate fields under the "Repeat" heading
+of the edit form.  Tell us how often to nag you and we'll take care of the rest.
+</div>
+
+<div class='faq_question'>
+Please stop sending me emails about my tasks!
+</div>
+<div class='faq_answer'>
+You can manage your own email preferences on <a href="/prefs">your
+preferences page</a>.  If you have any trouble, send us an email at <a
+href="mailto: support@hiveminder.com">support@hiveminder.com</a> and
+we'll take care of it.
+</div>
+
+<div class='faq_question'>
+Why not just use a piece of paper?
+</div>
+<div class='faq_answer'>
+Well, if you feel more comfortable using paper, go for it.  Unlike a
+paper list, Hiveminder won't get lost, though.  If you have a
+Hiveminder account, you can print any list to paper using the <img
+src="/static/images/silk/printer.png" width="16" height="16" alt="[printer]" /> icon on your "To Do" List.
+</div>
+
+<div class='faq_question'>
+How do I get Hiveminder for my company?
+</div>
+<div class='faq_answer'>
+You can either use it right off of the Internet or check out <a href="
+http://www.bestpractical.com/rt/">RT</a>, which is sort of like
+Hiveminder's big brother.
+</div>
+
+<div class='faq_question'>
+How can I delete my account?
+</div>
+<div class='faq_answer'>
+While we're sorry to see any user leave Hiveminder, we understand it may
+not be the best for everyone and so we make it easy to
+<a href="/account/delete">delete your own account</a>.  We would really
+appreciate hearing why you're leaving before you do so!
+</div>
+
+<div class="faq_heading">
+Security and Privacy
+</div>
+
+<div class='faq_question'>
+Can other people see my tasks?
+</div>
+<div class='faq_answer'>
+People can only see your tasks if you invite them to do so in a group
+setting.  Or if they steal your login.
+</div>
+
+<div class='faq_question'>
+Can you see my tasks?
+</div>
+<div class='faq_answer'>
+Yes.  But we have better things to do than spy on your tasks.  It is
+difficult for us to casually see your tasks, but we keep the option
+open because we may need to access the place where your tasks are
+stored in order to fix something.
+</div>
+
+<div class='faq_question'>
+You're not using SSL; how do I know my password is safe?
+</div>
+<div class='faq_answer'>
+If you have a Javascript-enabled browser (most of them are these
+days), then your password will be encrypted when logging in, before
+being sent to us over the internet.  But we also offer SSL encryption
+as a feature to <a href="/pro">pro</a> users.
+</div>
+
+<div class='faq_question'>
+How do I know you won't sell my information to a marketing company (or anyone else)?
+</div>
+<div class='faq_answer'>
+Because we promise not to.  And because our information is also
+collected in Hiveminder.  And our friends' information.  And our
+families'.  We'd hate ourselves even more than you hate spam.
+</div>
+
+<div class="faq_heading">
+About Us
+</div>
+
+<div class="faq_question">
+Do you use Hiveminder yourselves?
+</div>
+<div class="faq_answer">
+Yes.
+</div>
+
+<div class="faq_question">
+What does Best Practical use Hiveminder for?
+</div>
+<div class="faq_answer">
+We've been using Hiveminder for the development of Hiveminder for
+almost a year.  We have been distributing tasks, tracking bugs, and
+figuring out new things we want to try with Hiveminder.  We take care
+of many of the basic, day-to-day operations at Best Practical with
+Hiveminder, and most of us use it to get our personal lives together,
+too.  If you're looking for something more heavy-duty, consider <a
+href="http://www.bestpractical.com/rt/">RT</a>, which we also make.
+</div>
+
+<div class='faq_question'>
+What tools did you use to build Hiveminder?
+</div>
+<div class='faq_answer'>
+Much of our development was done with <a
+href="http://www.jifty.org">Jifty</a>, an internally-developed web
+development kit that is especially good at the AJAX-y mojo that people
+are so excited about these days.  It's opensource, so you can download
+it for free at <a href="http://www.cpan.org">CPAN</a>.
+</div>
+
+<div class='faq_question'>
+Is Hiveminder in Beta?
+</div>
+<div class='faq_answer'>
+Hiveminder is still a young service, but we think you're smart enough
+to see through any label we stick on it to help us get out of trouble
+if it doesn't work right.  We're always going to do our best to make
+sure it works right for you, even if it doesn't read Beta, Gamma, Pi,
+Rho, 1.0 or "2006 Premium Executive Edition, now with Concierge
+Service."
+</div>
+
+<div class='faq_question'>
+How do you guys plan to make money off this?  (You <em>are</em> a business, right?)
+</div>
+<div class='faq_answer'>
+You can <a href="/account/upgrade">upgrade your account</a> to a <a
+href="/pro">pro</a> account, which gives you all sorts of nifty extra
+features!  Hiveminder will remain a free service forever, though.  You
+will never be forced to pay for Hiveminder.
+</div>
+
+<div class='faq_question'>
+Is Hiveminder for sale?
+</div>
+<div class='faq_answer'>
+No, but we will consider ridiculously lucrative offers.  Like,
+"Notorious B.I.G. in the <em>Hypnotize</em> video" lucrative.
+</div>

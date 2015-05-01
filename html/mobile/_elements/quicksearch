@@ -1,0 +1,9 @@
+<%init>
+my $search = Jifty->web->new_action( class => 'DispatchQuicksearch' );
+</%init>
+<div id="quicksearch">
+<%Jifty->web->form->start%>
+<%$search->form_field('query')->render_widget%>
+<%$search->button(label => 'Search')%>
+<%Jifty->web->form->end %>
+</div>

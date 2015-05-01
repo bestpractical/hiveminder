@@ -1,0 +1,121 @@
+<%args>
+$id => undef
+$searchpath => '/list/owner/me/not/complete'
+$tokens => undef
+$maybe_view => 0
+$schedule_for => undef
+$refresh_on_schedule => ''
+</%args>
+<%once>
+our $LOCATOR = Number::RecordLocator->new();
+</%once>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load($id);
+
+return unless $task->id;
+
+if ( $maybe_view && $tokens ) {
+    my $search = BTDT::Model::TaskCollection->new();
+    $search->from_tokens($search->split_tokens($tokens));
+    $search->limit( column => 'id', value => $id );
+    return () unless $search->count;
+}
+
+my $update = Jifty->web->new_action(
+    class   => "UpdateTask",
+    moniker => "edit-" . Jifty->web->serial,
+    record  => $task
+);
+
+</%init>
+<div class="task_container">
+<dt class="todo task <% $task->text_priority %>_priority ">
+    <span class="task">
+
+<%perl>
+if ($schedule_for) {
+    $m->out(
+        Jifty->web->link(
+            label   => "Schedule",
+            class   => "schedule-task",
+            as_link => 1,
+            tooltip => "Schedule task for this milestone",
+            onclick => [
+                {
+                    submit => {
+                        action => $update,
+                        arguments => {
+                            milestone => $schedule_for,
+                        },
+                    },
+                },
+                {
+                    refresh_self => 1,
+                    args => {
+                        maybe_view => 1,
+                    },
+                },
+                ($refresh_on_schedule
+                    ? (map { {refresh => $_} } split / /, $refresh_on_schedule)
+                    : () ),
+            ]
+        )
+    );
+}
+</%perl>
+
+<span class="priority <% $task->text_priority %>_priority">
+    <& priority_menu,
+        action => $update,
+        task => $task
+    &>
+</span>
+
+<span class="task_summary">
+    <% Jifty->web->tangent(
+        url => "/task/".$task->record_locator,
+        label => $task->summary || '(Empty task)',
+    ) %>
+</span>
+
+<div class="metadata">
+    <span class="task_people">
+        <span class="task_by">
+            by
+            <& /_elements/username,
+                user    => $task->owner,
+                url     => $searchpath . '/owner/' . $task->owner->email,
+                useyou  => 1,
+            &>
+        </span>
+    </span>
+
+% if ( my @taglist = $task->tag_array ) {
+    <span title="Tags" class="tags">
+        <%perl>
+        for my $tag (@taglist) {
+            my $thistag = BTDT::Model::TaskCollection->add_tag_tokens(
+                $searchpath . "/",
+                $tag
+            );
+            </%perl>
+            <span class="tag">
+                <% Jifty->web->link(
+                    url => $thistag,
+                    label => $tag,
+                ) %>
+            </span>
+%       }
+    </span>
+% }
+
+    <& /_elements/time_tracking,
+        task => $task,
+        hide_stopwatch => 1,
+    &>
+</div>
+
+</span>
+</dt>
+</div>

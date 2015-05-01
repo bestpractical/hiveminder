@@ -1,0 +1,281 @@
+#splash {
+    margin: 0 1em 1em 1em;
+    font-size: 70%;
+    text-align: center;
+}
+
+#slim_splash {
+    width: 50%;
+    margin: 0 auto;
+    text-align: left;
+}
+
+#splash h1 {
+    padding-top: 55px;
+    width: 300px;
+    display: block;
+    text-align: center;
+    margin: 1em auto 0.4em auto;
+
+    background: url(/static/images/hmlogo/splash.png) no-repeat;
+    text-indent: -9999px;
+
+    /* WIN IE5 hack */
+    height: 55px;
+    voice-family: "\"}\"";
+    voice-family: inherit;
+    height: 0;
+    overflow: hidden;
+}
+
+html>body#splash h1 {
+    height: 0;
+    overflow: hidden;
+}
+
+* html #splash h1 {
+    margin-top: 0.5em;
+}
+
+#splash h2.tagline {
+    background: none;
+    border: none;
+    font-size: 1.6em;
+    letter-spacing: 0;
+    padding: 0;
+    margin: 0;
+    color: #0065ce;
+}
+
+#splash #frontpage_wrapper {
+    margin: 0 auto;
+    clear: both;
+    width: 90%;
+    text-align: center;
+}
+
+#splash #minitour_wrapper {
+    margin: 0 auto;
+    text-align: center;
+    width: 90%;
+}
+
+#splash #minitour {
+    margin-top: 2em;
+    text-align: left;
+}
+
+#splash #current_user {
+    width: 50%;
+    float: left;
+    text-align: left;
+    margin-top: 0.5em;
+    padding-left: 5%;
+    background: url(/static/images/vertical.flourish.flipped.png) no-repeat 98% 1em;
+}
+
+#splash #new_user {
+    width: 43%;
+    float: right;
+    text-align: left;
+    margin-top: 0.5em;
+}
+
+#splash p {
+    width: 100%;
+    margin: 1em auto 0.5em auto;
+    font-size: 1.5em;
+    clear: both;
+}
+
+* html #splash p {
+    font-size: 1.3em;
+}
+
+#splash div.argument-email_address {
+    width: 100%;
+}
+
+#splash .inline input.argument-email_address {
+    font-size: 2.5em;
+    width: 98%;
+}
+
+#splash .inline label {
+    font-size: 1.3em;
+}
+
+#splash #slim_splash input {
+    font-size: 1.2em;
+}
+
+#splash #slim_splash label {
+    font-size: 1.1em;
+    width: 9em;
+}
+
+#splash #slim_splash .hints {
+    padding-left: 11.5em;
+}
+
+#splash .submit_button {
+    margin: 0;
+    padding: 0;
+    float: right;
+}
+
+* html #splash .submit_button {
+    float: none;
+    text-align: right;
+}
+
+* html #splash .submit_button input.button {
+    margin: 0;
+}
+
+#splash #social_links {
+    text-align: center;
+    font-size: 1.1em;
+    padding-top: 3em;
+}
+
+#splash #social_links a {
+    margin: 0 0.2em 0 0.2em;
+}
+
+#digg_this, #delicious_this {
+    text-decoration: none;
+    padding-left: 20px;
+}
+
+#digg_this:hover, #delicious_this:hover {
+    text-decoration: underline;
+}
+
+#digg_this {
+    background: url(/static/images/digg.gif) no-repeat center left;
+}
+
+#delicious_this {
+    background: url(/static/images/delicious.gif) no-repeat center left;
+}
+
+/* Login box */
+
+#splash #login-box h2 {
+    display: none;
+}
+
+#splash #login-box {
+    font-size: 1.3em;
+}
+
+#splash #login-box form {
+    padding-bottom: 0;
+}
+
+#splash #login-box label {
+    width: 10em;
+}
+
+#splash #login-box .button {
+    clear: both;
+    float: left;
+    font-size: 0.9em;
+    margin-left: 24em;
+}
+
+#splash #login-box input.text,
+#splash #login-box input.password {
+    font-size: 1.1em;
+}
+
+#splash #login-box span.error {
+    font-size: 0.8em;
+}
+
+
+#splash #login-box .argument-remember .hints { font-size: 0.8em; }
+
+#splash #login-box .argument-remember .hints,
+#splash #signup-box .argument-email_service_updates .hints,
+#splash #signup-box .argument-likes_ticky_boxes .hints
+{
+    float: left;
+    clear: none;
+    width: 50%;
+    padding: 0 0 0 0.3em;
+}
+
+* html #splash #login-box .argument-remember .hints,
+* html #splash #signup-box .argument-email_service_updates .hints,
+* html #splash #signup-box .argument-likes_ticky_boxes .hints
+{
+    width: auto;
+}
+
+#splash #login-box input.argument-remember,
+#splash #signup-box input.argument-email_service_updates,
+#splash #signup-box input.argument-likes_ticky_boxes
+{
+    float: left;
+}
+
+#splash #signup-box label { width: 12em; }
+#splash #slim_splash #signup-box .hints { padding-left: 15.5em; }
+
+#splash #signup {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+#splash #existinguser { font-weight: bold; }
+
+#splash #needhelp {
+    padding-bottom: 1em;
+    margin-top: 1em;
+    font-size: 1.2em;
+}
+
+#splash #lostpass {
+    font-size: 1.2em;
+}
+
+/* Feedback */
+
+#splash #feedback h3 {
+    font-size: 1.5em;
+}
+
+/* notices */
+
+#splash #frontpage #messages {
+    width: 27em;
+}
+#splash #frontpage #errors {
+    width: 90%;
+    max-width: 27em;
+}
+
+#splash .pro-pitch {
+    margin-top: 1.5em;
+    padding: 0.8em;
+    border: 1px solid #E48511;
+    background-color: #F8F1D3;
+}
+
+#splash .pro-pitch p {
+    margin: 0;
+    padding: 0.5em 0 0 0;
+}
+
+#splash .pro-pitch p.first {
+    padding-top: 0;
+}
+
+#splash .pro-pitch ul {
+    font-size: 1.5em;
+    padding-bottom: 0;
+    margin-bottom: 0.2em;
+}
+

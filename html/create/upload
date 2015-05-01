@@ -1,0 +1,15 @@
+<&| /_elements/wrapper, title => "Textfile uploaded" &>
+
+<& /_elements/tasklist, tokens => $tokens, ids => \@created, title => "Results" &>
+
+</&>
+<%init>
+
+my @created = ();
+my $tokens;
+
+if (Jifty->web->request->action('uploadtasks')) {
+  @created = @{ Jifty->web->response->result('uploadtasks')->content('ids') || [] };
+  $tokens = [split ' ', Jifty->web->response->result('uploadtasks')->content('tokens')];
+}
+</%init>

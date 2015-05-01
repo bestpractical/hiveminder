@@ -1,0 +1,32 @@
+#region-coupons-list .item {
+    clear: both;
+}
+
+#region-coupons-list .item hr {
+    visibility: hidden;
+    clear: both;
+}
+
+#region-coupons-list .item a.editlink {
+    padding-top: 1.4em;
+    float: left;
+}
+
+#region-coupons-list input.argument-code
+{
+    width: 8em;
+}
+
+#region-coupons-list input.argument-discount,
+#region-coupons-list input.argument-minimum,
+#region-coupons-list input.argument-use_limit,
+#region-coupons-list input.argument-use_count
+{
+    width: 5em;
+}
+
+.transaction-failed { color: red; }
+
+
+#imap-clients { width: 100%; }
+#imap-clients tr.top td { padding-top: 1.5em; }

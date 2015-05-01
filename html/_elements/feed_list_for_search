@@ -1,0 +1,52 @@
+<ul class="feed-list">
+  <li><a title="Print" class="print" href="/print/list/<% $searchpath %>"
+         onmousedown="this.onfocus=this.blur;"
+         onmouseup="this.onfocus=window.clientInformation?null:window.undefined"
+         onclick="return BTDT.Util.openWindow(this.href, 'print', 800, 600);">Print</a></li>
+  <li><a title="Export to plain text" class="plaintext" href="<% $text->as_url  %>"
+         onmousedown="this.onfocus=this.blur;"
+         onmouseup="this.onfocus=window.clientInformation?null:window.undefined">Text</a></li>
+  <li><a title="Atom feed" class="atom" href="<% $atom->as_url %>"
+         onmousedown="this.onfocus=this.blur;"
+         onmouseup="this.onfocus=window.clientInformation?null:window.undefined">Atom</a></li>
+  <li><a title="Export to iCal" class="ical"
+         onmousedown="this.onfocus=this.blur;"
+         onmouseup="this.onfocus=window.clientInformation?null:window.undefined"
+         href="<% $webcal_url %>">iCal</a></li>
+  <li><a title="Add to Google Calendar" class="gcal"
+         onmousedown="this.onfocus=this.blur;"
+         onmouseup="this.onfocus=window.clientInformation?null:window.undefined"
+         href="//www.google.com/calendar/render?cid=<% $cal_url |u %>">Add to Google Calendar</a></li>
+</ul>
+
+<%init>
+
+my $text = Jifty::LetMe->new;
+my $atom = Jifty::LetMe->new;
+my $ical = Jifty::LetMe->new;
+
+my $encoded_tokens = join(' ',@$tokens);
+
+for my $letme ($text, $atom, $ical) {
+    $letme->email(Jifty->web->current_user->user_object->email);
+    $letme->path('feed');
+    $letme->user(Jifty->web->current_user->user_object);
+    # XXX TODO, split_tokens_url isn't doing the right unescaping
+    $letme->args->{tokens} = $encoded_tokens;
+}
+
+$text->args->{format} = 'text';
+$atom->args->{format} = 'atom';
+$ical->args->{format} = 'ical';
+
+my $searchpath = BTDT::Model::TaskCollection->join_tokens_url(@{$tokens});
+
+my $cal_url = $ical->as_url;
+
+my $webcal_url = $cal_url;
+$webcal_url =~ s/^http/webcal/;
+
+</%init>
+<%args>
+$tokens => undef
+</%args>

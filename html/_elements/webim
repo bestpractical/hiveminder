@@ -1,0 +1,14 @@
+<%init>
+my $webim = Jifty->web->new_action( class => 'WebIM', moniker => 'webim');
+</%init>
+<div id="webim">
+<% Jifty->web->form->start(disable_autocomplete => 1) %>
+<% $webim->form_field('message')->render_widget %>
+<% Jifty->web->form->submit(
+    label => "Command",
+    onclick => { submit       => $webim,
+                 refresh_self => 1 },
+    )
+%>
+<% Jifty->web->form->end %>
+</div>

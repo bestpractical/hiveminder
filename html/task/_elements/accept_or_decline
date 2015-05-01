@@ -1,0 +1,25 @@
+<%args>
+$task_id
+$update_task
+</%args>
+<%init>
+# XXX TODO: make this a fragment
+my $task = BTDT::Model::Task->new();
+$task->load($task_id);
+
+return unless $task->is_unaccepted;
+</%init>
+<div class="note">
+<h2 class="inline">Accept or decline this task</h2>
+<p>If you're up for taking this on, click "accept". Otherwise, pick "decline". Either way, we'll tell <& /_elements/username, user => $task->requestor &>.</p>
+    <div class="button_line">
+      <span class="submit_button">
+
+<% Jifty->web->form->submit( label   => 'Decline', submit => { action => $update_task, arguments => { accepted => '0' } } ) %>
+</span>
+or
+      <span class="submit_button">
+<% Jifty->web->form->submit( label   => 'Accept', submit => { action => $update_task, arguments => { accepted => '1' } } ) %>
+</span>
+</div>
+</div>

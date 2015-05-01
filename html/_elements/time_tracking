@@ -1,0 +1,36 @@
+<%args>
+$task
+</%args>
+<%init>
+my $label = $task->time_summary;
+
+my @title;
+push @title, 'Time worked: ' . $task->time_worked if $task->time_worked;
+push @title, 'Time left: '   . $task->time_left   if $task->time_left;
+my $title = join ' / ', @title;
+</%init>
+
+% if ( length $label and $label =~ /\S/ ) {
+<span class="time_tracking" title="<% $title %>">
+
+% if (Jifty->web->current_user->pro_account ) {
+  <%
+    Jifty->web->link(
+        label   => $label,
+        onclick => [
+            {
+                element => '#stopwatch-'.Jifty->web->current_region->qualified_name,
+                replace_with => '/fragments/tasklist/stopwatch',
+                args => {
+                    task_id => $task->id,
+                    element => '#stopwatch-'.Jifty->web->current_region->qualified_name,
+                    parent  => Jifty->web->current_region->qualified_name
+                },
+            }
+        ]
+    )
+  %>
+% }
+</span>
+% }
+

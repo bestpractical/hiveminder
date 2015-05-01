@@ -1,0 +1,39 @@
+
+% for my $new (@tasks) {
+<div class="inline">
+% $new->form_field($_)->default_value($new->argument_value($_)) for qw/complete summary description tags/;
+<h2 class="inline"><% $new->form_field('complete') %>
+<% $new->form_field('summary') %></h2>
+<div class="subline">
+<% $new->form_field('priority') %>
+<% $new->form_field('owner_id') %> 
+<% $new->form_field('due') %> 
+<% $new->form_field('tags') %>
+</div>
+<% $new->form_field('description', rows => 3) %> 
+</div>
+% }
+
+<% Jifty->web->form->submit( label => "Create") %>
+
+<%init>
+my @tasks;
+my %results = Jifty->web->response->results;
+for my $moniker (keys %results) {
+    next unless $results{$moniker}->action_class eq "BTDT::Action::ParseTasksMagically";
+    push @tasks, @{$results{$moniker}->content("actions") ||[]};
+}
+
+unless (@tasks) {
+    # XXX TODO: This section can probably get factored out into some
+    # "Get me Jifty::Actions for all of the failed request actions"
+    # somewhere; where would that go?
+    @tasks = map {Jifty->web->new_action_from_request($_)}
+            grep {$_->class eq "BTDT::Action::CreateTask"
+                  and Jifty->web->response->result($_->moniker)
+                  and Jifty->web->response->result($_->moniker)->failure}
+            Jifty->web->request->actions;
+
+}
+return unless @tasks;
+</%init>

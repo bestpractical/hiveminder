@@ -1,0 +1,52 @@
+% if (defined $id) {
+<% Jifty->web->form->start %>
+    <dd>
+
+% if ($im->confirmed) {
+
+    <% $im->screenname %>
+    on
+    <% $im->protocol %>
+
+% } else {
+
+%    if ($protocol =~ /Twitter/i) {
+         <a target="_blank" href="http://twitter.com/home?status=d+<%$sn%>+<%$im->auth_token%>"><%$im->auth_token%></a>
+%    }
+%    else {
+         <% $im->auth_token %>
+%    }
+
+% }
+
+    <%
+    $delete->button(
+        label    => 'Delete',
+        class    => 'delete',
+        onclick  => [
+            {
+                confirm => sprintf('Really delete this %s?',
+                    $im->confirmed ? 'screenname' : 'password'),
+                submit => $delete
+            },
+            {
+                replace_with => '/__jifty/empty'
+            }
+        ]
+    )
+    %>
+    </dd>
+<% Jifty->web->form->end %>
+% }
+
+<%init>
+my $im = BTDT::Model::UserIM->new(current_user => Jifty->web->current_user);
+$im->load($id);
+my $delete = Jifty->web->new_action(class => 'DeleteUserIM', record => $im);
+my $sn = Jifty->config->app("IM")->{twitter_screenname};
+
+</%init>
+<%args>
+$id => undef,
+$protocol => '',
+</%args>

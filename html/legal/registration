@@ -1,0 +1,5 @@
+<&| /_elements/wrapper, title => 'Registration Agreement' &>
+
+<& /legal/registration.html &>
+
+</&>

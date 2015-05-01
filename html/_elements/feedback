@@ -1,0 +1,7 @@
+<div id="feedback_wrapper">
+<h3>Send us feedback!</h3>
+% if ( Jifty->web->current_user->pro_account ) {
+<p>For customer support, please visit the <% Jifty->web->link( url => '/support/', label => 'support page' ) %>.</p>
+% }
+<% Jifty->web->region( name => 'feedback', path => "/fragments/no_auth/feedback", defaults => { } ) %>
+</div>

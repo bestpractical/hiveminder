@@ -1,0 +1,50 @@
+<div class="tasklist_panel_wrapper">
+<div class="dropshadow_wrap1"><div class="dropshadow_wrap2"><div class="dropshadow_wrap3">
+<div class="tasklist_panel">
+<& /_elements/task_search_criteria, search => $search &>
+<div class="search_options">
+<div class="button_line">
+<% Jifty->web->form->submit(
+    label   => 'Search',
+    submit  => $search,
+    url     => '/list',
+    # XXX TODO ALEX HELP ME OBI-WAN. HOW THE HELL DO I DO THIS WITH THE API?
+    # XXX TODO SUPER FUCKING FRAGILE
+    parameters => { 'J:V-region-'.$region->qualified_name => '/__jifty/empty' }
+    )
+%>
+<%
+   Jifty->web->link(
+        label => "Cancel",
+        onclick => {
+            # XXX TODO: We should be able to say refresh_self => 1, but
+            # J::W::Form::Clickable doesn't DTRT with it right now
+            replace_with => '/__jifty/empty',
+            toggle       => 1,
+        },
+        class => "cancel",
+        as_button => 1,
+   )
+%>
+</div>
+</div>
+</div>
+</div></div></div>
+</div>
+<%init>
+my $tokens = $region->parent->argument('tokens');
+# Close the search box for the next request
+my $collection = BTDT::Model::TaskCollection->new();
+$collection->from_tokens($collection->split_tokens($tokens));
+
+my $search = Jifty->web->new_action(
+    moniker   => $region->parent->argument("moniker") || $region->qualified_name."-search",
+    class     => "TaskSearch",
+    sticky_on_success => 1,
+    arguments => {$collection->arguments},
+);
+
+</%init>
+<%args>
+$region => undef
+</%args>

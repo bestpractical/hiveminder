@@ -1,0 +1,54 @@
+<%init>
+Jifty->web->redirect('/todo')
+    if    Jifty->web->current_user->user_object->accepted_eula_version
+       >= BTDT->current_eula_version;
+
+my $never_accepted = Jifty->web->current_user->user_object->accepted_eula_version == 0;
+
+my $accept = Jifty->web->new_action(
+    moniker   => "accept_eula",
+    class     => "AcceptEULA",
+);
+
+</%init>
+<&| /_elements/wrapper, title => "Proof that the US is too fond of lawsuits" &>
+
+  <p>
+% if ( $never_accepted ) {
+    Basic Hiveminder accounts will <i>always</i> be free of charge. However, we do need you
+    to read through our registration agreement before you can use 
+    the service.  It <i>is</i> important to read these things, to make sure
+    that our lawyers aren't going to make you give up your first-born child.
+% } else {
+    We've updated our privacy policy and terms of service. Unfortunately,
+    the lawyers say that we need to bother you every time we do this. Have a 
+    look at the revised policy below and make sure we haven't turned evil.
+% }
+  </p>
+  
+  <div id="privacy_policy">
+  <& /legal/registration.html &>
+  </div>
+  
+  <p>
+    If you aren't ready to accept the terms of service today, Hiveminder will log you out.
+   When you're ready, just log back in.
+  </p>
+  
+  <% Jifty->web->form->start %>
+    <% $accept->hidden( eula_version => BTDT->current_eula_version ) %>
+
+    <div class="button_line">
+                        
+    <% $accept->return( label     => _("Accept these terms and make our lawyers happy"),
+                        as_button => 1,
+                        to        => "/todo" ) %>
+    
+    <% Jifty->web->link( url       => "/logout",
+                         label     => _("Cancel"),
+                         class     => "cancel",
+                         as_button => 1 ) %>
+    </div>
+  <% Jifty->web->form->end %>
+</&>
+

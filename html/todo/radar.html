@@ -1,0 +1,26 @@
+<&| /_elements/wrapper, title => "What's happening?", tag_collection => $done &>
+
+<h2>Recently done by you</h2>
+<& /_elements/tasklist, collection => $done &>
+
+<h2>Recently done for you</h2>
+<& /_elements/tasklist, collection => $done_for_you &>
+
+</&>
+
+
+<%init>
+
+# TODO:
+# * simpler view that doesn't have the heading and create new task thingy.
+# * task is done 32min ago
+# * limit the list to 5 items and link the <h2> to a search of the tokens
+# * allow yesterday / last 3 days / last week
+# * group view?
+
+my $done = BTDT::Model::TaskCollection->new();
+$done->from_tokens(qw(complete owner me completed_at after yesterday));
+
+my $done_for_you = BTDT::Model::TaskCollection->new();
+$done_for_you->from_tokens(qw(complete requestor me not owner me completed_at after yesterday));
+</%init>

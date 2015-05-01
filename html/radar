@@ -1,0 +1,64 @@
+<%args>
+$dates => undef
+$starting => undef
+$ending => undef
+$today => undef
+</%args>
+<&|/_elements/wrapper, title => _('What happened on %1 %2, %3', $starting->month_name, $starting->day, $starting->year) &>
+
+% my $earlier = $starting->clone->subtract(days => 1);
+<% Jifty->web->link( label => 'Earlier', class => "prev", url => '/on/'.$earlier->ymd)%>
+% if ( $starting < $today ) {
+% my $later = $starting->clone->add(days => 1);
+<% Jifty->web->link( label => 'Later', class => "next", url => '/on/'.$later->ymd)%>
+% }
+
+% foreach my $date (sort keys %$dates) {
+<ul class="tasklist">
+<%perl>
+# sort by first transaction time, ascending
+ my @tasks = map {$_->[0]}
+             sort { $a->[1] <=> $b->[1] }
+             map {[$_, $dates->{$date}->{'txns'}->{$_->id}->[ 0]->modified_at,
+             ]}
+             values %{$dates->{$date}->{'tasks'}};
+
+ foreach my $t (@tasks) { 
+
+    Jifty->web->region(
+        name     => 'task-' . $t->id. "-date-".$date,
+        path     => '/fragments/tasklist/view', 
+        defaults => { 
+        id                  => $t->id,
+        read_only           => 0,
+        show_context_menu => 1,
+        tokens              => ''
+        },
+    );
+</%perl>
+
+
+<blockquote>
+% my @txns = @{ $dates->{$date}->{'txns'}->{$t->id}};
+<dl>
+% foreach my $txn (@txns) { 
+% next unless $txn->summary;
+<div class="transaction">
+<dt><% sprintf('%02d:%02d', $txn->modified_at->hour, $txn->modified_at->minute)%> <% $txn->summary %></dt>
+% if ($txn->type eq "update" and $txn->visible_changes->count > 1) {
+%     my $changes = $txn->visible_changes;
+%     while (my $c = $changes->next) {
+  <dd><%$c->as_string%></dd>
+%     }
+% }
+
+</div>
+% }
+</dl>
+</blockquote>
+
+
+% } 
+</ul>
+% }
+</&>

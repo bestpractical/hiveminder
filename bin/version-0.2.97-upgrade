@@ -1,0 +1,299 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+use BTDT::CurrentUser;
+
+my $version = Jifty->handle->_fetch_dbv;
+die "This should only be needed for version 0.2.97"
+    unless $version eq "0.2.97";
+
+my $tasks = BTDT::Model::TaskCollection->new( current_user => BTDT::CurrentUser->superuser );
+my $bp = BTDT::Model::Group->new( current_user => BTDT::CurrentUser->superuser );
+$bp->load_by_cols( name => "Best Practical" );
+$tasks->limit(
+    column => $_,
+    operator => 'IS NOT',
+    value => 'NULL',
+    subclause => 'affected',
+    entry_aggregator => 'OR'
+) for qw/time_left time_worked time_estimate/;
+$tasks->limit( column => 'group_id', value => $bp->id, subclause => 'affected', entry_aggregator => 'OR');
+$tasks->results_are_readable(1);
+
+Jifty->handle->begin_transaction;
+
+warn "Have ". $tasks->count. " tasks matching\n";
+my $i = 0;
+while (my $task = $tasks->next) {
+    $i++;
+    warn "Working on task # @{[$task->record_locator]}, id @{[$task->id]}, $i/@{[$tasks->count]}\n";
+    my $txns = $task->transactions;
+    $txns->order_by(
+        { column => 'modified_at', order => 'ASC' },
+        { column => 'id',          order => 'ASC' },
+    );
+    $txns->prefetch_common( task => 0, history => 1, visible_only => 0 );
+    my %backfill;
+    $backfill{$_} = [] for qw/owner_id group_id project milestone/;
+    my %time_backfill;
+    $time_backfill{$_} = {positive => {}, negative => {}} for qw/time_left time_worked/;
+    my %first;
+    my %current = (complete => 0, will_complete => 1);
+    my $visible = 1;
+    my $updates = 1;
+    while (my $txn = $txns->next) {
+        if ($updates and ($txn->type eq "milestone" or $txn->type eq "timetrack"
+          or grep {defined $txn->$_ and (not ref $txn->$_ or $txn->$_->id)}
+              qw/owner_id group_id project milestone time_left time_worked time_estimate/)) {
+            warn "Txn @{[$txn->id]} stops updates";
+            $updates = 0;
+        }
+
+        for my $field (sort grep {not /^time_/ and not /^(will_)?complete$/} keys %current) {
+            if ($updates) {
+                my $method = "set_" . $field;
+                $txn->$method($current{$field}) if $current{$field};
+            } elsif ($txn->type eq "update") {
+                my $old = $field;$field =~ s/_id$//;
+                warn "Replayed txn @{[$txn->id]} disagrees in $field (expect $current{$old}, got @{[$txn->$field->id]})"
+                    if $txn->$field->id ne $current{$old};
+            }
+        }
+
+        my $txnuser = BTDT::CurrentUser->new( id => $txn->created_by->id );
+        if (not defined $txnuser->id or $txnuser->id == BTDT::CurrentUser->superuser->id) {
+            # Try a fallback if the superuser was responsible
+            $txnuser = BTDT::CurrentUser->new( id => $task->owner->id );
+        }
+        my $changes = $txn->changes;
+        my %changed;
+        while (my $c = $changes->next) {
+            if ($c->field =~ /^(owner_id|group_id|project|milestone)$/) {
+                next if defined $c->new_value and $c->new_value =~ /\D/;
+                if (defined $c->old_value and exists $backfill{$c->field}) {
+                    # Backfill the field on all of the previous entries
+                    my $method = "set_" . $c->field;
+                    push @{$backfill{$c->field}}, $txn if $updates;
+                    if ($c->old_value) {
+                        $_->$method($c->old_value) for @{$backfill{$c->field}};
+                    }
+                }
+                delete $backfill{$c->field};
+                $current{$c->field} = $c->new_value;
+                $changed{$c->field} = $c->old_value;
+            } elsif ($c->field =~ /^time_(worked|left|estimate)$/) {
+                my $old = BTDT::Model::Task->duration_in_seconds($c->old_value) || 0;
+                my $new = BTDT::Model::Task->duration_in_seconds($c->new_value) || 0;
+                $current{$c->field} = $new;
+                unless (exists $first{$c->field}) {
+                    # Backfill time fields
+                    $first{$c->field} = $old;
+                    if ($old) {
+                        for my $field (keys %{$time_backfill{$c->field}{positive}}) {
+                            my $method = "set_$field";
+                            $_->$method($old) for @{$time_backfill{$c->field}{positive}{$field}};
+                        }
+                        for my $field (keys %{$time_backfill{$c->field}{negative}}) {
+                            my $method = "set_$field";
+                            $_->$method(-$old) for @{$time_backfill{$c->field}{negative}{$field}};
+                        }
+                    }
+                    delete $time_backfill{$c->field};
+                }
+                next if not $visible and $c->field eq "time_left";
+                if ($updates) {
+                    my $method = "set_" . $c->field;
+                    $txn->$method($new - $old) if $new != $old;
+                } else {
+                    my $field = $c->field;
+                    warn "Replayed txn @{[$txn->id]} disagrees in $field (expect @{[$new-$old]}, got @{[$txn->$field]})"
+                        if $txn->$field != $new-$old;
+                }
+            } elsif ($c->field =~ /^(complete|will_complete)$/) {
+                $current{$c->field} = $c->new_value ? 1 : 0;
+            }
+        }
+
+        if ($visible xor (not $current{complete} and $current{will_complete}) ) {
+            if ($current{time_left} and $updates) {
+                if ($visible) { # Going invisible
+                    $txn->set_time_left( ($txn->time_left || 0) - ($current{time_left}) );
+                } else { #re-appearing
+                    $txn->set_time_left( ($txn->time_left || 0) + ($current{time_left}) );
+                }
+            }
+            $visible = (not $current{complete} and $current{will_complete});
+        }
+
+        next unless $updates;
+
+        my (@times, %old, %new);
+        $new{$_} = $current{$_} for grep {not /^time_/ and not /^(will_)?complete$/} keys %current;
+        $new{task_id} = $txn->task->id;
+        %old = %new;
+        $old{$_} = $changed{$_} for keys %changed;
+        if ($txn->type eq "create") {
+            push @{$time_backfill{time_left}{positive}{time_left}}, $txn;
+            push @{$time_backfill{time_worked}{positive}{time_worked}}, $txn;
+            push @{$time_backfill{time_left}{positive}{time_estimate}}, $txn;
+        }
+
+        if (exists $changed{milestone}) {
+            if ($old{milestone}) {
+                # We're leaving a milestone, so find the estimite from
+                # when we entered, and subtract it off.
+                my $search = BTDT::Model::TaskTransactionCollection->new( current_user => $txnuser );
+                $search->limit( column => "milestone", value => $old{milestone} );
+                $search->limit( column => "task_id",   value => $txn->task_id );
+                $search->limit( column => "type",      value => "milestone" );
+                $search->order_by({column => "modified_at"});
+                my $prev = $search->last;
+                if ($prev and $prev->id) {
+                    $prev->create(
+                        %old,
+                        time_left     => -($current{time_left} || 0),
+                        time_estimate => -($prev->time_estimate || 0),
+                        type          => "milestone",
+                        created_by    => $txn->created_by->id,
+                    );
+                    push @times, $prev;
+# ???                    push @{$time_backfill{time_left}{negative}{time_left}}, $prev unless exists $current{time_left};
+                } else {
+                    # Create the back transaction
+                    my $create = BTDT::Model::TaskTransaction->new( current_user => BTDT::CurrentUser->superuser );
+                    $create->load_by_cols( type => "create", task_id => $task->id );
+                    my $first = BTDT::Model::TaskTransaction->new( current_user => BTDT::CurrentUser->new( id => $create->created_by->id ));
+                    $first->create(
+                        %old,
+                        created_by => $create->created_by->id,
+                        type => "milestone",
+                        time_left => $first{time_left},
+                        time_worked => $first{time_worked},
+                        time_estimate => $first{time_left},
+                    );
+                    $first->__set( column => "modified_at", value => $create->modified_at );
+                    push @{$time_backfill{time_left}{positive}{time_left}}, $first unless exists $first{time_left};
+                    push @{$time_backfill{time_worked}{positive}{time_worked}}, $first unless exists $first{time_worked};
+                    push @{$time_backfill{time_left}{positive}{time_estimate}}, $first unless exists $first{time_left};
+                    push @{$backfill{$_}}, $first for sort keys %backfill;
+
+                    # Add the removal now
+                    my $prev = BTDT::Model::TaskTransaction->new( current_user => $txnuser );
+                    $prev->create(
+                        %old,
+                        time_left     => -(($first{time_left}||0) - (($current{time_worked}||0) - ($first{time_worked}||0))),
+                        time_estimate => -($first{time_left}||0),
+                        type          => "milestone",
+                        created_by    => $txn->created_by->id,
+                    );
+                    push @{$time_backfill{time_left}{negative}{time_left}}, $prev unless exists $first{time_left};
+                    push @{$time_backfill{time_left}{negative}{time_estimate}}, $prev unless exists $first{time_left};
+                    push @times, $prev;
+                }
+            }
+
+            if ($new{milestone}) {
+                # Create the entry into the milestone.  Note that if this
+                # is not the _first_ time moving it into the milestone, we
+                # revert to the first estimate, and don't take the current
+                # time left as the estimate!
+                my $search = BTDT::Model::TaskTransactionCollection->new( current_user => $txnuser );
+                $search->limit( column => "milestone", value => $new{milestone} );
+                $search->limit( column => "task_id",   value => $txn->task_id );
+                $search->limit( column => "type",      value => "milestone" );
+                $search->order_by({column => "modified_at"});
+                my $prev = $search->first;
+                my $new = BTDT::Model::TaskTransaction->new( current_user => $txnuser );
+                if ($prev and $prev->id) {
+                    # We've been in this milestone before
+                    $new->create(
+                        %new,
+                        time_left     => $current{time_left},
+                        time_estimate => $prev->time_estimate,
+                        type          => "milestone",
+                        created_by    => $txn->created_by->id,
+                    );
+                    push @{$time_backfill{time_left}{positive}{time_left}}, $new unless exists $first{time_left};
+                    push @{$time_backfill{time_left}{positive}{time_estimate}}, $new unless exists $first{time_left};
+                } else {
+                    # This is the first move into the milestone
+                    $new->create(
+                        %new,
+                        time_left     => $current{time_left},
+                        time_estimate => $current{time_left},
+                        type          => "milestone",
+                        created_by    => $txn->created_by->id,
+                    );
+                    push @{$time_backfill{time_left}{positive}{time_left}}, $new unless exists $first{time_left};
+                    push @{$time_backfill{time_left}{positive}{time_estimate}}, $new unless exists $first{time_left};
+                }
+                push @times, $new;
+            }
+        }
+        if (( grep { $_ ne "milestone" } keys %changed )
+            and (  ( $current{time_left} || 0 ) != 0
+                or ( $current{time_estimate} || 0 ) != 0
+                or keys %backfill)
+            )
+        {
+            my $prev = BTDT::Model::TaskTransaction->new(
+                current_user => $txnuser );
+            $prev->create(
+                %old,
+                time_left     => -( $current{time_left}     || 0 ),
+                time_estimate => -( $current{time_estimate} || 0 ),
+                type          => "timetrack",
+                created_by    => $txn->created_by->id,
+            );
+            push @times, $prev;
+            push @{$time_backfill{time_left}{negative}{time_left}}, $prev unless exists $first{time_left};
+            push @{$time_backfill{time_estimate}{negative}{time_estimate}}, $prev unless exists $first{time_estimate};
+            my $new = BTDT::Model::TaskTransaction->new(
+                current_user => $txnuser );
+            $new->create(
+                %new,
+                time_left     => $current{time_left},
+                time_estimate => $current{time_estimate},
+                type          => "timetrack",
+                created_by    => $txn->created_by->id,
+            );
+            push @times, $new;
+            push @{$time_backfill{time_left}{positive}{time_left}}, $new unless exists $first{time_left};
+            push @{$time_backfill{time_estimate}{positive}{time_estimate}}, $new unless exists $first{time_estimate};
+        }
+
+        # Fix the create times
+        $_->__set(column => "modified_at", value => $txn->modified_at) for @times;
+
+        # Add to the set of txns we might need to backfill
+        for my $field (sort keys %backfill) {
+            push @{$backfill{$field}}, $txn, @times;
+        }
+    }
+    # Finally, take the current values as "old_values", as we might
+    # still need to backfill something that never changed
+    for my $field (keys %backfill) {
+        next unless defined $task->$field and (not ref $task->$field or $task->$field->id);
+        my $method = "set_" . $field;
+        $_->$method($task->$field) for @{$backfill{$field}};
+    }
+
+    for my $field (keys %time_backfill) {
+        next if exists $first{$field};
+        my $get = $field . "_seconds";
+        next unless defined $task->$get;
+        for my $set (keys %{$time_backfill{$field}{positive}}) {
+            my $method = "set_$set";
+            $_->$method($task->$get) for @{$time_backfill{$field}{positive}{$set}};
+        }
+        for my $set (keys %{$time_backfill{$field}{negative}}) {
+            my $method = "set_$set";
+            $_->$method(-$task->$get) for @{$time_backfill{$field}{negative}{$set}};
+        }
+        
+    }
+}
+Jifty->handle->commit;

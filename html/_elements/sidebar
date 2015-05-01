@@ -1,0 +1,12 @@
+% if (Jifty->web->current_user->id) {
+<p id="greeting">
+  Hiya,
+  <span class="user"><%Jifty->web->current_user->user_object->name%></span>
+  (<% Jifty->web->link( url => '/logout', label => 'Logout' ) %>).
+</p>
+% } else {
+<p id="greeting">
+You're not currently signed in.  Perhaps you'd like to
+<% Jifty->web->link( url => '/', label => 'sign in' ) %>.
+</p>
+% }

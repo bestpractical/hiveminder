@@ -1,0 +1,37 @@
+New prefs tab to manage addresses (add/delete/change primary)
+    - must confirm control of email addresses
+    - change primary only to verified addresses
+
+PROBLEM: current autocomplete implementation (and privacy concerns)
+
+TO CONSIDER: search, now there is a difference between person and email
+    - how do we deal?  (if we even do)
+
+TO CONSIDER: Privacy issues.
+    - Do we canonicalize email addresses on task create/update?  If so,
+      this will reveal addresses to people who might not have had primary address
+* All roads lead to trantor - one master account per person
+
+* Must support joining two existing accounts
+
+    * move all tasks
+    * move all memberships
+
+
+* must have a trivial workflow for "you sent this to the wrong hiveminder account"
+
+* must support login with any identity
+
+
+
+* If I have two accounts:
+
+    when I bond them:
+
+    * everything becomes visible in the "primary" account
+
+    * group memberships move over
+    * published addresses move over
+    * invitations move over
+    * task ownership moves over
+    * task requestorness moves over

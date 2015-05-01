@@ -1,0 +1,271 @@
+<%args>
+$tasks => undef
+$done => 0
+$show_edit => 0
+$start => 0
+$tokens => undef
+</%args>
+<div id="task-review">
+<table border="0" width="100%">
+<tr>
+<td valign="top" style="width: 14em;">
+<h2 class="inline"><%$done%> of <%$done +(scalar @tasks)%>
+%#<%int(100*($done/ ($done + $#tasks)))%>% done
+</h2>
+<script>
+Jifty.KeyBindings.reset();
+jQuery("#keybindings").html("").removeClass("keybindings-written");
+</script>
+<div class="buttons">
+% if ($show_edit) {
+<% $update_task->button( label       => "Save and goto next",
+    key_binding => 'n',
+    onclick     => [
+        { submit => { action => $update_task } },
+        $GOTO_NEXT,
+    ]) %> 
+% } else {
+<% $update_task->button( label       => "Next",
+    key_binding => 'n',
+    onclick     => [
+        { submit => { action => $update_task } },
+        $GOTO_NEXT,
+    ]) %> 
+
+% }
+% if ($task->accepted) {
+<p>Mark this task:</p>
+% } else { 
+<p> Accept and mark:</p>
+% }
+<% 
+$update_task->button(
+    label       => "Done",
+    key_binding => 'D',
+    onclick     => [
+        { submit => {
+            action => $update_task,
+            arguments => { complete => "true", %DEFAULT_ARGS },
+        } },
+        $GOTO_NEXT,
+    ])
+%> 
+
+% if ($task->accepted) {
+<p> Do this:</p>
+% } else { 
+<p> Accept and do this:</p>
+% }
+<% 
+$update_task->button(
+    label       => "Today",
+    key_binding => 'T',
+    onclick     => [
+        { submit => {
+            action => $update_task,
+            arguments => { starts => BTDT::DateTime->today->ymd, %DEFAULT_ARGS },
+        } },
+        $GOTO_NEXT,
+    ])
+    %> 
+
+<span class="procrastinate">
+% if ($task->accepted) {
+<p> Hide until:</p>
+% } else { 
+<p> Accept and hide until:</p>
+% }
+
+% for my $date (@review_dates) {
+    <% $update_task->button(
+        %$date,
+        onclick => [
+            {
+                submit => {
+                    action    => $update_task,
+                    arguments => {
+                        starts => $date->{date}->ymd,
+                        %DEFAULT_ARGS,
+                    },
+                },
+            },
+            $GOTO_NEXT,
+        ],
+    ) %>
+% }
+</span>
+% if ( $task->owner_id == Jifty->web->current_user->id ) {
+% if ($task->accepted) {
+<span class="delete">
+<% $update_task->button( label       => "Never do this",
+    key_binding => 'X',
+    onclick     => [
+        { submit => {
+            action    => $update_task, 
+            arguments => { will_complete => '0' },
+        } },
+        $GOTO_NEXT,
+    ]) %> 
+</span>
+% }
+% } elsif ( $task->owner_id == BTDT::CurrentUser->nobody->id ) {
+<% $update_task->button( label       => "Take",
+    key_binding => 'A',
+    onclick     => [
+        { submit => {
+            action    => $update_task, 
+            arguments => { owner_id => 'me' },
+        } },
+        $GOTO_NEXT,
+    ]) %> 
+% }
+
+</div>
+</td>
+<td valign="top">
+<dl class="tasklist">
+<& /fragments/tasklist/view, id => $task->id, show_context_menu => 0, brief => 1, show_checkbox => 0, tokens => $tokens &>
+</dl>
+% if (!$task->accepted && $task->owner->id == Jifty->web->current_user->id) { 
+<div class="note">
+<h2 class="inline">Accept or decline this task</h2>
+<p>If you're up for taking this on, click "accept". Otherwise, pick "decline". Either way, we'll tell <& /_elements/username, user => $task->requestor &>.</p>
+<div class="button_line"><span class="delete">
+<% 
+$update_task->button(
+    label       => 'Decline',
+    key_binding => 'X',
+    onclick => [
+        { submit => {
+            action      => $update_task,
+            arguments   => { accepted => '0' },
+        } },
+        $GOTO_NEXT,
+    ])
+%>
+</span>
+or
+<span class="submit_button">
+<% 
+$update_task->button(
+    label       => 'Accept',
+    key_binding => 'A',
+    onclick => [
+        { submit => {
+            action      => $update_task,
+            arguments   => { accepted => '1' },
+        } },
+        $GOTO_NEXT,
+    ])
+%>
+</span>
+</div>
+</div>
+% }
+
+% if ($show_edit) {
+    <%Jifty->web->form->submit(
+        label => 'Hide details for task ' .$task->record_locator,
+        as_link => 1,
+        onclick => { refresh_self => 1,
+                     arguments => { show_edit => 0}
+                    }
+    
+    
+    )%>
+<div class="yui-g">
+  <div class="yui-u">
+    <h2>Notes about this task</h2>
+    <% $update_task->form_field('description')->render_widget %>
+% if ( Jifty->web->current_user->has_feature('TimeTracking') ) {
+    <h2>Time tracking</h2>
+    <% $update_task->form_field('add_time_worked') %>
+    <% $update_task->form_field('time_left') %>
+% }
+  </div>
+  <div class="yui-u first">
+    <h2>Details</h2>
+    <% $update_task->form_field('summary', hints => '') %>
+    <% $update_task->form_field('priority') %>
+% if ( not $task->accepted ) {
+    <div class="form_field">
+      <span class="label">Status</span>
+      <span class="text"><% ( not defined $task->accepted or not length $task->accepted )
+                                ? 'Unaccepted' : 'Declined' %></span>
+    </div>
+% }
+    <% $update_task->form_field('tags') %>
+    <% $update_task->form_field('requestor_id', render_mode => 'read') %>
+    <% $update_task->form_field('owner_id') %>
+    <% $update_task->form_field('group_id') %>
+
+    <% $update_task->form_field('starts') %>
+    <% $update_task->form_field('due') %>
+  </div>
+</div>
+% } else {
+    <& /task/_elements/add_comment, update_task => $update_task, task => $task &>
+
+
+    <%Jifty->web->form->submit(
+        label => 'Edit details for task ' .$task->record_locator,
+        as_link => 1,
+        onclick => { refresh_self => 1,
+                     arguments => { show_edit => 1}
+                    }
+    
+    
+    )%>
+    <% Jifty->web->region( name => "history-$id", path => "/fragments/task/history", lazy => 1, force_arguments => {id => $task->id, show => 10}) %>
+% }
+    <span class="record_locator"><% Jifty->web->link( url => '/task/'.$task->record_locator, label=> 'Open task.hm/'.
+    $task->record_locator." in another window...", target => '_blank' ) %></span>
+</td>
+</tr>
+</table>
+
+<script>
+Jifty.KeyBindings.writeLegend(document.getElementById('keybindings'));
+</script>
+
+<%init>
+if (!$tasks || $tasks eq 'done') {
+    $m->comp('/review/_elements/done', start => $start);
+    return;
+}
+
+my @tasks = split /,/, $tasks;
+my $id = shift @tasks;
+$done++;
+
+# load up the task we want to work with
+my $task = BTDT::Model::Task->new();
+
+$task->load_by_cols( id => $id );
+
+# This has to be not sticky on failure, or otherwise Jifty will get
+# confused if you click the trash button and use the old arguments for
+# the update action
+my $update_task = Jifty->web->new_action(
+    class             => "UpdateTask",
+    moniker           => 'taskreview',
+    record            => $task,
+    sticky_on_failure => 0
+);
+
+require BTDT::View::Review;
+my @review_dates = BTDT::View::Review->review_dates;
+
+my %DEFAULT_ARGS = ();
+
+if (!$task->accepted && $task->owner->id == Jifty->web->current_user->id) { 
+    %DEFAULT_ARGS = ( accepted => 1);
+}
+
+
+my $GOTO_NEXT = 
+
+        { refresh_self => 1, 
+          arguments => { tasks => (join (',',@tasks)||'done'), done => $done, start => $start}
+        };
+</%init>

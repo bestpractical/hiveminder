@@ -1,0 +1,297 @@
+<&| /help/_elements/wrapper, title => 'API' &>
+
+<p>
+    Hiveminder has a simple, yet powerful API. Like the rest of our
+    application, we try to give you the building blocks to use Hiveminder
+    however suits you best.
+</p>
+
+<p>
+    You can see the very terse description of the API at
+    <a href="/=/help">http://hiveminder.com/=/help</a>. This document is more
+    of a walkthrough to how it all works, and how you can use it.
+</p>
+
+<p>
+    We also have a
+    <a href="http://groups.google.com/group/hiveminder-api">mailing list</a>
+    for discussing Hiveminder's API and what people are doing with it. Join us!
+</p>
+
+<p>
+    If you speak Perl, we have a ready-made <a href="http://search.cpan.org/dist/Net-Hiveminder/lib/Net/Hiveminder.pm">Net::Hiveminder</a> to ease working with
+    our API.
+</p>
+
+<p>
+    Our API assumes that you're logged in (or using <a href="/oauth">OAuth</a>)
+    Logged in users have a cookie, <tt>JIFTY_SID_HIVEMINDER</tt>. You'll need
+    to send this cookie with every request, so we know who you are.
+</p>
+
+<p>
+    To play around, we'll use the <tt>curl</tt> command line utility. It makes
+    this kind of interaction easy. You'll also need your
+    <tt>JIFTY_SID_HIVEMINDER</tt> cookie. In further commands, we'll be
+    calling it <tt><i>$COOKIE</i></tt>.
+</p>
+
+<p>
+    You can quickly get a cookie by running the following command. Be sure to
+    put in your email address and password.
+</p>
+
+<p>
+    <tt>curl -is -F 'J:A-login=BTDT::Action::Login' -F 'J:A:F-address-login=EMAILADDRESS' -F 'J:A:F-password-login=PASSWORD' http://hiveminder.com/splash | grep -o 'JIFTY_SID_HIVEMINDER=[0-9a-f]\+'</tt>
+</p>
+
+<h2>Creating a Task</h2>
+
+<h3>The Request</h3>
+
+<pre>curl -b JIFTY_SID_HIVEMINDER=<i>$COOKIE</i> -F summary="hello from curl" http://hiveminder.com/=/model/Task.yml</pre>
+
+<p>There are a few pieces to this. Here's what each one means:</p>
+
+<dl>
+    <dt><tt>curl</tt></dt>
+    <dd>The name of the program</dd>
+
+    <dt><tt>-b JIFTY_SID_HIVEMINDER=<i>$COOKIE</i></tt></dt>
+    <dd>How you tell <tt>curl</tt> what your cookie is, for authentication</dd>
+
+    <dt><tt>-F summary="hello from curl"</tt></dt>
+    <dd>How you tell <tt>curl</tt> the arguments to this task creation</dd>
+
+    <dt><tt>http://hiveminder.com/=/model/Task.yml</tt></dt>
+    <dd>
+        The URL of the request. The <tt>.yml</tt> indicates we want our result
+        in YAML, we could also pick <tt>.xml</tt>, <tt>.json</tt>, and even
+        <tt>.pl</tt>.
+    </dd>
+</dl>
+
+<h3>The Response</h3>
+
+<p>
+    If all goes well, you'll get the following response (in YAML just as we
+    requested):
+</p>
+
+<pre>
+---
+action_class: BTDT::Action::CreateTask
+content:
+    id: 271901
+    record_locator: ACJX
+error: ~
+failure: 0
+field_errors: {}
+field_warnings: {}
+message: Your task has been created!
+success: 1
+</pre>
+
+<p>Let's examine some of these fields:</p>
+
+<dl>
+    <dt><tt>action_class: BTDT::Action::CreateTask</tt></dt>
+    <dd>The action that the server ran. You can ignore this one.</dd>
+
+    <dt><tt>id: 271901</tt></dt>
+    <dd>
+        The numeric ID of the created task.
+    </dd>
+
+    <dt><tt>record_locator: ACJX</tt></dt>
+    <dd>
+        The human-friendly version of the task ID. This is what we display
+        as the task ID in the web interface and elsewhere. This is
+        because #ACJX is a lot easier to remember. We use the
+        <a href="http://search.cpan.org/dist/Number-RecordLocator/"
+        >Number::RecordLocator Perl module</a> to convert between the
+        actual numeric ID and the friendlier record locator.
+    </dd>
+
+    <dt><tt>error: ~</tt></dt>
+    <dd>
+        In YAML, a tilde represents no value. So there were no errors.
+    </dd>
+
+    <dt><tt>field_errors: {}</tt> and <tt>field_warnings: {}</tt></dt>
+    <dd>
+        These are (empty) mappings of column name to validation and
+        canonicalization notices. For example, if you give a due date of
+        "tomorrow" then field_warnings will be <tt>due: <%
+            BTDT::DateTime->now->add(days => 1)->ymd %></tt> to tell you that
+        it canonicalized the value you gave it. You can ignore these.
+    </dd>
+</dl>
+
+<p>
+    In addition to getting a response, we also get some special values in the
+    HTTP response header. Namely, Hiveminder gives response code 302 to
+    indicate redirection. We also get <tt>Location:
+    http://hiveminder.com/=/model/BTDT%3A%3AModel%3A%3ATask/id/271901</tt>
+    (the redirection's target URL) to tell you how to read the newly created
+    object. So if you're using a library in your favorite programming language,
+    you may instead see the task itself, instead of the create action's results.
+</p>
+
+<h2>Generic CRUD</h2>
+
+<p>
+    Hiveminder's API lets you <b>c</b>reate, <b>r</b>ead, <b>u</b>pdate, and
+    <b>d</b>elete things (as long as you have permission to do it). It's not
+    limited to just tasks either; you can create groups, delete IM
+    accounts, and so on. Using our API, you can do everything that our
+    other interfaces do, and more.
+</p>
+
+<p>
+    We make use of different HTTP request methods. You're probably familiar with
+    <tt>GET</tt> and <tt>POST</tt>. We use <tt>GET</tt> for reading objects and
+    <tt>POST</tt> for creating them. We also use <tt>PUT</tt> for update and
+    <tt>DELETE</tt> for delete. Here are examples of using curl for each of
+    these.
+</p>
+
+<p>Create a new task: <tt>curl -F summary=hello -b JIFTY_SID_HIVEMINDER=<i>$COOKIE</i> http://hiveminder.com/=/model/Task.yml</tt></p>
+
+<p>Read task 271901: <tt>curl -b JIFTY_SID_HIVEMINDER=<i>$COOKIE</i> http://hiveminder.com/=/model/Task/id/271901.yml</tt></p>
+
+<p>Update task 271901's due date: <tt>curl -X PUT -F due=tomorrow -b JIFTY_SID_HIVEMINDER=<i>$COOKIE</i> http://hiveminder.com/=/model/Task/id/271901.yml</tt></p>
+
+<p>Delete task 271901: <tt>curl -X DELETE -b JIFTY_SID_HIVEMINDER=<i>$COOKIE</i> http://hiveminder.com/=/model/Task/id/271901.yml</tt></p>
+
+<h2>Actions</h2>
+
+<p>
+    In addition to CRUD, we also expose our actions. Actions are like
+    functions: each takes arguments, does its thing, then returns values. We
+    have a wide range of actions, from CRUD, to braindump, even upgrading to
+    Pro.
+</p>
+
+<p>
+    Let's have a look at our braindump action, ParseTasksMagically. It takes
+    two arguments. The first, "text", you're already familiar with: it's the
+    text you submit that eventually becomes tasks.
+</p>
+
+<p>
+    The second argument is "tokens", which we don't expose in the web
+    interface. Every tasklist has a list of tokens associated with it, things
+    like "due before today", "owner me", and "tag music". This token list is
+    the tasklist's identity; when you export tasks to a text file, or get an
+    Atom feed of the tasklist, tokens are what is saved. Anyway, you can pass
+    in tokens to this argument to set attributes for <em>all</em> of the
+    created tasks at once.
+</p>
+
+<p>
+    Let's say we want to braindump the following text:
+</p>
+
+<pre>
+finish documenting API [hiveminder]
+    just need to think of a good example braindump
+profit!
+</pre>
+
+<p>
+    We also want to apply the following tokens to these tasks, namely
+    "tag @work". So after URI-encoding everything, we end up with this (lines
+    broken for clarity):
+</p>
+
+<pre>
+curl
+
+-F text='finish documenting API [hiveminder]
+    just need to think of a good example braindump
+profit!'
+
+-F tokens='tag @work'
+
+-b JIFTY_SID_HIVEMINDER=<i>$COOKIE</i>
+
+http://hiveminder.com/=/action/ParseTasksMagically.yml
+</pre>
+
+<p>
+    You'll get back a lot of text. Among other things, you'll see fields called
+    "completed", "create_failed", "update_failed", and "updated".  These are
+    there because ParseTasksMagically is actually a specialization of
+    UploadTasks, so you can ignore these fields. It's hopefully mostly obvious
+    what the rest of it means.
+</p>
+
+<h2>Search</h2>
+
+<p>We have a number of ways to let you search through your tasks:</p>
+
+<dl>
+    <dt><tt>/=/action/BTDT.Action.TaskSearch</tt></dt>
+    <dd>
+        Token-based search for tasks. Practically every time you have a
+        tasklist in the web interface, you're using this action.
+    </dd>
+
+    <dt><tt>/=/action/BTDT.Action.DispatchQuicksearch</tt></dt>
+    <dd>
+        A text-based search that looks through your tasks' summaries,
+        descriptions, and tags
+    </dd>
+
+    <dt><tt>/=/action/BTDT.Action.SearchTask</tt></dt>
+    <dd>A generic action for searching for basic column values</dd>
+
+    <dt><tt>/=/model/BTDT.Model.Task/column</tt></dt>
+    <dd>
+        List all the values of <i>column</i> for tasks you can see
+    </dd>
+
+    <dt><tt>/=/model/BTDT.Model.Task/column/value</tt></dt>
+    <dd>
+        A "search" for one column-value pair. You'll only get one result, so
+        it's recommended you use this when you know your column is unique.
+    </dd>
+
+    <dt><tt>/=/search/BTDT.Model.Task/column1/value1/column2/value2</tt></dt>
+    <dd>
+        A search for column-value pairs. Can return multiple values.
+    </dd>
+</dl>
+
+<p>
+Except for the first two, these are available for all models, not just
+Tasks.
+</p>
+
+<h2>Discoverability</h2>
+
+<p>
+    We've tried to make our API <i>discoverable</i>. If you want to know what
+    arguments an action takes, or what columns a model has, you can easily
+    figure that out.
+</p>
+
+<p>
+    If you want to know what arguments the UploadTasks action takes, you can
+    get that information with:
+</p>
+
+<pre>
+curl http://hiveminder.com/=/action/UploadTasks.yml
+</pre>
+
+<p>
+    If you want to know what columns a Task has:
+</p>
+
+<pre>
+curl http://hiveminder.com/=/model/Task.yml
+</pre>
+
+</&>

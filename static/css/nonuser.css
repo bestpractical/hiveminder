@@ -1,0 +1,38 @@
+.edit_explain {
+    background: #ffc64a;
+    padding: 0.3em 0.7em;
+    margin-top: 0.5em;
+    font-size: 0.9em;
+}
+
+.optout {
+    background: #ffc64a;
+    padding: 0.3em 0.7em;
+    margin-top: 3em;
+    font-size: 0.9em;
+}
+
+#signupplea {
+    background: #ffc64a;
+    padding: 0.5em 0.7em;
+}
+
+#signupplea h4 {
+    background: transparent;
+    color: #793300;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-bottom: 1px solid #793300;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0 0 0 0.2em;
+}
+
+#signupplea p {
+    margin-top: 0.2em;
+    margin-bottom: 0;
+}
+
+.nonuser_update_task .button_line {
+    margin-top: 0;
+}

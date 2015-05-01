@@ -1,0 +1,31 @@
+<%init>
+my $feed = XML::Atom::Feed->new;
+$feed->title(_('Hiveminder News'));
+$feed->id(Jifty->web->url( path => '/news'));
+my $link = XML::Atom::Link->new;
+$link->type('text/html');
+$link->rel('alternate');
+$link->href(Jifty->web->url( path => '/news'));
+$feed->add_link($link);
+
+my $news = BTDT::Model::NewsCollection->new(current_user => BTDT::CurrentUser->superuser);
+$news->unlimit;
+$news->order_by( column => 'created', order => 'desc' );
+$news->set_page_info( per_page => 10, current_page => 1 );
+
+while ( my $item = $news->next ) {
+    my $entry = $item->as_atom_entry;
+    $entry->id( Jifty->web->url( path => '/news'). '#item-' . $item->id );
+    $entry->add_link(
+        {   rel  => "alternate",
+            type => "text/html",
+            href => Jifty->web->url( path => '/news').'#item-' . $item->id 
+        }
+    );
+    $feed->add_entry($entry);
+}
+
+Jifty->web->response->content_type('application/atom+xml');
+$m->out( $feed->as_xml() );
+$m->abort();
+</%init>

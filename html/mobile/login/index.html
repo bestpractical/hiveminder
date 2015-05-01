@@ -1,0 +1,24 @@
+<%init> 
+$m->redirect('/mobile/') if Jifty->web->current_user->id;
+my $action = Jifty->web->new_action(class => 'Login', moniker => 'loginbox' );
+</%init>
+<&| ../_elements/wrapper, title => 'Hiveminder: Sign in' &>
+<div class="basicpage">
+<div align="center"><img src="/static/images/hmlogo/default.white.png" alt="Hiveminder" /></div>
+<p>Welcome to Hiveminder Mobile, the quick and easy way to manage your tasks and lists on the go.</p>
+<div id="login-box">
+<h2>Sign in</h2>
+<% Jifty->web->form->start(call => Jifty->web->request->continuation, name => "loginbox") %>
+<% $action->form_field('address') %>
+<% $action->form_field('password') %>
+<% $action->form_field('remember', render_as => 'hidden', default_value => '1' )%>
+<% Jifty->web->return(to => "/mobile/", label => _('Let me in!'), submit =>  $action) %>
+<% Jifty->web->form->end %>
+</div>
+<p>If you've never used Hiveminder before, you'll have to visit <a href="/splash/signup/">hiveminder.com</a> from a regular web browser to set up an account.</p>
+
+<hr />
+Looking for Hiveminder's regular website? For one reason or another, it looks like
+you're using a PDA or mobile phone to get here. If we've guessed wrong <a href="/splash/?non_mobile=<%Jifty->web->request->user_agent |u%>">sign in with the regular site</a>.
+</div>
+</&>

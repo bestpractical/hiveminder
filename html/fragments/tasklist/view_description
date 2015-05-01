@@ -1,0 +1,35 @@
+<%args>
+$id => undef
+$short => 1
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new;
+$task->load( $id );
+return unless $task->id;
+
+my $ellipsis = chr 8230;
+my $key      = 'XXX-HACK-' . Jifty->web->serial;
+
+# Invert the value of short
+my %args = ( short => !$short );
+my $desc = $task->formatted_description(
+               short    => $short,
+               ellipsis => $key
+           );
+
+my $truncated = ( $desc =~ s/\Q$key\E/$ellipsis/ ? 1 : 0 );
+my $original = $task->description || '';
+my $squashed = ($original =~ /\n/) && ($original =~ /\S/);
+
+</%init>
+<div class="<% $short ? "short" : "full" %>">
+<% $desc |n %>
+
+% if ( ( not $short or $truncated ) or ( not $truncated and $squashed ) ) {
+<div class="description_view_link">
+  (<% Jifty->web->link( label => ( $short ? 'more' : 'less' ),
+                        onclick => { args => \%args } ) %>)
+</div>
+% }
+    
+</div>

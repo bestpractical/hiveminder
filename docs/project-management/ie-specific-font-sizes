@@ -1,0 +1,8 @@
+The project management branch now uses YUI fonts and a hacked, lightweight
+version of grids.  In the two files below we compensate for IE's different font
+sizes, but with YUI fonts base css, this should no longer be necessary and may
+cause display issues.  We should check before deploying.
+
+splash.css
+ie-fixes.css
+

@@ -1,0 +1,7 @@
+<&| /_elements/wrapper, title => "Group Invitation Error" &>
+%# The AcceptGroupInvitation action redirects on success, so we'll only see
+%# this content in an error (either the action not redirecting, or the pattern
+%# match in the setup method failing).
+Sorry, but there was some sort of error declining that invitation.  Please check
+that link again.
+</&>

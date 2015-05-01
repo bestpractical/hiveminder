@@ -1,0 +1,13 @@
+<&| _elements/wrapper, title => 'Feedback (Hiveminder)' &>
+<h1>Feedback</h1>
+<div class="basicpage">
+<p>Tell us what's good, what's bad, and what else you want Hiveminder to do!</p>
+<% Jifty->web->form->start %>
+<% $feedback->form_field('content') %>
+<% Jifty->web->form->submit( label => "Send" ) %>
+<% Jifty->web->form->end %>
+</div>
+</&>
+<%init>
+my $feedback = Jifty->web->new_action( class => "SendFeedback", moniker => "feedback" );
+</%init>

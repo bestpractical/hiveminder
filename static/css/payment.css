@@ -1,0 +1,39 @@
+.cc_form .argument-address { width: 25em; }
+.cc_form .argument-zip { width: 8em; }
+.cc_form .argument-cvv2 { width: 10em; }
+.cc-hint, .coupon-hint {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 0;
+    margin-bottom: 0.3em;
+}
+
+.cc_form fieldset {
+    border-left: none;
+    border-bottom: none;
+    border-right: none;
+    margin-top: 1em;
+}
+
+.cc_form fieldset legend {
+    font-weight: bold;
+}
+
+.receipt label, .receipt .label {
+    font-weight: bold;
+}
+
+.cc_form .card_types img {
+    padding-top: 0.4em;
+}
+
+.cc_form .security_code_help {
+    padding-left: 1em;
+    padding-top: 1.6em;
+    float: left;
+}
+
+.cc_form .current_recipients div.argument-user_id {
+    display: block;
+    float: none;
+}

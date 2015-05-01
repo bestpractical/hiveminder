@@ -1,0 +1,133 @@
+#!/bin/sh
+
+function usage {
+    cat <<EOF >&2
+Options:
+    --jifty deadbeef        Only pulls jifty to the given revision
+    --no-jifty              Equivalent to --jifty=HEAD
+                            (doesn't pull jifty)
+
+    --hiveminder deadbeef   Only pulls hiveminder to the given revision
+    --no-hiveminder         Equivalent to --hiveminder=HEAD
+                            (doesn't pull hiveminder)
+
+    --http-only             Only restarts the webserver
+EOF
+    exit 1
+}
+
+# Files not owned by nobody in var/mason will make the server sad
+if [[ -n "$(find var/mason -not -user nobody)" ]] ; then
+  echo "There are files not owned by 'nobody' in var/mason!";
+  echo "Fix these before continuing:";
+  find var/mason -not -user nobody;
+  exit;
+fi
+
+# Running as root leaves lots of files not readable by hiveminder
+if [[ `/bin/id -un` == "root" ]] ; then
+  echo ">>> Don't run gitupdate as root; dropping privs";
+  sudo -u hiveminder $0 "$@";
+  exit;
+fi
+
+# Parse command-line options
+jifty_head="origin/master"
+hiveminder_head="origin/master"
+http_only=0
+opts=`getopt -n gitupdate -o j:h:H --long jifty:,no-jifty,hiveminder:,no-hiveminder,http-only,help -- "$@"`
+if [ $? != 0 ] ; then
+    usage
+fi
+eval set -- "$opts"
+
+while true ; do
+    case $1 in
+        --no-jifty) jifty_head=""
+            ;;
+        -j|--jifty) shift
+            jifty_head="$1"
+            ;;
+        --no-hiveminder) hiveminder_head=""
+            ;;
+        -h|--hiveminder) shift
+            hiveminder_head="$2"
+            ;;
+        --http-only) http_only=1
+            ;;
+        --help) usage
+            ;;
+        --) shift
+            break
+            ;;
+    esac
+    shift
+done
+
+if [ -n "$jifty_head" ] ; then
+    echo "Pulling Jifty to $jifty_head"
+    sudo -u perl /home/perl/update-jifty "$jifty_head" || exit 1
+else
+    echo "Not updating Jifty"
+fi
+
+export BIN=$(dirname $0)
+cd "$BIN/.."
+export ROOT=`pwd`;
+
+if [ -n "$hiveminder_head" ] ; then
+    echo "Pulling Hiveminder to $hiveminder_head"
+
+    # prevent conflicts by reverting this
+    git co lib/BTDT.pm
+
+    # See if we need to do the stash dance
+    stashed=0
+    git stash 2>&1 | grep -q 'No local changes to save'
+    if [[ $? == 1 ]] ; then
+        stashed=1
+    fi
+
+    # Now do the merge
+    git fetch origin || exit 1
+    git merge "$hiveminder_head" || exit 1
+
+    # If we stashed changes, pop them off now
+    if [[ $stashed == 1 ]] ; then
+        git stash pop || exit 1
+    fi
+else
+    echo "Not updating Hiveminder"
+fi
+
+# rev is the latest shared commit between HEAD and origin/master
+rev=`git merge-base origin/master HEAD`
+shortrev=`git rev-parse --short $rev`
+# localrev is HEAD's sha1
+localrev=`git rev-parse HEAD`
+jiftyrev=`git --git-dir /var/home/perl/jifty/.git rev-parse HEAD`
+
+# Update change stamps
+perl -pi -e"s/(?<=return ')exported(?=';)/$shortrev/; s/(?<=return )time(?=;)/time/e;" lib/BTDT.pm
+
+# Make it so, Number One!
+hmperl Makefile.PL
+make
+
+# Timestamp for the restore
+psql -U postgres -c 'select now()' -A | head -n2 | tail -n1 > $ROOT/../backups/by-revision/$rev
+
+echo "Upgrading database"
+hmperl ./bin/jifty schema
+
+# Log which versions we're using
+echo "`date`: Hiveminder revision $rev (local $localrev), Jifty revision $jiftyrev" >> $ROOT/log/gitupdate.log
+sudo -u perl /home/perl/tag-with "hiveminder-remote-$rev"
+sudo -u perl /home/perl/tag-with "hiveminder-local-$localrev"
+
+# Restart everything
+if [[ $http_only == 1 ]] ; then
+    ./bin/restart-httpd
+else
+    ./bin/restart
+fi

@@ -1,0 +1,29 @@
+#keybindings {
+    color: #666;
+}
+
+dl.keybindings {
+    margin: 0.5em 0 0.5em 1em;
+    padding: 0;
+}
+
+#keybindings .keybindings_label {
+    font-weight: bold;
+}
+
+.keybindings dt {
+    margin: 0;
+    font-weight: bold;
+    float: left;
+    clear: left;
+    text-align: center;
+    width: 1.5em;
+}
+
+.keybindings dd {
+    margin-right: 1.5em;
+    margin-left: 0.6em;
+    white-space: nowrap;
+    display: inline;
+}
+

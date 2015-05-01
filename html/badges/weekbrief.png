@@ -1,0 +1,33 @@
+<%init>
+Jifty->web->response->content_type("image/png");
+#Jifty->web->response->header( 'Expires' => HTTP::Date::time2str(time + 300) );
+
+my $mine = BTDT::Model::TaskCollection->new();
+$mine->from_tokens(qw/owner me accepted created after lastweek/);
+my $done = BTDT::Model::TaskCollection->new();
+$done->from_tokens(qw/owner me complete accepted completed_at after lastweek/);
+
+use GD;
+my ($width, $height) = (120, 50);
+my $im = GD::Image->new($width, $height);
+my $white = $im->colorAllocate(255,255,255);
+my $red = $im->colorAllocate(255,0,0);
+my $black = $im->colorAllocate(0,0,0);
+
+$im->transparent($white);
+$im->string(gdSmallFont,1,0, 'Todo this week: ', $black);
+$im->string(gdSmallFont,10,15, $mine->count.' new, '.$done->count.' done', $black);
+
+#$im->rectangle(0, 0, $width-1, $height-1, $red);
+my $logo = Jifty::Util->absolute_path(Jifty->config->framework('Web')->{'StaticRoot'}).'/images/hmlogo/default.png';
+Jifty->log->logdie("can't find hm logo $logo") unless -e $logo;
+
+my $hm = GD::Image->newFromPng($logo, 1);
+
+$im->copyResized($hm,0,$height-$width/180*32,
+		 0,0,
+		 $width, $width/180*32,
+		 180,  32);
+
+print $im->png;
+</%init>

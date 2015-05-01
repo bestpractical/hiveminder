@@ -1,0 +1,21 @@
+The system should integrate with just about every bloody device a user can get their hands on:
+
+
+* Pretty, modern webui
+* Downlevel webui for older browsers
+* Easy email interaction
+    * Incoming
+        * create or update a task
+    * Outgoing
+        * reminders
+        * subscribe to tasks
+
+* PDA browser interaction
+* Incoming voicemail gateway "Leave a message, create a task"
+
+* Outoging voice gateway. "Call me with a reminder"
+
+* ICal feed of due dates
+* RSS feed of updates
+
+* Web Services API so users can surprise us

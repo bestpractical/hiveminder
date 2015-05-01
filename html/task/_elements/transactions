@@ -1,0 +1,72 @@
+<dl class="transactions">
+% while (my $t = $transactions->next) {
+% next if $discussion_only and not ( $t->comments->count or $t->type =~ /attachment|create/ );
+% my $summary = $t->summary(show_task_locator => $show_task);
+% next unless $summary;
+<div class="transaction">
+<dt><% $summary %>
+% my $changes = $t->visible_changes;
+% if ($t->type eq "update" and $changes->count > 1) {
+%     while (my $c = $changes->next) {
+%         my $description = $c->as_string(show_task_locator => $show_task);
+%         next unless $description;
+          <dd><% $description %></dd>
+%     }
+% }
+
+% my $comments = $t->comments;
+% while (my $email = $comments->next) {
+%     my $body = $email->formatted_body;
+%     next if not length $body;
+  <div class="comment">
+% if (my $sub = $email->header('Subject')) {
+%     my $subject = Encode::decode('MIME-Header', $sub);
+%     # XXX TODO: How to get a list that's better than this manually grepped one?
+%     unless ( $subject =~ /^(?i:Re):\s*(?:Up for grabs|Comment|New task|Taken|For \w+|(?:To|From) group|Done|Incomplete|Deleted|Declined|Abandoned|Accepted|Done): / ) {
+<div class="messageheader">Subject: <% $subject %></div>
+%     }
+% }
+% if (my $cc = $email->header('Cc')) {
+<div class="messageheader">Cc: <% Encode::decode('MIME-Header', $cc) %></div>
+% }
+    <div class="body"><% $body |n %></div>
+  </div>
+% }
+
+% my $attachments = $t->attachments;
+% while ( my $file = $attachments->next ) {
+  <div class="attachment content_type_<% $file->short_content_type %>">
+    <span class="name">
+      <% $file->name %>
+% if ( $file->filename and $file->name ne $file->filename ) {
+      <span class="filename"><% $file->filename %></span>
+% }
+    </span>
+    <% Jifty->web->link( url => $file->url, label => 'View' ) %>,
+    <% Jifty->web->link( url => $file->url('download'), label => 'Download' ) %>
+  </div>
+% }
+
+<span class="timestamp"><% $t->modified_at->set_time_zone('UTC') %></span></dt>
+</div>
+% }
+</dl>
+<script>
+%# prettify task history dates. this may want to move to app_behaviour.js
+jQuery(".transactions .timestamp").prettyDateTag();
+setInterval(function(){ jQuery(".transactions .timestamp").prettyDateTag(); }, 5000);
+</script>
+<%args>
+$task => undef
+$transactions => undef
+$show => undef
+$discussion_only => 0
+$show_task => 0
+</%args>
+<%init>
+unless ($transactions) {
+    $transactions = $task->transactions;
+    $transactions->prefetch_common;
+}
+$transactions->rows_per_page( $show ) if defined $show and $show;
+</%init>

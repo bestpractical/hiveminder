@@ -1,0 +1,18 @@
+<&| /_elements/wrapper, title => "News - " . $title &>
+
+<p><% Jifty->web->link( url => '/news/', label => '&#8592; Return to all news', escape_label => 0 ) %></p>
+
+<% Jifty->web->region(
+    name => 'newsitem',
+    path => '/fragments/no_auth/news/view',
+    arguments => {
+        id => $id
+    },
+) %>
+
+</&>
+
+<%args>
+$id
+$title
+</%args>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head profile="http://a9.com/-/spec/opensearch/1.1/">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="robots" content="all" />
+     <link rel="search"
+           type="application/opensearchdescription+xml" 
+           href="http://hiveminder.com/integration/search-osd.xml"
+           title="Search Hiveminder" />
+     <link rel="search"
+           type="application/opensearchdescription+xml" 
+           href="http://hiveminder.com/integration/braindump-osd.xml"
+           title="Create tasks in Hiveminder" />  
+           <title><% join ' - ', grep $_, $title, 
+               ($subtitle ? " ($subtitle)":''),
+               'Hiveminder'%></title>
+  <link rel="icon" type="image/png" href="/static/images/bee-favicon.png" />
+  <% Jifty->web->include_css %>
+  <% Jifty->web->include_javascript %>
+  <% $include_content |n %>
+</head>
+<%args>
+$title => ""
+$subtitle => ""
+$include_content => ""
+</%args>
+<%init>
+Jifty->web->response->content_type('text/html; charset=utf-8');
+
+# Don'tcha get your HTML in my <title>
+use HTML::Scrubber;
+use HTML::Entities qw(decode_entities);
+my $scrubber = HTML::Scrubber->new( default => 0 );
+$subtitle = decode_entities( $scrubber->scrub( $subtitle ) );
+</%init>

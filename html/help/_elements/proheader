@@ -1,0 +1,17 @@
+<%args>
+$section => "section"
+</%args>
+% return if Jifty->web->request->argument('_IMAP_INTERNAL');
+
+<h2>Pro Feature</h2>
+
+% unless (Jifty->web->current_user->pro_account) {
+
+<p>This <% $section %> describes a feature available only to our <a
+href="/pro" class="external">pro users</a>.
+<a href="/account/upgrade" class="external">Upgrade your account</a> today,
+for only $30 a year.</p>
+
+<hr />
+
+% }

@@ -1,0 +1,9 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+
+use BTDT::IMAP;
+BTDT::IMAP->new->run;

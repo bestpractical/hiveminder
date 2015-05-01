@@ -1,0 +1,76 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+
+use BTDT::CurrentUser;
+use BTDT::Model::User;
+use Getopt::Long;
+use DateTime;
+use DateTime::TimeZone;
+
+my $hour = 6;
+$hour += shift(@ARGV) if @ARGV;
+
+my @tzs = grep { DateTime->now( time_zone => $_ )->hour == $hour }
+          DateTime::TimeZone->all_names;
+
+# weekly notifications are sent out Monday morning
+my $weekly = 0;
+if ($tzs[0] && DateTime->now( time_zone => $tzs[0] )->dow == 1)
+{
+    $weekly = 1;
+}
+
+my $users = BTDT::Model::UserCollection->new(
+    current_user => BTDT::CurrentUser->superuser );
+
+$users->limit(
+    column   => 'notification_email_frequency',
+    operator => '!=',
+    value    => 'never',
+);
+$users->limit(
+    column   => 'never_email',
+    value    => 'f',
+);
+$users->limit(
+    column   => 'email_confirmed',
+    value    => 't',
+);
+$users->limit(
+    column   => 'notification_email_frequency',
+    operator => '!=',
+    value    => 'weekly',
+) if !$weekly;
+
+$users->limit(
+    column   => 'time_zone',
+    operator => 'IN',
+    value    => \@tzs,
+);
+
+while ( my $user = $users->next ) {
+    eval {
+        my $notification_type;
+
+        if ( $user->notification_email_frequency eq 'daily' ) {
+            $notification_type = 'BTDT::Notification::DailyReminder';
+        } else {
+            return if !$weekly;
+            $notification_type = 'BTDT::Notification::WeeklyReminder';
+        }
+
+        my $notification = $notification_type->new(
+            to           => $user,
+            current_user => BTDT::CurrentUser->new( id => $user->id )
+        );
+        return unless ( $notification->subject );
+        $notification->send();
+    };
+    warn($@) if ($@);
+}
+
+1;

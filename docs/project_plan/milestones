@@ -1,0 +1,108 @@
+Done That, a project plan
+
+* First milestone: groups
+
+    * We need a way to turn down invitiations
+
+
+* Usable by us (Self hosting)
+
+    DONE
+
+
+--- Before M2, but later ----
+
+*   Create a set of tasks
+**         filters can be named and given their own URIs (URIs are memorable)
+
+**   Update a bunch of tasks at once
+
+-------cut here--------------
+
+* Usable by our friends
+
+
+** RSS feed 
+*** My tasks with embedded controls
+
+
+** Usability
+*** Online help
+
+** Reminders 
+*** Set up emailed reminders of tasks
+*** "Send me a report every x days about what's happened since the last one"
+*** "Send me a reminder about task x"
+
+** Email
+*** Incoming mail to create/update tasks
+
+Tasks:
+
+        TODO: delete a task. make it go away forever?
+
+
+
+** UI
+*** "Help me deal with all these tasks"
+**** Braindump
+
+* Usable by their friends -  A wider circle
+
+** Lots of pretty
+
+** Offline worksheet
+*** Save this set of tasks to a javascript/dhtml mini-app that I can 
+    work on while offline and then "save to server" later.
+    Tiddlywiki style.
+
+
+* Beta Launch (General public)
+
+** Quotas
+
+** Recurring tasks
+
+** Premium Services
+*** Document storage?
+*** Approvals?
+*** Workflows?
+*** More task assignment
+*** "Email me these tasks for offline update"
+
+
+
+
+* Beta2 
+
+** Web Services
+
+*** Server side
+*** Clients
+**** Perl  demo code
+**** Python demo code
+
+
+* Release
+
+** Premium services
+*** call in
+*** call out
+
+
+Potential Future
+
+* IMAP Server PREMIUM
+
+INBOX
+   my_searches
+        things_i_own
+    groups
+        jifty
+            open
+            done
+        bestpractical
+            open
+            done
+        foobar
+

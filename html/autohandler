@@ -1,0 +1,26 @@
+<%init>
+eval {
+    $m->call_next();
+};
+
+if ( my $error = $@ ) {
+    unless ( $error =~ qr/abort was called/ ) {
+        eval {
+            my $content = "$error\n\nARGS " . YAML::Dump( \%ARGS );
+            $content
+                .= "\n" . " Current base comp is " . $m->base_comp()->path;
+            $content
+                .= "\n" . " Request comp was " . $m->request_comp()->path;
+            $content
+                .= "\n"
+                . "Caller args were "
+                . YAML::Dump( $m->caller_args(1) );
+            $content .= "\n" . "Caller was  " . $m->caller(1);
+            warn $content;
+        };
+    }
+    die $error;
+}
+
+return;
+</%init>

@@ -1,0 +1,14 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+use BTDT::CurrentUser;
+use BTDT::Model::User;
+
+Jifty->new();
+my $current = BTDT::CurrentUser->new( email => shift @ARGV );
+my $tasks = BTDT::Model::TaskCollection->new( current_user => $current );
+$tasks->from_tokens(@ARGV);
+print BTDT::Sync::TextFile->as_text($tasks);

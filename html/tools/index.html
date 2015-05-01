@@ -1,0 +1,193 @@
+<&| /_elements/wrapper, title => "Tools" &>
+
+<p class="large">
+  There are lots of ways you can work with Hiveminder!
+</p>
+
+<dl id="application-list">
+  
+  <div id="browser">
+    <dt>Hiveminder in your browser</dt>
+    <dd>
+      <p>
+        If you use <strong>Firefox</strong> or <strong>IE 7</strong>, you can
+        <a href="javascript:window.external.AddSearchProvider('http://hiveminder.com/integration/braindump-osd.xml');">Braindump</a>
+        or <a href="javascript:window.external.AddSearchProvider('http://hiveminder.com/integration/search-osd.xml');">Search</a>
+        Hiveminder from your browser's search box.
+      </p>
+
+      <p><a href="javascript:window.external.AddSearchProvider('http://hiveminder.com/integration/braindump-osd.xml');">Add Braindump to your browser</a>.</p>
+      <p><a href="javascript:window.external.AddSearchProvider('http://hiveminder.com/integration/search-osd.xml');">Add Hiveminder Search to your browser</a>.</p>
+    </dd>
+  </div>
+
+  <div id="cli">
+    <dt>todo.pl</dt>
+    <dd class="summary">Command Line Interface</dd>
+    <dd>
+      <p>
+        If you're a fan of <a href="http://todotxt.com/">Todo.sh</a>, don't miss our todo.pl.  You can <a href="/import/todo.txt">import</a> an existing Todo.sh text file.  If you have problems with usage, read <a href="http://bestpractical.typepad.com/worst_impractical/2006/09/todopl_or_how_i.html">this instruction</a> first. This program is <a href="http://www.opensource.org/licenses/mit-license.php" rel="license">MIT Licensed</a>.
+      </p>
+      <p>
+        To use todo.pl, please install <a href="http://search.cpan.org/dist/App-Todo/">App::Todo</a> from CPAN.
+        From the command line, you should be able to run <tt>cpan -i App::Todo</tt>.
+      </p>
+    </dd>
+  </div>
+
+  <div id="iphone">
+    <dt>iMinder, an iPhone app</dt>
+    <dd>
+      <p>
+        Kris Arnold has written <a href="http://iminder.worldairmaillinks.com">iMinder</a>,
+        a free app to allow you to access and sync your tasks with your iPhone.
+        You can download it from the
+        <a href="http://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/browserRedirect?url=itms%253A%252F%252Fax.itunes.apple.com%252FWebObjects%252FMZStore.woa%252Fwa%252FviewSoftware%253Fid%253D314313409%2526mt%253D8">App Store</a>.
+    </dd>
+  </div>
+
+  <div id="android">
+    <dt>Hiveminder Braindump, an Android app</dt>
+    <dd>
+      <p>
+        Marc Dougherty created
+        <a href="https://market.android.com/details?id=org.nerdcircus.android.hiveminder">Hiveminder Braindump</a>,
+        a simple Android app to let to jot down your tasks.  You can search,
+        view, and create tasks, but editing isn't supported at this time.  Get
+        it from the Marketplace!
+      </p>
+    </dd>
+  </div>
+
+  <div id="webos">
+    <dt>Hiveminder Cloud Tasks, a Palm webOS app</dt>
+    <dd>
+      Paul Miller created this app enabling you to access your Hiveminder tasks
+      from your Palm webOS device.  It's currently in beta and only allows
+      viewing tasks, but he promises that there's much more to come.
+      <a href="http://developer.palm.com/webChannel/index.php?packageid=org.voltar.hiveminder">Check
+      it out on the app catalog</a>!
+    </dd>
+  </div>
+
+  <div id="quicksilver">
+    <dt>Quicksilver</dt>
+    <dd>
+      <p><a href="http://zak.greant.com">Zak Greant</a> has a <a href="http://zak.greant.com/quicksilver-adium-hiveminder/">quick tip for using Hiveminder via IM from Quicksilver</a>.</p>
+      <p><a href="http://worldairmaillinks.com/">Kris Arnold</a> also built a <a href="http://worldairmaillinks.com/post/4692422">Quicksilver integration using todo.pl</a>.</p>
+    </dd>
+  </div>
+
+  <div id="api">
+    <dt>Hiveminder API</dt>
+    <dd>
+      <p>
+        Perhaps none of our existing tools meet your needs exactly. You could use
+        our <a href="/help/reference/API.html">API</a> to write your perfect interface
+        to Hiveminder. Please join our
+        <a href="http://groups.google.com/group/hiveminder-api">mailing list</a>
+        to ask questions or to share in your creations!
+      </p>
+
+      <p>
+        If you speak Perl, we have a
+        <a href="http://search.cpan.org/dist/Net-Hiveminder/lib/Net/Hiveminder.pm">Net::Hiveminder</a>
+        module that makes using our API even easier.
+      </p>
+    </dd>
+  </div>
+
+  <div id="outlook">
+    <dt>Sync with Outlook</dt>
+    <dd>
+      <p><a href="http://n8v.enteuxis.org/">Nathan Vonnahme</a> has written a program to <a href="http://n8v.enteuxis.org/2008/08/synchronizing-hiveminder-with-outlook/">sync your Hiveminder tasks with Outlook</a>, which in turns lets you sync from Outlook to your Palm device.</p>
+    </dd>
+  </div>
+
+  <div id="sd">
+    <dt>Sync with RT, Google Code, Trac, and more</dt>
+    <dd class="summary">Peer-to-peer bug tracking and syncing</dd>
+    <dd>
+      <p>
+        We've also created <a href="http://syncwith.us/sd/">SD</a> (Simple
+        Defects) which leverages <a href="http://syncwith.us/">Prophet</a> to
+        provide a simple bug tracker which can sync with other SD databases and
+        a variety of services.  SD makes bidirectional sync between
+        <a href="http://bestpractical.com/rt/">RT</a> and Hiveminder possible.
+      </p>
+    </dd>
+  </div>
+
+</dl>
+
+<dl id="service-list">
+  <div id="chat">
+    <dt>Hiveminder IM</dt>
+    <dd>
+      Chat with Hiveminder using AIM<super>&reg;</super>, Jabber, GTalk, and Twitter.
+      <% Jifty->web->link( url => '/prefs/IM', label => 'Find out how!')%>
+    </dd>
+  </div>
+
+  <div id="taskbyemail">
+    <dt>Tasks by email</dt>
+    <dd>You can create tasks <a href="/prefs/addresses">by email</a>.</dd>
+  </div>
+
+% if (Jifty->config->app('FeatureFlags')->{IMAP}) {
+  <div id="imap">
+    <dt>Tasks in Mail.app, Outlook, Thunderbird, and more!</dt>
+    <dd>
+      You can access and modify your tasks
+      <% Jifty->web->link(url => "/help/reference/IMAP/", label => "using Hiveminder's IMAP support") %>, just like you would normal email.
+    </dd>
+  </div>
+% }
+
+  <div id="mobile">
+    <dt>Mobile</dt>
+    <dd>Just visit <strong>http://hiveminder.com</strong> or <strong>http://task.hm</strong> from your mobile phone.</dd>
+  </div>
+  
+<!--
+  <div id="badges">
+    <dt>Badges</dt>
+    <dd><a href="/badges/">Show how productive you are on your blog</a>.</dd>
+  </div>
+-->
+
+  <div id="gadget">
+    <dt>Google Gadget</dt>
+    <dd>
+      <p>Put your Hiveminder tasks in your Google Desktop/Personal Homepage.  Give it a try!</p>
+      <a href="http://fusion.google.com/add?moduleurl=http%3A//hiveminder.com/integration/google_widget.xml"><img src="http://buttons.googlesyndication.com/fusion/add.gif" width="104" height="17" border="0" alt="Add Google gadget" /></a>
+    </dd>
+  </div>
+% if (0) {
+  <div id="gmail-gadget">
+    <dt>GMail Gadget</dt>
+    <dd>
+    <p>Manage your tasks from GMail!</p>
+    <ol>
+        <li>Open up <a href="http://mail.google.com/mail/#settings/labs" target="_blank">GMail Labs settings</a>
+        <li>Click <b>Enable</b> for the "Add any gadget by URL" feature.
+        <li>Click <b>Save Changes</b>
+        <li>Open up the <a href="http://mail.google.com/mail/#settings/gadgets" target="_blank">GMail Gadget settings</a>.
+        <li>Add the Hiveminder Gadget for GMail: <tt>http://hiveminder.com/integration/gmail.xml</tt>
+    </ol>
+
+    </dd>
+  </div>
+% }
+
+  <div id="gcal">
+    <dt>Google Calendar Gadget</dt>
+    <dd>
+      <p>See, create, and update your Hiveminder tasks from within Google Calendar.</p>
+      <a target="_blank" href="http://www.google.com/calendar/render?cid=http%3A%2F%2Fhiveminder.com%2Fintegration%2Fgoogle_calendar.ics%3Fbeta"><img border="0" src="http://www.google.com/calendar/images/ext/gc_button1.gif" alt="Add Google Calendar gadget" /></a>
+    </dd>
+  </div>
+</dl>
+
+</&>
+

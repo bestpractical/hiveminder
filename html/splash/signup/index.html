@@ -1,0 +1,30 @@
+<&| /_elements/splash_wrapper, title => "Sign up" &>
+
+% if (Jifty->web->current_user->id) {
+
+  <p>
+    You're already logged in as <% Jifty->web->current_user->user_object->name %>; no need to sign up!
+    Why don't you head to your <% Jifty->web->link( url => '/todo', label => 'To Do list' ) %>?
+  </p>
+% } else {
+<p id="overview">
+  Welcome to Hiveminder.  We need a tiny bit of information before we get out of your way 
+  and let you do your thing.  Later, you can fill in more information about yourself. 
+  Right now, it's just a Name, rank and serial number sort of thing.
+</p>
+<div id="signup-box">
+  <% Jifty->web->form->start(name => "signupform") %>
+% Jifty->web->form->next_page( url => "/splash/signup/confirm.html" );
+% for (qw(name email password password_confirm email_service_updates) ) {
+    <% $signup->form_field($_) %>
+% }
+  <% Jifty->web->form->submit( label => "Join us!") %>
+  <% Jifty->web->form->end %>
+</div>
+% }
+</&>
+
+<%init>
+my $signup = Jifty->web->new_action(class => 'Signup', moniker => 'signupform');
+</%init>
+

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+export BIN=$(dirname $0)
+cd "$BIN/.."
+export ROOT=`pwd`;
+
+rev=$1
+localrev=""
+if [[ "x$rev" == "x" ]] ; then
+    localrev=$(git rev-parse local^)
+    rev=$(git merge-base $prev origin/master)
+else
+    localrev=$(git rev-list --max-count=1 $rev..local)
+fi
+
+# To the time machine!
+echo "Reverting to revision $rev (local $localrev)"
+git co $localrev
+sudo -u perl /home/perl/revert-to "hiveminder-remote-$rev"
+
+# Restart
+$ROOT/bin/restart

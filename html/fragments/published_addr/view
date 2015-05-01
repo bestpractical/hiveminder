@@ -1,0 +1,25 @@
+<dt>
+<a href="mailto:<%$addr->address%>@my.hiveminder.com">
+    <%$addr->address%>@my.hiveminder.com</a>
+
+    <% 
+    Jifty->web->link( label    => 'Edit',
+    onclick => {  replace_with => '/fragments/published_addr/update', args => { id => $addr->id}
+    }
+    ) 
+    %></dt>
+    <dd><%$addr->auto_attributes||''%></dd>
+
+% if ($addr->user_id) {
+    <dd><%$addr->auto_accept
+          ? 'Accept new tasks automatically'
+          : 'Hold new tasks for review'%></dd>
+% }
+
+<%init>
+my $addr = BTDT::Model::PublishedAddress->new();
+$addr->load($id);
+</%init>
+<%args>
+$id => undef
+</%args>

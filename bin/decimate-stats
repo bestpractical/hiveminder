@@ -1,0 +1,67 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+use BTDT::CurrentUser;
+
+my $now = BTDT::DateTime->now;
+$now->set_time_zone("UTC");
+
+decimate( "performance", "hour", [hours => 4], "day", [days => 1]);
+
+decimate( $_, "day",  [days  => 1])
+    for qw/performance size/;
+
+sub decimate {
+    my ($cat, $round, $until, $fromround, $from) = @_;
+    my $latest = $now->clone->subtract( @{$until} )->truncate( to => $round );
+
+    if ($from and $fromround) {
+        $from = $now->clone->subtract( @{$from} )->truncate( to => $fromround );
+        $from = Jifty->handle->dbh->quote( $from );
+        $from = "and min(sampled_at) >= $from";
+    } else {
+        $from = "";
+    }
+
+    Jifty->handle->begin_transaction;
+    my $sth = Jifty->handle->simple_query(<<"EOT");
+select avg(cast(value as float)) as value,
+       count(*) as cnt,
+       sample_name,
+       min(sampled_at) as min_at,
+       max(sampled_at) as max_at
+  from jifty_plugin_monitoring_monitored_data_points
+ where category = '$cat'
+ group by date_trunc('$round', sampled_at), sample_name
+having count(*) > 1
+   and max(sampled_at) < '$latest'
+   $from
+ order by min_at asc, sample_name asc;
+EOT
+
+    my $data = $sth->fetchall_arrayref( {} );
+    return unless @{$data};
+    Jifty->log->debug("Decimating $cat, grouped by $round -- @{[@{$data} + 0]} rows");
+    for my $point ( @{$data} ) {
+        Jifty->log->debug("@{[$point->{min_at},'..',$point->{max_at},'=>',$point->{sample_name}]} (averaging @{[$point->{cnt}]} rows)");
+        Jifty->handle->simple_query(<<EOT);
+delete
+  from jifty_plugin_monitoring_monitored_data_points
+ where sampled_at >= '@{[$point->{min_at}]}'
+   and sampled_at <= '@{[$point->{max_at}]}'
+   and category = '$cat'
+   and sample_name = '@{[$point->{sample_name}]}'
+EOT
+        my $data = Jifty::Plugin::Monitoring::Model::MonitoredDataPoint->new( current_user => BTDT::CurrentUser->superuser );
+        $data->create(
+            category => $cat,
+            sample_name => $point->{sample_name},
+            value => $point->{value},
+            sampled_at => $point->{min_at},
+        ) or die "Create failed";
+    }
+    Jifty->handle->commit;
+}

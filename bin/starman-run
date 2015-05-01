@@ -1,0 +1,16 @@
+#!/bin/sh
+# This script is run by daemontools. It should be symlinked from
+# /service/hm-starman/run which runs as root, hence the need to drop privs.
+
+executable=$0
+if [ -L $executable ]
+then
+    executable=$(readlink $0)
+fi
+export BIN=$(dirname $executable)
+cd "$BIN/.."
+export ROOT=`pwd`;
+
+umask 002
+exec /usr/bin/setuidgid nobody softlimit -m 573741824 $ROOT/bin/starman --port 8008 -E deployment --workers 6 -e 'enable "ReverseProxy"' app.psgi
+

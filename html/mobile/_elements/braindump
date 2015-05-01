@@ -1,0 +1,11 @@
+<%$action->form_field( 'tokens', default_value => $tokens) %>
+<%$action->form_field('text', rows => 4)%>
+<p>Add tasks one per line, like this: <i>Buy apples to make pie tonight [due: today] [shopping] [food]</i></p>
+<%init>
+my $action = Jifty->web->new_action(class => 'ParseTasksMagically', moniker => 'quickcreate');
+Jifty->web->form->next_page( url =>$next_page);
+</%init>
+<%args>
+$next_page => '/mobile'
+$tokens => undef
+</%args>

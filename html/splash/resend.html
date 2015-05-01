@@ -1,0 +1,24 @@
+<&| /_elements/splash_wrapper, title => "Resend Confirmation Email" &>
+
+% if (Jifty->web->current_user->id) {
+%   Jifty->web->redirect('/todo');
+% } else {
+<p id="overview">
+  <% Jifty->web->form->start %>
+
+    <p> Fill in your address below, and we'll send out another
+    confirmation email to you. </p>
+
+  <% $resend->form_field('address') %>
+  <% Jifty->web->form->submit( label => 'Resend Confirmation') %>
+  <% Jifty->web->form->end %>
+% }
+</&>
+
+<%init>
+my $resend = Jifty->web->new_action(
+    class => 'ResendUserLink',
+    moniker => 'resend'
+);
+</%init>
+

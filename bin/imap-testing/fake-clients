@@ -1,0 +1,170 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Net::IMAP::Simple::SSL;
+use Getopt::Long;
+use Pod::Usage;
+use Email::Simple;
+use Email::Simple::Creator;
+
+my %opts;
+GetOptions( \%opts, "host=s", "port=i", "parallel=i", "help" )
+    or pod2usage( -exitval => 1, -verbose => 1 );
+pod2usage( -exitval => 1, -verbose => 1 ) if $opts{help};
+
+$opts{host}     ||= "localhost";
+$opts{port}     ||= 4243;
+$opts{parallel} ||= 5;
+
+setup();
+
+my @kids;
+for my $i ( 1 .. $opts{parallel} ) {
+    my $sleep = rand(2*$opts{parallel});
+    my $pid;
+    unless ( $pid = fork ) {
+        sleep $sleep;
+        print "$i: Connecting\n";
+        my $client = Net::IMAP::Simple::SSL->new("$opts{host}:$opts{port}")
+            or die "$i can't connect";
+        $client->login( "user$i\@example.com", "password" )
+            or die "$i can't login\n";
+
+        $client->select("INBOX");
+
+        # Wait to be killed
+        sleep 30;
+
+        #do_things($client,$i);
+
+        exit;
+    }
+    push @kids, $pid;
+}
+
+print "Master sleeping\n";
+sleep 60;
+print "Killing kids\n";
+kill 2, @kids;
+1 while wait() >= 0;
+print "Exited\n";
+
+sub Net::IMAP::Simple::append {
+    my $self = shift;
+    my ( $box, $message ) = @_;
+    my $length = do { use bytes; length $message };
+    return $self->_process_cmd(
+        cmd     => [ APPEND => $box . " {" . $length . "}" ],
+        process => sub {
+            my $val = shift;
+            if ( $val =~ /^\+/ ) {
+                my $sock = $self->_sock;
+                print $sock $message, "\n";
+            }
+        },
+        final => sub {
+            return 1;
+        },
+    );
+}
+
+use Time::HiRes;
+
+sub setup {
+    my $client = Net::IMAP::Simple::SSL->new("$opts{host}:$opts{port}")
+      or die "Setup can't connect";
+    $client->login( "user1\@example.com", "password" )
+      or die "Setup can't login\n";
+    $client->select("Help");
+}
+
+sub do_things {
+    my($client, $i) = @_;
+    my %timings;
+    my %count;
+    my $inbox = $client->messages("INBOX") || 0;
+    local $SIG{INT} = sub {print "$_ = @{[$timings{$_}/$count{$_}]} (\@ $count{$_} from $i)\n" for sort keys %timings; exit};
+    while (1) {
+        if ( ($inbox == 0 or int rand(4) == 0) and $inbox <= 10 ) {
+            my $email_content = Email::Simple->create(
+                header => [
+                    From    => "user$i\@example.com",
+                    To      => "user$i\@example.com",
+                    Subject => "Some subject"
+                ],
+                body => "Some body here",
+            )->as_string;
+            my $start = Time::HiRes::time();
+            $client->append( INBOX => $email_content );
+            $timings{append} += (Time::HiRes::time() - $start);
+            $count{append}++;
+            $inbox++;
+        }
+        if ($inbox > 1) {
+            if ($inbox > 10 or rand(4) == 0) {
+                my $start = Time::HiRes::time();
+                $client->select("INBOX");
+                $client->copy(int(rand($inbox)), "Actions/Completed");
+                $timings{completed} += (Time::HiRes::time() - $start);
+                $count{completed}++;
+                $inbox--;
+            }
+        }
+        if ( int rand(4) == 0 ) {
+            my $start = Time::HiRes::time();
+            my @boxes = $client->mailboxes;
+            $client->messages( $boxes[ rand @boxes ] );
+            $timings{select} += (Time::HiRes::time() - $start);
+            $count{select}++;
+        }
+        if ( int rand(4) == 0 ) {
+            my $start = Time::HiRes::time();
+            my $n = $client->select("INBOX");
+            $client->_process_cmd(
+                cmd     => [ FETCH => qq[1:* (FLAGS UID)] ],
+                final   => sub     {1},
+                process => sub     {1},
+            );
+            $timings{shortfetch} += (Time::HiRes::time() - $start)/$n;
+            $count{shortfetch}++;
+        }
+        if ( int rand(4) == 0 ) {
+            my $start = Time::HiRes::time();
+            my $n = $client->select("INBOX");
+            $client->_process_cmd(
+                cmd => [
+                    FETCH =>
+                        qq[1:* (UID RFC822.SIZE FLAGS BODY.PEEK[HEADER.FIELDS (From To Cc Subject Date Message-ID Priority X-Priority References Newsgroups In-Reply-To Content-Type)])]
+                ],
+                final   => sub {1},
+                process => sub {1},
+            );
+            $timings{longfetch} += (Time::HiRes::time() - $start)/$n;
+            $count{longfetch}++;
+        }
+        if ( int rand(4) == 0 ) {
+            my $start = Time::HiRes::time();
+            my @boxes = $client->mailboxes;
+            for my $box (@boxes) {
+                $client->_process_cmd(
+                    cmd     => [ STATUS => qq["$box" (UNSEEN UIDNEXT)] ],
+                    final   => sub      {1},
+                    process => sub      {1},
+                );
+            }
+            $timings{status} += (Time::HiRes::time() - $start);
+            $count{status}++;
+        }
+        my $start = Time::HiRes::time();
+        $client->_process_cmd(
+            cmd     => [ "NOOP" => "" ],
+            final   => sub      {1},
+            process => sub      {1},
+        );
+        $timings{noop} += (Time::HiRes::time() - $start);
+        $count{noop}++;
+
+        sleep( ( rand(10) + 30 ) * int( rand(5) ) + rand(10) );
+    }
+}

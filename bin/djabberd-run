@@ -1,0 +1,14 @@
+#!/bin/sh
+# This script is run by daemontools. It should be symlinked from
+# /service/hm-djabberd/run which runs as root, hence the need to drop privs
+
+executable=$0
+if [ -L $executable ]
+then
+    executable=$(readlink $0)
+fi
+export BIN=$(dirname $executable)
+cd "$BIN/.."
+export ROOT=`pwd`;
+
+exec /usr/bin/setuidgid hiveminder $ROOT/bin/djabberd --conffile etc/djabberd.conf --logconf etc/prod.log4perl.conf

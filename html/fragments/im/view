@@ -1,0 +1,26 @@
+<dt>
+
+% if ($im->confirmed) {
+    <% $im->screenname %>
+    on
+    <% $im->protocol %>
+% } else {
+    <% $im->auth_token %>
+% }
+
+    <% 
+    Jifty->web->link( label    => 'Remove',
+    onclick => {  replace_with => '/fragments/im/delete', args => { id => $im->id}
+    }
+    ) 
+    %></dt>
+
+
+<%init>
+my $im = BTDT::Model::UserIM->new(current_user => Jifty->web->current_user);
+$im->load($id);
+</%init>
+<%args>
+$id => undef
+</%args>
+

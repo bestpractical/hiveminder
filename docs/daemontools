@@ -1,0 +1,25 @@
+DaemonTools keeps processes running. Once DaemonTools is chugging along
+happily, adding new programs under it isn't too hard.
+
+/service contains a directory for each program you want to keep running. For
+example, if you have a service named FOO, then you'd have /service/FOO, and in
+that directory you'd have a script named run -- /service/FOO/run
+
+run (and perhaps FOO) needs to be owned by nobody. run should be a symlink to a
+script in the BTDT svn repository, so it can be updated. run needs to be +x.
+
+The script will be run as root, will be run from some unknown directory, and
+will have no environment. So you need to drop priviledges, cd into the BTDT
+directory, and set the env variables you care about (in particular, HOME,
+PATH, and PERL5LIB).
+
+See bin/im-run for an example.
+
+According to djb, svscan looks for new things in /service every five seconds,
+so that should be all. You may need to kick some things over if not.
+
+
+If any DaemonTools-managed program breaks and doesn't come back up, check the
+executable bits and permissions on the bin/ scripts that are symlinked from
+/service. Subversion seems to misstep here a lot.
+

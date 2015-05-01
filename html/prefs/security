@@ -1,0 +1,44 @@
+<&| /_elements/wrapper, title => "Preferences", subtitle => "Security" &>
+
+<h2>Password</h2>
+<% Jifty->web->form->start(name => "password") %>
+% for (qw(current_password password password_confirm)) {
+<% $edit_user->form_field($_)%>
+% }
+<div class="button_line">
+<% Jifty->web->form->submit( label => "Change password" ) %>
+</div>
+<% Jifty->web->form->end %>
+
+<h2>Feeds</h2>
+<p>Hiveminder gives you links that let you access feeds of your task
+lists -- the iCal, Atom and text icons you see at the top of
+every task list. These links let you securely access your task lists
+without your password, so that you can easily give them to other
+applications, like iCal, Bloglines or your desktop news reader.</p>
+
+<p>If somebody gets ahold of one of these links, or you accidentally give 
+one out, those people can see 
+that tasklist. Clicking the button below will reset <i>all</i> your 
+tasklist feeds.</p>
+
+<p class="warning"><strong>Warning!</strong>
+Clicking this button will disable all of your existing feeds. You'll need
+to go back and re-add them anywhere you want to use them.
+</p>
+<% Jifty->web->form->start %>
+
+<% $regen->hidden(regenerate_auth_token => 1) %>
+<div class="button_line">
+<% $regen->button(label => 'Generate new feed links') %>
+</div>
+<% Jifty->web->form->end  %>
+</&>
+<%init>
+my $edit_user = Jifty->web->new_action(class => 'UpdateUser', moniker => 'useredit', arguments => { id => Jifty->web->current_user->id } );
+
+# use different actions since we don't want one to clobber the other.
+
+my $regen = Jifty->web->new_action(class => 'UpdateUser', moniker => 'regenauth', arguments => { id => Jifty->web->current_user->id } );
+</%init>
+

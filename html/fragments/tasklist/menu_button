@@ -1,0 +1,56 @@
+<%args>
+$task_id
+$tokens
+$menu_loaded => 0
+$type => 'action'
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new;
+$task->load( $task_id );
+return unless $task->id;
+
+my ($name, $label, $fragment) = ('action', 'More...', 'context_menu');
+my %extra_args = ();
+
+if ( $type eq 'assign' ) {
+    ($name, $label, $fragment) = ('assign', 'Assign to...', 'assign_menu');
+
+    $label = 'Reassign to...' if $task->owner_id != BTDT::CurrentUser->nobody->id;
+
+    $extra_args{'reassign'} = $ARGS{'reassign'} if exists $ARGS{'reassign'};
+}
+
+my $maybe_clear_menu = {
+    beforeclick => "YAHOO.widget.MenuManager.removeMenu(YAHOO.widget.MenuManager.getMenu('task-$task_id-$name-menu'));",
+    replace_with => '/fragments/tasklist/menu_button',
+    args => {
+        task_id => $task_id,
+        tokens => $tokens,
+        menu_loaded => 0,
+        type => $type,
+        %extra_args,
+    }
+};
+</%init>
+<span id="task-<% $task_id %>-<% $name %>-menu-button" class="<% $name %>-menu-button">
+<span id="task-<% $task_id %>-<% $name %>-submenu-toggle" <% $menu_loaded ? 'class="open"' : '' |n %>>
+% if ( not $menu_loaded ) {
+<%
+    Jifty->web->link(
+        label   => $label,
+        class   => 'submenu-toggle',
+        onclick => {
+            replace_with => "/fragments/tasklist/$fragment",
+            args => {
+                task_id => $task_id,
+                tokens  => $tokens,
+                %extra_args,
+            },
+        }
+    )
+%>
+% } else {
+<span class="submenu-toggle"><% $label %></span>
+% }
+</span>
+</span>

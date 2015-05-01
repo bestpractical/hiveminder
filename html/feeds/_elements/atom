@@ -1,0 +1,22 @@
+<%init>
+my $feed = XML::Atom::Feed->new;
+my $uri  = Jifty->web->url(path => Jifty->web->request->uri);
+$feed->title( "Tasks for " . Jifty->web->current_user->user_object->name );
+$feed->id($uri);
+my $link = XML::Atom::Link->new();
+$link->rel('self');
+$link->href($uri);
+$feed->add_link($link);
+my $now = DateTime->now();
+$feed->updated( $now->ymd('-') . 'T' . $now->hms(':') . 'Z' );
+
+Jifty->web->response->content_type('application/atom+xml; charset=utf-8');
+$feed->add_entry( $_->as_atom_entry ) for @{ $collection->items_array_ref };
+my $str = $feed->as_xml();
+Encode::_utf8_on($str); # XML::Feed explicitly turns off the UTF8 flag on its output (?!)
+$m->out( $str );
+$m->abort();
+</%init>
+<%args>
+$collection
+</%args>

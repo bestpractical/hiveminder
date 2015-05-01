@@ -1,0 +1,204 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+use DateTime;
+use Time::HiRes;
+use Jifty;
+BEGIN { Jifty->new };
+
+my $log = Log::Log4perl->get_logger("session-cleaner");
+
+# How many rows we fetch in one go
+use constant BATCH => 500;
+
+# How long to sleep between each row
+use constant MICROSLEEP => 0.1;
+
+use constant GRACE_PERIOD  => DateTime->now->subtract( days   => 2 );
+use constant EPHEMERAL     => DateTime->now->subtract( weeks  => 4 );
+use constant OTHERWISE     => DateTime->now->subtract( months => 6 );
+use constant CONTINUATIONS => DateTime->now->subtract( months => 1 );
+
+unless (@ARGV) {
+    $log->warn( " Grace period: @{[GRACE_PERIOD]}\n" );
+    $log->warn( "    Ephemeral: @{[EPHEMERAL]}\n" );
+    $log->warn( "    Otherwise: @{[OTHERWISE]}\n" );
+    $log->warn( "Continuations: @{[CONTINUATIONS]}\n" );
+}
+
+# Set up the people we always purge
+my %ignore;
+for my $email (qw/nobody nagios@bestpractical.com srl+timing@bestpractical.com/) {
+    my $user = BTDT::Model::User->new( current_user => BTDT::CurrentUser->superuser );
+    $user->load_by_cols( email => $email);
+    $ignore{$user->id}=$email if $user->id;
+}
+
+if (not @ARGV) {
+    my $start;
+
+    # Clean out the Big Continuations
+    $log->warn( "Huge continations\n" );
+    $start = Time::HiRes::time();
+    Jifty->handle->simple_query("delete from _jifty_sessions where key_type = 'continuation' and length(value) > 50*1024 and updated < '@{[CONTINUATIONS]}'");
+    $log->warn( "..done, in @{[Time::HiRes::time() - $start]} seconds\n" );
+
+    # Double logins?
+    $log->warn( "Double logins\n" );
+    $start = Time::HiRes::time();
+    Jifty->handle->simple_query("delete from _jifty_sessions where session_id in (select session_id from _jifty_sessions where key_type = 'key' and data_key = 'user_id' group by session_id having count(*) > 1)");
+    $log->warn( "..done, in @{[Time::HiRes::time() - $start]} seconds\n" );
+
+    # Old ones
+    $log->warn( "Old ones\n" );
+    $start = Time::HiRes::time();
+    Jifty->handle->simple_query("delete from _jifty_sessions where key_type = 'session' and updated < '@{[OTHERWISE]}'");
+    $log->warn( "..done, in @{[Time::HiRes::time() - $start]} seconds\n" );
+
+    # Orphans
+    $log->warn( "Orphans\n" );
+    $start = Time::HiRes::time();
+    for my $n (0 .. 256 * 256 - 1) {
+        my $low  = sprintf("%04x", $n).("0" x 28);
+        my $high = sprintf("%04x", $n).("f" x 28);
+        my $sth = Jifty->handle->simple_query(<<"EOSQL");
+delete from _jifty_sessions a
+ where session_id in (select session_id
+                        from _jifty_sessions b
+                       where b.session_id >= '$low'
+                         and b.session_id <= '$high'
+                       group by b.session_id
+                      having every(b.key_type != 'session'))
+EOSQL
+        $log->warn( "  $low .. $high (@{[$sth->rows]})\n" );
+#        Time::HiRes::sleep(MICROSLEEP*10);
+    }
+    $log->warn( "..done, in @{[Time::HiRes::time() - $start]} seconds\n" );
+
+    # Sessions with _no_ content
+    $log->warn( "Nobodies\n" );
+    $start = Time::HiRes::time();
+    my $sth = Jifty->handle->simple_query(<<"EOSQL");
+delete from _jifty_sessions
+ where session_id in (select session_id from _jifty_sessions
+                       group by session_id
+                      having count(*) = 1
+                         and max(updated) < '@{[GRACE_PERIOD]}' limit 500);
+EOSQL
+    while ($sth->rows == 500) {
+        $log->warn( "...removing another 500\n" );
+        Time::HiRes::sleep(MICROSLEEP*10);
+        $sth->execute;
+    }
+    $log->warn( "..done, in @{[Time::HiRes::time() - $start]} seconds\n" );
+}
+
+# Now the Big Search
+$log->warn( "Starting the Big Search\n" ) unless @ARGV;
+my $end = shift(@ARGV) || Jifty->handle->simple_query("select min(updated) from _jifty_sessions")->fetchrow_arrayref->[0];
+for (1..5) {
+    my $start = Time::HiRes::time();
+    Jifty->handle->begin_transaction;
+
+    my $sessions = Jifty::Model::SessionCollection->new( current_user => BTDT::CurrentUser->superuser );
+    $sessions->limit(column => "key_type", value => "session");
+    $sessions->limit(column => "updated", operator => '<', value => GRACE_PERIOD, case_sensitive=> 1, entry_aggregator => 'AND');
+    $sessions->limit(column => "updated", operator => '>=', value => $end, case_sensitive=> 1, entry_aggregator => 'AND');
+    $sessions->order_by( column => "updated" );
+    $sessions->set_page_info( current_page => 1, per_page => ((ref $end and $end > DateTime->now->subtract(weeks => 2)) ? BATCH/2 : BATCH ) );
+
+    my $join = $sessions->join(
+        column1 => 'session_id',
+        table2 => '_jifty_sessions',
+        column2 => 'session_id',
+        is_distinct => 1,
+        type => 'left',
+    );
+    $sessions->limit(leftjoin => $join, column => "key_type", value => "key");
+    $sessions->limit(leftjoin => $join, column => "data_key", value => "user_id");
+    $sessions->prefetch( name => 'user', alias => $join, class => 'Jifty::Model::Session' );
+    $log->warn( "******************************* About to fetch next batch\n" );
+    my %nobodies;
+SESSION:
+    while (my $session = $sessions->next) {
+        $end = $session->updated;
+        Time::HiRes::sleep(MICROSLEEP);
+
+        # Find out who they are
+        {
+            my $user = $session->prefetched('user');
+            # Nobodies lose everything within 3 days
+            if ( not $user->id or not defined $user->value or $ignore{$user->value}) {
+                $nobodies{$ignore{$user->value||''}||'nobody'}++;
+                Jifty->handle->simple_query("DELETE FROM _jifty_sessions WHERE session_id = ?", $session->session_id);
+                next SESSION;
+            }
+        }
+        
+
+        # We only need to find out if it has an expires date if the
+        # updated is in the range where it would matter
+        if ($session->updated < OTHERWISE) {
+            $log->warn( "Delete user from @{[$session->updated]}, expires was irrelevant\n" );
+            Jifty->handle->simple_query("DELETE FROM _jifty_sessions WHERE session_id = ?", $session->session_id);
+            next SESSION;
+        } else {
+            my $expires = Jifty::Model::Session->new;
+            $expires->load_by_cols( session_id => $session->session_id, key_type => "metadata", data_key => "expires");
+            # If they have an expires set, they get the longer version (2
+            # months), otherwise they only had the cookie for however long
+            # the browser was open, so we can blow it away quicker (2
+            # weeks)
+            if (($expires->id and not $expires->value) ? $session->updated < EPHEMERAL : $session->updated < OTHERWISE) {
+                $log->warn( "Delete user from @{[$session->updated]}, expires was @{[$expires->id ? ($expires->value || 'empty') : 'nonexistent']}\n" );
+                Jifty->handle->simple_query("DELETE FROM _jifty_sessions WHERE session_id = ?", $session->session_id);
+                next SESSION;
+            }
+        }
+        
+        
+        # Otherwise, we just look at their continuations
+        {
+            my %conts;
+            my $continuations = Jifty::Model::SessionCollection->new;
+            $continuations->limit( column => "session_id", value => $session->session_id );
+            $continuations->limit( column => "key_type", value => "continuation" );
+            $continuations->columns(qw/id updated/);
+            while (my $cont = $continuations->next) {
+                $conts{$cont->value->id}{kids} ||= 0;
+                $conts{$cont->value->id}{row} = $cont;
+                $conts{$cont->value->id}{parent} = $cont->value->parent;
+                $conts{$cont->value->parent}{kids}++ if $cont->value->parent;
+                delete $cont->{$_}{value} for qw/fetched decoded values/;
+            }
+            next SESSION unless $continuations->count;
+            $log->warn( "Session @{[    $session->session_id   ]} continuation purge (@{[$continuations->count]} continuations)\n" );
+            my $pruned = 0;
+            while (my @kill = grep {($conts{$_}{row} and $conts{$_}{kids} <= 0 and $conts{$_}{row}->updated < CONTINUATIONS)} keys %conts) {
+                $pruned = 1;
+                for my $id (@kill) {
+                    $conts{$conts{$id}{parent}}{kids}-- if $conts{$id}{parent};
+                    $conts{$id}{row}->delete;
+                    delete $conts{$id};
+                }
+            }
+            $log->warn( "                                                 purge done (@{[scalar keys %conts]} continuations)\n" ) if $pruned;
+        }
+    }
+    Jifty->handle->commit;
+
+    if (my $count = $sessions->count) {
+        my $rate = (Time::HiRes::time() - $start)/($count);
+        $log->warn( "Removed ".join(", ", map {"$nobodies{$_} $_"} sort keys %nobodies)) if keys %nobodies;
+        $log->warn( "$rate seconds/item, or @{[60/$rate]} per minute; $end\n" );
+    }
+
+    last if ref $end and $end > DateTime->now->subtract( weeks => 1 );
+    if ($sessions->count < BATCH) {
+        $log->warn( "Complete!\n" );
+        exit;
+    }
+}
+
+exec($^X, $0, $end);
+

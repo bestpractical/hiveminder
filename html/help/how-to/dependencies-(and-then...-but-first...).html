@@ -1,0 +1,52 @@
+<&| /help/_elements/wrapper, title => 'Dependencies (And Then, But First)' &>
+
+<p>In order to create tasks that depend on one another, you must first create one of the tasks
+in the chain via braindump or via the task creation bar at the bottom of your "To Do" list.
+  Once this task is created, click on its task summary to show the full task details of that
+  task summary.  At the bottom of the page are "But First..." and "And Then..." sections, which are just 
+  task creation bars that will set up a dependency.  In other words, tasks created in those bars will
+  need to be completed before or after the task that is currently open.</p>
+  
+<p>You can also create dependencies directly in braindump. If you've already created the tasks, then you can use any of the following:</p>
+<pre>
+check account balance [then: #CADR]
+
+check account balance
+    then: #CADR
+
+call mom
+    but first: #DALN
+
+call mom [but first: #DALN]
+</pre>
+
+<p>You can also create dependent tasks directly in braindump. Just indent, add "first:" or "then:", then the new task. You can even chain many tasks together, any way you like:</p>
+<pre>
+make dinner
+    then: eat dinner
+        then: do dishes
+
+clean room [work]
+    but first: write report [school work]
+    but first: walk Tyson [pet]
+    but first: feed Chairman Mao [pet]
+
+buy groceries
+    but first: start car
+        then: get in car
+    then: make dinner
+        then: eat dinner
+            then: do dishes
+            then: go to bed
+</pre>
+
+<p>Once you have created dependencies, only the first task in the chain will show up in your 
+"To Do" list by default.  The dependent task summary will show up in your task as hyperlink to the right of 
+that task summary.  You can create as many dependecies as you like.  To create dependencies
+between existing tasks, you can enter the Task ID (i.e. #L4Z) into the appropriate "But first..."
+or "And then..." field.  You can do this either from the task screen or from the task's
+dropdown menu to the right of its summary in a list.  To undo a "But first..." or "And then...", you
+can select "remove link to (Task ID)" from the task's dropdown menu.  This will make the 
+dependent task its own independent task.</p> 
+
+</&>

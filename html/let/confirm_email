@@ -1,0 +1,7 @@
+<%init>
+my $link = Jifty::Web::Form::Clickable->new( url => "/todo" );
+$link->region_argument("tasklist-tasklistotherstuff", suggest_tasks => 1);
+$link->region_fragment("tasklist-tasklistotherstuff" => "/fragments/tasklist/braindump");
+
+Jifty->web->redirect($link);
+</%init>

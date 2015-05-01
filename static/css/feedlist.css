@@ -1,0 +1,52 @@
+ul.feed-list {
+    padding: 0;
+    margin: 0;
+    float: right;
+    list-style: none;
+}
+
+ul.feed-list li {
+    float: left;
+}
+
+ul.feed-list li.explain {
+    font-size: 0.9em;
+    color: #888;
+    padding-right: 0.2em;
+    text-align: right;
+}
+
+ul.feed-list li a {
+    display: block;
+    width: 0;
+    padding-left: 22px;
+    min-height: 20px;
+    text-indent: -9999em;
+    background: no-repeat left center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+html>body ul.feed-list li a {
+    overflow : hidden; /* opera */
+}
+
+ul.feed-list li a.ical {
+    background: url(/static/images/ical.new.png) no-repeat 2px 0;
+}
+
+ul.feed-list li a.atom {
+    background: url(/static/images/silk/feed.png) no-repeat 2px 0;
+}
+
+ul.feed-list li a.plaintext {
+    background: url(/static/images/silk/page_white_text.png) no-repeat 2px 0;
+}
+
+ul.feed-list li a.print {
+    background: url(/static/images/silk/printer.png) no-repeat 2px 0;
+}
+
+ul.feed-list li a.gcal {
+    background: url(/static/images/gcal.png) no-repeat 2px 0;
+}
+

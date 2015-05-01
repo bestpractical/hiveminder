@@ -1,0 +1,29 @@
+#!/usr/bin/env hmperl
+
+# This is a slightly stripped-down version of the original starman,
+# mainly to ensure that we run with hmperl, not some random perl; it
+# also loads up the Jifty and BTDT libraries before forking.
+
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new(no_handle => 1) }
+use BTDT;
+
+use Plack::Runner;
+
+sub version {
+    require Starman;
+    print "Starman $Starman::VERSION\n";
+}
+
+my $runner = Plack::Runner->new(
+    server     => 'Starman',
+    env        => 'deployment',
+    version_cb => \&version,
+    loader     => 'Delayed',
+);
+$runner->parse_options(@ARGV);
+$runner->set_options(argv => \@ARGV);
+$runner->run;

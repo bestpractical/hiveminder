@@ -1,0 +1,11 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+
+use BTDT::CurrentUser;
+use BTDT::Model::User;
+use BTDT::ScheduleRepeats;
+BTDT::ScheduleRepeats->new->run(skip_time_zone => 0, adjust => shift(@ARGV) );

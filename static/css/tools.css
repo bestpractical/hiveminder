@@ -1,0 +1,126 @@
+/* Layout */
+
+#application-list {
+    float: left;
+    width: 60%;
+    margin: 0;
+    padding: 0;
+}
+
+#service-list {
+    float: right;
+    width: 35%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Applications */
+
+#application-list dt {
+    color: #084c8f;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+#application-list dd {
+    margin: 0.5em 0 0 0;
+    padding: 0;
+}
+
+#application-list dd.summary {
+    color: #666;
+    margin-top: 0;
+}
+
+#application-list dd p {
+    margin: 0;
+    padding: 0 0 0.5em 0;
+}
+
+#application-list div {
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 0.75em;
+    margin-bottom: 1em;
+}
+
+#application-list #browser dt,
+#application-list #iphone dt,
+#application-list #android dt,
+#application-list #cli dt,
+#application-list #quicksilver dt,
+#application-list #api dt
+{
+    padding-left: 20px;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+}
+
+#application-list #browser dt { background-image: url(/static/images/silk/textfield_add.png) }
+#application-list #cli dt { background-image: url(/static/images/silk/application_xp_terminal.png) }
+#application-list #quicksilver dt {
+    background-image: url(/static/images/quicksilver.icon.png);
+    padding-left: 22px;
+}
+#application-list #api dt { background-image: url(/static/images/silk/bricks.png) }
+#application-list #iphone dt { background-image: url(/static/images/tools/iminder.png) }
+#application-list #android dt { background-image: url(/static/images/tools/android.png) }
+
+/* Services */
+
+#service-list dt {
+    color: #333;
+    font-weight: bold;
+}
+
+#service-list dd {
+    margin: 0.25em 0 0 0;
+    padding: 0;
+}
+
+#service-list dd p {
+    margin: 0;
+    padding: 0 0 0.25em 0;
+}
+
+#service-list div {
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+}
+
+#service-list #chat dt,
+#service-list #taskbyemail dt,
+#service-list #imap dt,
+#service-list #mobile dt,
+#service-list #gadget dt,
+#service-list #gcal dt
+{
+    padding-left: 20px;
+    background-repeat: no-repeat;
+    background-position: top left;
+    min-height: 16px;
+}
+
+#service-list #chat dt { background-image: url(/static/images/silk/comments.png) }
+#service-list #taskbyemail dt { background-image: url(/static/images/silk/email_go.png) }
+#service-list #imap dt { background-image: url(/static/images/silk/email_open.png) }
+#service-list #mobile dt { background-image: url(/static/images/silk/phone.png) }
+#service-list #gadget dt { background-image: url(/static/images/silk/plugin.png) }
+#service-list #gcal dt { background-image: url(/static/images/gcal.png) }
+
+/* Latest */
+
+#application-list .latest,
+#service-list .latest
+{
+    padding-right: 20px;
+    background-image: url(/static/images/silk/new.png);
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+}
+
+#service-list #gadget a, #service-list #gmail-gadget a, #service-list #gcal a {
+    display: block;
+    margin: 0.5em auto 0 auto;
+    text-align: center;
+}

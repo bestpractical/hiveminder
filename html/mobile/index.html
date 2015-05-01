@@ -1,0 +1,43 @@
+<%init>
+my $menu = Jifty::Web::Menu->new();
+
+my @default_lists = BTDT::Model::List->default_lists(Jifty->web->current_user->pro_account);
+
+my @items = ([ 'Create tasks'  => url => '/mobile/braindump'],
+[ 'Tag cloud' => url => '/mobile/tags'],
+[ 'Review' => url => '/mobile/review'],
+[ 'To Do' => url => '/mobile/list/'.$default_lists[0]->{'token_url'}],
+);
+my $i = 1;
+foreach my $item (@items) {
+$menu->child(@$item, 
+($i < 9 ? (keybinding => $i++) : ())
+
+);
+}
+
+
+
+
+my $savedlists = BTDT::Model::ListCollection->new;
+$savedlists->limit( column => 'owner', value => Jifty->web->current_user->id );
+
+# if there are no saved lists, we just don't ever run this loop
+while ( my $list = $savedlists->next ) {
+$menu->child( $list->name => url => '/mobile/list/'.$list->tokens_as_url , ($i < 9 ? (keybinding => $i++) : ()));
+}
+
+for (@default_lists) {
+    next unless $_->{url} =~ /^\/list/;
+$menu->child( $_->{label}, url   => "/mobile".$_->{url}, ($i < 9 ? (keybinding => $i++) : ()));
+}
+
+
+$menu->child('Send feedback' => url => '/mobile/feedback' );
+$menu->child( 'logout' => label => _('Logout'), url => '/mobile/logout');
+</%init>
+<&| _elements/wrapper, title => 'Hiveminder Mobile' &>
+<div align="center"><img src="/static/images/hmlogo/default.white.png" alt="Hiveminder" /></div>
+<% $menu->render_as_menu %>
+
+</&>

@@ -1,0 +1,39 @@
+<%args>
+$collection
+$searchpath => ""
+</%args>
+<%init>
+my $url = Jifty->web->url(path => "/list/$searchpath" );
+</%init>
+<& /_elements/header, title => "" &>
+  <body id="print">
+    <p class="print_command">
+      <a href="#" onclick="window.print(); return false;">Print this page</a>
+    </p>
+    
+    <p class="print_note note">
+      You probably want to "print background images" if you have the option
+      to do so in your print dialog. (This note will not be printed.)
+    </p>
+
+    <p class="url">
+      You can access this tasklist at:
+      <% Jifty->web->link( label => $url, url => $url ) %>
+    </p>
+  
+    <& /_elements/tasklist, collection    => $collection,
+                            new_item_path => '/__jifty/empty',
+                            search_open   => 0,
+                            hide_paging   => 1,
+                            hide_feeds    => 1,
+                            hide_actions  => 1,
+                            render_submit => 0,
+                            page          => -1,
+                            print         => 1
+                            &>
+    <p class="blurb">
+      <img src="/static/images/bee-grey.png" width="13" height="12" alt="" />
+      Hiveminder &mdash; the online "to do" list that also comes in a sleek new "paper" format!
+    </p>
+  </body>
+</html>

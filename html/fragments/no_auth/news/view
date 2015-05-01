@@ -1,0 +1,14 @@
+<%args>
+$id
+</%args>
+<%init>
+my $n = BTDT::Model::News->new( current_user => BTDT::CurrentUser->superuser );
+$n->load($id);
+</%init>
+<div class="newsitem">
+<h2><b><% $n->title %></b> by <& /_elements/username, user => $n->author, showtype => 0 &> on <% $n->created %> (<a href="<% $n->url %>">permalink</a>)</h2>
+<% ($n->content||'') |n %>
+% if ( Jifty->web->current_user->id and Jifty->web->current_user->user_object->access_level eq "staff") {
+<p><% Jifty->web->link( label => 'Edit', onclick => {replace_with => '/fragments/no_auth/news/edit' } )%></p>
+% }
+</div>

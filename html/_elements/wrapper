@@ -1,0 +1,182 @@
+% if ($ARGS{detect_mobile} and Jifty->web->request->template_argument('mobile_ua')) {
+<&|/mobile/_elements/wrapper, %ARGS &><% $m->content |n %></&>
+% $m->abort;
+% }
+% Jifty->handler->stash->{'in_body'} = 1;
+<& header, title => $title, subtitle => $subtitle, include_content => $header_include&>
+<body <% $body_id ? qq[id="$body_id"] : '' |n %> class="<% $class %>">
+
+<div id="body">
+% Jifty::View->call_trigger('body_start');
+  <div id="headers">
+    <%Jifty->web->link( url => "/", label => '<h1 class="hiveminder">Hiveminder</h1>', escape_label => 0)%>
+% if ( Jifty->web->current_user->pro_account ) {
+    <img src="/static/images/pro-text-f6f6f6-bg.png" alt="Pro" id="protext" width="29" height="14" />
+% }
+  </div>
+
+% if ( $normal_user and not $unaccepted_eula ) {
+  <div id="navigation">
+    <div class="container">
+      <& /_elements/nav, title => $title &>
+      <%Jifty->web->navigation->render_as_yui_menubar("navbar")%>
+      <div class="clear">&nbsp;</div>
+    </div>
+% if ( $normal_user and not $unaccepted_eula ) {
+<& /_elements/quicksearch &>
+% }
+  </div>
+% }
+
+  <div id="main">
+
+    <div id="content-wrapper">
+      <div id="content-wrapper2">
+
+        <& /_elements/random_pro_pitch &>
+
+<div class="dropshadow_left_wrap1"><div class="dropshadow_left_wrap2"><div class="dropshadow_left_wrap3">
+      <div id="content">
+        <a name="content"></a>
+% unless ($hide_title) { 
+        <h1 class="title">
+          <% $title %>
+%     if ( defined $in_page_subtitle && $in_page_subtitle ) {
+%         if ( $escape_subtitle ) {
+          <span class="subtitle"><% $in_page_subtitle %></span>
+%         } else {
+          <span class="subtitle"><% $in_page_subtitle |n %></span>
+%         }
+%     }
+        </h1>
+% }
+        <& /_elements/page_nav &>
+% if($hide_messages) {
+% # Always show errors
+	<% Jifty->web->render_error_messages %>
+% } else {	
+        <% Jifty->web->render_messages %>
+% }	
+
+        <% $m->content |n%>
+
+%#<% Jifty->web->render_request_debug_info %>
+        <hr class="clear hidden" />
+      </div>
+</div></div></div>
+      <hr class="clear hidden" />
+      </div>
+    </div>
+
+% if ( not $hide_sidebar ) {
+    <div id="info-wrapper">
+      <div id="info">
+        <hr class="hidden clear" />
+        <div id="sidebar">
+          <& /_elements/sidebar &>
+        </div>
+% if ( $normal_user and not $unaccepted_eula ) {
+    <% Jifty->web->region( name => 'notices', path => "/fragments/notices" ) %>
+% }
+
+        <& /_elements/keybindings &>
+
+% if ( $normal_user and not $unaccepted_eula ) {
+        <% Jifty->web->region( name     => 'tagcloud',
+                               path     => "/fragments/tagcloud",
+                               defaults => { tokens   => $tokens,
+                                             group_id => $group_id },
+                              )
+          %>
+% }
+
+% if ( not $hide_braindump and $normal_user and not $unaccepted_eula ) {
+        <& /_elements/quick_create, task_review => $task_review &>
+% }
+% if ( not $normal_user ) {
+        <& /_elements/signup_plea &>
+% }
+% if ( not $unaccepted_eula ) {
+        <& /_elements/invite_new_user &>
+% }
+        <& /_elements/feedback &>
+      </div>
+      <hr class="hidden clear" />
+    </div>
+  </div>
+% }
+
+% if ( not $hide_footer ) {
+  <& /_elements/footer, logo => $footer_logo &>
+% }
+</div>
+  <div id="jifty-wait-message" style="display: none">&nbsp;</div>
+% if (BTDT->is_production) {
+<script type="text/javascript">
+_uacct = "UA-937869-1";
+urchinTracker();
+</script>
+% }
+
+% Jifty::View->call_trigger('body_start');
+</body>
+</html>
+<%args>
+$header_include => ""
+$title => ""
+$subtitle => ""
+$in_page_subtitle => ""
+$escape_subtitle => 1
+$tag_collection => undef
+$group_id => 0
+$hide_braindump => 0
+$hide_title => 0
+$hide_sidebar => 0
+$hide_footer => 0
+$hide_messages => 0
+$body_id => ''
+$task_review => 0  
+$class => ''
+$logo => ''
+$footer_logo => 'bp_logo_small_f6f6f6.gif'
+</%args>
+<%init>
+
+my $tokens;
+if ($tag_collection) {
+    $tokens = BTDT::Model::TaskCollection->join_tokens($tag_collection->tokens);
+}
+
+my $normal_user =    Jifty->web->current_user->id
+                  && Jifty->web->current_user->user_object->access_level ne 'nonuser';
+
+my $nonuser     =    Jifty->web->current_user->id
+                  && Jifty->web->current_user->user_object->access_level eq 'nonuser';
+
+my $unaccepted_eula =    $normal_user 
+                      &&   Jifty->web->current_user->user_object->accepted_eula_version
+                         < BTDT->current_eula_version;
+
+my @classes = split /\s+/, $class;
+
+push @classes, 'nonuser'
+    if not $normal_user or $unaccepted_eula;
+
+# "Hi" on login/activation trumps everything but errors (below)
+my $loginbox = Jifty->web->response->result('loginbox');
+my $golegit  = Jifty->web->response->result('golegit');
+$logo = 'hi' if    ( defined $loginbox and $loginbox->success )
+                or ( defined $golegit  and $golegit->success );
+
+# Errors trump everything
+$logo = 'er' if Jifty->web->request->path =~ m|^/errors|;
+
+push @classes, "logo_$logo"
+    if $logo;
+
+$class = join ' ', @classes;
+
+$in_page_subtitle ||= $subtitle;
+
+$title = "" unless defined $title;
+</%init>

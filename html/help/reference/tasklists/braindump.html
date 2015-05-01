@@ -1,0 +1,167 @@
+<&| /help/_elements/wrapper, title => 'Braindump' &>
+
+We realize that no "to do" list springs fully-formed from your head, like Athena from Zeus'.
+We provide the opportunity to spit the things you have to do into Hiveminder quickly and painlessly on pretty much every page.  
+These "braindump" boxes allow you to quickly
+type out tasks as they occur to you so that you don't forget them, and the tasks are then added to your 
+To Do List.  You can always add information to or organize them later, but at least they're out 
+of your head.  
+
+<h2>Braindump Syntax</h2>
+<p>Type a task name on a line; one task per line.  Create as many tasks as you 
+like by using multiple lines.  If the task name contains square brackets <code>[ ]</code> with one or more words inside
+separated by spaces (eg. '<code>[stuff things]</code>'), those words become its 
+tags.  This does not become part of the final task name.
+</p>
+<p>Any line under the task name which begins with a space becomes part of the task
+description.  If the task name or description contains
+a date, that becomes the task's due date.  These do become part of the task's details.
+</p>
+<p>You can give your task a priority by including 'plus' and 'minus' signs
+at the start of the task title.  See below for the key:
+
+<ul><li><code>++</code> &#8594; highest</li>
+<li><code>+</code> &#8594; high</li>
+<li>nothing &#8594; normal</li>
+<li><code>-</code> &#8594; low</li>
+<li><code>--</code> &#8594; lowest</li></ul>
+
+These priority markings do not become part of the final task 
+name.</p>
+
+<p>If you include exclamation points in the task's title, you can also increase its priority
+according to the scheme below:
+<ul><li><code>!!</code> &#8594; highest</li>
+<li><code>!</code> &#8594; high</li></ul>
+
+These priority markings do become part of the final task 
+name.</p>
+
+%# XXX TODO ACL
+% if ( Jifty->web->current_user->has_group_with_feature('Projects') ) {
+<p>To create a project or milestone in a braindump, prefix the name with "Project:" or "Milestone:", like this:</p>
+
+<ul>
+  <li><code>Project: Hiveminder [group: Best Practical]</code> &#8594; creates a new project called "Hiveminder" in the group "Best Practical"</li>
+  <li><code>Milestone: Project management [group: Best Practical]</code> &#8594; creates a new milestone called "Project management" in the group "Best Practical"</li>
+</ul>
+
+<p>These "Project:" and "Milestone:" prefixes, as seen in the example, do <em>not</em> become part of the final project or milestone name.</p>
+% }
+
+<p>In addition to tags, square brackets <code>[ ]</code> can be used to add extra information to your
+task (eg. '<code>[due: friday]</code>').  See below for a list.
+
+<ul>
+ <li><code>[due: thursday]</code> &#8594; set 'Date due' to Thursday's date</li>
+ <li>Set Owner</li>
+ <ul>
+  <li><code>[owner: steve@example.com]</code> &#8594; Assign this task to
+	 <code>steve@example.com</code></li>
+  <li><code>[by: steve@example.com]</code> &#8594; Assign this task to 
+	 <code>steve@example.com</code></li>
+ </ul>
+ <li>Set Group</li>
+ <ul>
+   <li><code>[group: mygroup]</code> &#8594; Put this task in the '<code>mygroup</code>' group</li>
+ </ul>
+ <li>Set Priority
+ <ul>
+  <li><code>[priority: low]</code> &#8594; this is a low-priority task</li>
+  <li><code>[prio: low]</code> &#8594; this is a low-priority task</li>
+ </ul>
+ <li>Set 'Hide until'</li>
+ <ul>
+  <li><code>[hide until: friday]</code> &#8594;  set 'Hide until' to Friday's date</li>
+  <li><code>[hide: friday]</code> &#8594; set 'Hide until' to Friday's date</li>
+  <li><code>[starts: friday]</code> &#8594; set 'Hide until' to Friday's date</li>
+ </ul>
+ <li>Set 'Will not complete'</li>
+ <ul>
+  <li><code>[hide: forever]</code> &#8594; set 'Will not complete'</li>
+  <li><code>[starts: never]</code> &#8594; set 'Will not complete'</li>
+ </ul>
+ <li>Set Repetition</li>
+ <ul>
+  <li><code>[every: week]</code> &#8594;  repeat every week</li>
+  <li><code>[repeats monthly]</code> &#8594; repeat every month</li>
+ </ul>
+% if (Jifty->config->app('FeatureFlags')->{TimeTracking}) {
+ <li>Time Tracking</li>
+ <ul>
+  <li><code>[time: 2h]</code> &#8594;  set 'Time left' to 2 hours</li>
+  <li><code>[estimate: 30 minutes]</code> &#8594; set 'Time left' to 30 minutes</li>
+  <li><code>[worked: 30m]</code> &#8594;  add 30 minutes to 'Time worked'</li>
+  <li><code>[spent: 1h]</code> &#8594; add 1 hour to 'Time worked'</li>
+ </ul>
+% }
+ <li>Dependencies</li>
+ <ul>
+  <li><code>[but first: #ADE]</code> &#8594; depend on task #ADE</li>
+  <li><code>[then: #ADE]</code> &#8594; task #ADE depends on this</li>
+ </ul>
+ <li>Complete</li>
+ <ul>
+  <li><code>[complete: 1]</code> &#8594; automatically mark the task as complete</li>
+ </ul>
+% if ( Jifty->web->current_user->has_group_with_feature('Projects') ) {
+ <li>Project management</li>
+ <ul>
+  <li><code>[project: Hiveminder]</code> &#8594; set the task's project to the "Hiveminder" project</li>
+  <li><code>[milestone: Project management]</code> &#8594; set the task's milestone to the "Project management" milestone</li>
+ </ul>
+% }
+</ul>
+
+This extra information does not become part of the final task name</p>
+
+<p>You can also create new <a href="/help/how-to/dependencies-(and-then...-but-first...).html">dependent tasks</a> in braindump. Indent the next line, include "but first:" or "and then:" then type the new task summary. You can even specify dependencies for your dependencies, and dependencies for those, ad nauseam (just be sure to have a task you can complete!)</p>
+
+<p>Braindumping to groups can be done from the tasklist braindump if you are currently in the list
+for that group.  You can always change the group within a braindump by using the <code>[group: groupname]</code>
+syntax.</p>
+
+<h2>Examples</h2>
+<code><pre>
+get sales figures [ceo cfo]
+</pre></code>
+ creates a normal-priority task named '<code>get
+sales figures</code>', tagged with '<code>ceo</code>' and 
+'<code>cfo</code>', with no 
+task description.
+<code><pre>
+-finish TPS report
+  get it to Bill
+</pre></code>
+creates a low-priority task named '<code>finish TPS report</code>', with the description '<code>get it to Bill</code>'.
+<code><pre>
+plan wedding!! [personal] tomorrow
+  fun stuff to figure out
++order flowers [personal "dave and sarah"]
+</pre></code>
+ creates two tasks: 
+<ol><li>a highest-priority task named '<code>plan wedding!! tomorrow</code>'
+and tagged with '<code>personal</code>',
+with the description '<code>fun stuff to figure out</code>', due 
+on tomorrow's date.</li>
+<li>a high-priority task named '<code>order flowers</code>' and tagged with
+'<code>personal</code>' and '<code>dave and sarah</code>', with no task description.</li></ol>
+<code><pre>
+Order Bobby's cake [due: friday] [family] [owner: bobby@example.com]
+</pre></code>
+creates a task named '<code>Order Bobby's cake</code>', due this coming Friday, tagged
+with '<code>family</code>' and assigned to '<code>bobby@example.com</code>'
+<code><pre>
+Buy presents [hide until: dec 24] [priority: highest]
+</pre></code>
+creates a highest-priority task named '<code>Buy presents</code>', which is hidden until Christmas Eve
+<code><pre>
++Pay electricity bill [every: month]
+</pre></code>
+creates a high-priority task named '<code>Pay electricity bill</code>', which automatically repeats every month
+<code><pre>
+document the new feature [worked: 15m] [complete: 1] [group: work]
+</pre></code>
+creates an already-completed task named '<code>document the new feature</code>', which is useful in conjunction with time-tracking
+
+</&>

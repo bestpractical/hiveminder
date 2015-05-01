@@ -1,0 +1,85 @@
+#!/usr/bin/env hmperl
+use warnings;
+use strict;
+
+# you should not run this directly, this is supervised by daemontools!
+
+# if you need to restart the bot (gitupdate does this for you) then it's
+#     svc -t hm-im
+
+# setup {{{
+use Jifty;
+BEGIN { Jifty->new }
+use BTDT::CurrentUser;
+use BTDT::IM;
+use Getopt::Long;
+use Fcntl;
+use Time::HiRes qw(sleep);
+
+Jifty->new();
+my $u = BTDT::Model::User->new(current_user => BTDT::CurrentUser->superuser);
+# }}}
+
+my $aim;
+my $jabber;
+my $twitter_rest;
+my $shell;
+
+GetOptions(
+    'aim'          => \$aim,
+    'jabber'       => \$jabber,
+    'twitter-rest' => \$twitter_rest,
+    'shell=s'      => \$shell
+) or exit;
+
+my @daemons;
+
+if ($aim) {
+    make_daemon('BTDT::IM::AIM');
+}
+
+if ($jabber) {
+    make_daemon('BTDT::IM::Jabber');
+}
+
+if ($twitter_rest) {
+    make_daemon('BTDT::IM::TwitterREST');
+}
+
+if (defined $shell)
+{
+    make_daemon('BTDT::IM::Shell', screenname => $shell);
+}
+
+die "No services selected. Usage: $0 [--aim] [--jabber] [--twitter-rest] [--shell]\n" if @daemons == 0;
+
+warn "Running a Jabber bot with other protocols in the same process is unrecommended. Net::Jabber cannot sleep at granularities of less than one second, so the other bots will seem unnecessarily laggy." if $jabber && @daemons > 1;
+
+eval {
+    while (1)
+    {
+        for my $daemon (@daemons)
+        {
+            $daemon->iteration();
+        }
+
+        # make absolutely sure we do wait a little between each iteration
+        # Net::OSCAR says it'll wait 10ms but if there's an error all bets are off
+        sleep 0.01;
+    }
+};
+
+warn "@daemons died!: $@";
+
+sub make_daemon
+{
+    my $package = shift;
+
+    my $file = $package;
+    $file =~ s{::}{/}g;
+    require "$file.pm";
+
+    push @daemons, $package->new(@_);
+}
+
+1;

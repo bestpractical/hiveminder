@@ -1,0 +1,21 @@
+<&| /_elements/wrapper, title => "Your Badges", logo => 'hivemind' &>
+
+<h2>Your selection of badges</h2>
+<% Jifty->web->form->start %>
+
+% for my $badge (qw(weekbrief)) {
+<img class="badge" src="/badges/<% $badge %>.png" alt="Hiveminder Badge: <% $badge %>">
+
+% my $letme = Jifty::LetMe->new;
+% $letme->email(Jifty->web->current_user->user_object->email);
+% $letme->path("badges");
+% $letme->args->{badge} = $badge;
+<p class="copyurl">
+<input value='<img src="<% $letme->as_url %>" alt="Hiveminder Badge" />' />
+</p>
+
+<% Jifty->web->form->end %>
+
+% }
+
+</&>

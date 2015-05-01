@@ -1,0 +1,18 @@
+<%args>
+$task => undef
+$id => undef
+</%args>
+<%init>
+if ($id) {
+    $task = BTDT::Model::Task->new();
+    $task->load($id);
+}
+</%init>
+  <div id="taskpage-dependencies">
+    <div id="taskpage-depends-on">
+      <& /task/_elements/depends_on, task => $task &>
+    </div>
+    <div id="taskpage-depended-on">
+      <& /task/_elements/depended_on_by, task => $task &>
+    </div>
+  </div>

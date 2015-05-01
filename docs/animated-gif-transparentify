@@ -1,0 +1,5 @@
+convert +adjoin -coalesce loading.indicator.bee.gif frame%02d.gifjess
+
+* hack the images*
+
+convert -adjoin -coalesce -loop 0 -dispose Background frame*.gif bee.gif

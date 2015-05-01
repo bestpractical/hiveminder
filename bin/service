@@ -1,0 +1,62 @@
+#!/usr/bin/env hmperl
+
+use strict;
+use warnings;
+use LWP::UserAgent;
+use HTTP::Cookies;
+use Getopt::Long;
+use Term::ReadKey;
+
+my ( $class, $host, $path, $format, $moniker, $email, $password );
+GetOptions(
+    "class=s"    => \$class,
+    "host=s"     => \$host,
+    "path=s"     => \$path,
+    "format=s"   => \$format,
+    "moniker=s"  => \$moniker,
+    "email=s"    => \$email,
+    "password=s" => \$password,
+);
+$format  ||= "yaml";
+$host    ||= "http://localhost:8008";
+$path    ||= "/__jifty/webservices/$format";
+$moniker ||= "moniker";
+die "Must provide a --class\n" unless $class;
+
+if ( $email and not $password ) {
+    ReadMode('noecho');
+    local $| = 1;
+    print "Password: ";
+    $password = ReadLine(0);
+    chomp $password;
+    ReadMode('restore');
+    print "\n";
+}
+
+my $ua = LWP::UserAgent->new;
+$ua->cookie_jar( HTTP::Cookies->new );
+
+action(
+    Login    => "login",
+    address  => $email,
+    password => $password,
+    )
+    if $email;
+
+action( $class => $moniker, @ARGV );
+
+sub action {
+    my ( $class, $moniker, %args ) = @_;
+    my $res = $ua->post(
+        "$host$path",
+        {   "J:A-$moniker" => "BTDT::Action::$class",
+            map { ( "J:A:F-$_-$moniker" => $args{$_} ) } keys %args
+        }
+    );
+
+    if ( $res->is_success ) {
+        print $res->content;
+    } else {
+        die $res->status_line;
+    }
+}

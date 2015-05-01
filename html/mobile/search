@@ -1,0 +1,10 @@
+<&| _elements/wrapper, title  => 'Tasks', tokens => $tokens &>
+<& _elements/list, tokens => $tokens , page =>$page &>
+</&>
+<%init>
+my $tasks = Jifty->web->response->result("search")->content("tasks");
+my $tokens = BTDT::Model::TaskCollection->join_tokens( grep { defined $_ } $tasks->tokens );
+</%init>
+<%args>
+$page => undef
+</%args>

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#     From:     trs@bestpractical.com
+#     Subject:    [Bps-internal] Re: r5664 - in hiveminder/trunk/BTDT: .
+#     Date:   November 30, 2006 9:53:42 PM BST
+#     To:       bps-internal@lists.bestpractical.com
+# 
+# jesse@bestpractical.com wrote:
+# Removed:
+#    hiveminder/trunk/BTDT/bin/add-background
+# Log:
+#  r45455@pinglin:  jesse | 2006-11-27 10:44:05 -0500
+#  * tom left this file kicking around
+# 
+# I checked it in intentionally.  I figured we'd have a use for it as we
+# added more images/icons to HM which have transparent backgrounds and
+# need to be converted for IE.
+#  
+
+COLOR=white
+
+if [[ ! -z "$2" ]]; then
+    COLOR=$2
+fi
+
+if [[ ! -e "$COLOR-bg.png" ]]; then
+    convert -size 16x16 xc:none -fill "$COLOR" -draw 'rectangle 0,0 16,16' "$COLOR-bg.png"
+fi
+composite -gravity center $1 "$COLOR-bg.png" "$(basename $1 .png)-${COLOR/\#}-bg.png"

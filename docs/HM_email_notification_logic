@@ -1,0 +1,218 @@
+Notification scheme A
+    * if it's a personal task,
+        notify the requestor if they aren't the actor
+        notify the owner if they aren't the actor
+    * if it's a group task 
+        * if either the old or new value is "no owner" 
+            notify all group members except the actor
+        * otherwise
+            notify the owner if they aren't the actor
+
+
+Notification scheme B
+    * Do what scheme A does
+    * If it's a personal task
+        * Notify the actor
+    * If it's a group task
+        * Send email to non-member requestors
+        * Notify all group members
+
+
+Notification Scheme C
+    * Do what scheme A does
+    * If it's a group task
+        * Notify the requestor if they're a group member and not the actor
+
+
+* When a task is created
+    Notification scheme A
+
+* When a task is deleted
+    Notification scheme A
+
+* When a task is marked done
+    Notification scheme A
+
+* When a task is marked not done
+    Notification scheme A
+
+* When a task is accepted
+    Notification scheme C
+
+* When a task is declined
+    Notification scheme C
+
+* When someone comments on a task
+    Notification scheme B
+
+* When someone moves a task into a group
+    Notification scheme A
+
+* When someone moves a task out of a group
+    Notification scheme A
+
+* When a task is taken by a user
+    Notification schema A
+
+* When a task is given to another user
+    Notification schema A
+
+* When a task is abandoned by a user
+    Notification schema A
+
+*
+
+* Personal tasks
+
+    You're the owner:
+
+    whenever someone who is not you creates the task
+    whenever the requestor deletes the task 
+    whenever the requestor changes the task owner
+    whenever someone who is not you comments on the task
+
+* personal tasks
+
+    You're the requestor:
+
+    whenever the owner accepts/declines the task
+    whenever someoene who is not you changes the task owner
+    whenever someone comments on the task
+    whenever someone finishes or unfinshes the task
+    whenever the owner deletes the task
+
+* Group tasks: (you're a group member)
+
+    whenever anyone adds a comment
+
+
+    You're the owner:
+
+    whenever someone finishes or unfinishes the task
+    whenever someone takes it from you
+    whenever someone moves the task in or out of the group?
+
+    Nobody is the owner:
+
+    whenever someone creates the task
+    whenever someone deletes the task
+    whenever someone who is not you changes the owner (assigns them to someone)
+    whenever someone moves the task in or out of the group?
+
+
+    You're the requestor:
+
+    whenever someone accepts/declines or takes the task
+    whenever someone creates the task
+    whenever someone deletes the task
+    whenever someone moves the task in or out of the group?
+
+* Group tasks: (You are not a watcher, but you are a requestor)
+
+    whenever someone adds a comment
+
+----------------------------------------------------------------------------------------------
+
+For group tasks, here's more about the kind of mails we should be sending.
+This is about the text we send, not just whether we send mail at all.
+(It hasn't been synchronized with the text above; this was a separate
+brainstorming session.)
+
+The point of this exercise is that we should be able to set up some data
+structures to make these decisions clearer, instead of having infinite
+rows of if statements.
+
+I = Informational, with only minor formatting differences across user classes.
+A = your action is required, with what you need to do at the top.
+X = Don't send mail to this person; they don't need it.
+M = Maybe; for now, send the mail, and maybe make this a single user preference later.
+    (The logic is: "can they see this trivially in the web UI? if not, send mail.")
+? = unsure, see note.
+
+    	     	     Actor  Requestor	Target/Owner	Members		Guest/Watcher	Organizer
+TaskAbandoned	     X	    I		I		A		I		(==member)
+TaskAccepted	     M	    X		A		I		I		
+TaskDeclined	     X	    I		X		A		I
+TaskComment	     M	    I		I		I		I
+TaskCompleted	     M	    I		I		I		I
+TaskCreated	     M	    X		A		I		I
+TaskDeleted	     X	    I		I		I		I
+TaskGiven	     M	    I		A		I		I
+TaskIntoGroup	     M	    ?[2]	I		I/A[1]		I
+TaskOutOfGroup	     M	    ?[2]	I		I		I
+TaskTaken	     X	    I		I		I		I
+TaskUncompleted	     X	    I		X		I/A[1]
+
+[1] If the owner is Nobody, members of the group it goes into need a chance to take it
+[2] Do they care?
+
+
+For personal tasks:
+    	     	     Actor  Requestor	Target/Owner	
+TaskAbandoned	     X	    I		I		SAME AS GROUP
+TaskAccepted	     M	    X		A		SAME AS GROUP
+TaskDeclined	     X	    I		X		SAME AS GROUP
+TaskComment	     M	    I		I		SAME AS GROUP
+TaskCompleted	     M	    I		I		SAME AS GROUP
+TaskCreated	     M	    X		A		SAME AS GROUP
+TaskDeleted	     X	    I		I		SAME AS GROUP
+TaskGiven	     M	    I		A		SAME AS GROUP
+TaskIntoGroup	     M	    X		I	        requestor doesn't get mail		
+TaskOutOfGroup	     M	    X		I		requestor doesn't get mail
+TaskTaken	     X	    I		I		SAME AS GROUP
+TaskUncompleted	     X	    I		X		SAME AS GROUP
+
+
+I *think* we can write the logic once about actor/requestor/owner overlaps,
+which should work the same way for group and personal tasks.
+
+- if the actor is also the requestor, they don't need to get mail
+- if the actor is the owner, they don't need to get mail
+- if the actor isn't the requestor, the requestor needs mail
+- if the actor isn't the owner, the owner needs mail
+
+
+This distinction between informational and action-required mail implies some things
+about email structure:
+
+      Greeting (?)
+
+      Note (with *short* task summary), foregrounding action to be taken if any
+
+      Action URL (with minimal text), OR
+      Info URL (with minimal text)
+
+      Summary-Description-Task History (ON ALL EMAILS)
+
+      Task mail footer ("if you reply to this...")
+
+      Footer (standard across all emails from HM, includes opt-out)
+
+We should have standard ways of designating this logic in TaskNotification
+so that the subclasses don't have to have their own logic. Ideally, we could
+represent the table above in code so that there's one place to change the
+email-sending logic.
+
+
+
+NON-LEGIT USERS (who haven't confirmed their email address yet):
+
+Non-legit users may have a needs-action flag implicit in all their correspondence;
+we probably want to treat them specially and have a code structure that supports this.
+Minimally, we need different prose for them. Is the following a reliable
+structure for non-legit-user task emails?
+
+      Greeting (?)
+
+      Note (with *short* task summary), foregrounding action to be taken if any
+
+      Action or Info URL (with minimal text)
+
+      "Please Go Legit" message
+
+      Summary-Description-Task History (ON ALL EMAILS)
+
+      Task mail footer ("if you reply to this...")
+
+      Footer (standard across all emails from HM, includes opt-out)
+

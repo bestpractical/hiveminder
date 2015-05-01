@@ -1,0 +1,99 @@
+.progressbar {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+    padding: 1px;
+    border: 1px solid #888;
+    /* XXX TODO: This is a hack to stop the progressbar from overflowing,
+       but really we should figure out why it's overflowing in the first
+       place.  I couldn't get it to be behave. */
+    overflow: hidden;
+}
+
+.progressbar .progress {
+    padding: 0.3em 0.5em;
+    background: #ffccff;
+    border: 1px solid #faf;
+    text-align: center;
+    height: 1.4em;
+    position: relative;
+}
+
+.progressbar .progress .progress_status {
+    position: absolute;
+    left: 1.1em;
+    width: 7em;
+    text-align: left;
+}
+
+#task-review .buttons .take_action,
+#task-review .buttons .procrastinate
+{
+    margin-right: 1.7em;
+}
+
+#task-review .buttons .take_action .button {
+    background-color: rgb(82, 134, 201);
+    border-color: rgb(82, 134, 201);
+}
+
+#task-review .buttons .procrastinate .button {
+    background-color: rgb(62, 114, 161);
+    border-color: rgb(62, 114, 161);
+    color: #fff;
+}
+
+#task-review .buttons .delete .button {
+    background-color: #c00;
+    border-color: #dff;
+    color: #fff;
+}
+
+#task-review .buttons .fieldset {
+    float: left;
+    border: none;
+    padding: 0;
+}
+
+#task-review .buttons .fieldset .legend {
+    font-weight: bold;
+    padding-left: 0;
+    padding-bottom: 0.3em;
+}
+
+#task-review .buttons .button {
+    display: block;
+    width: 14em;
+    margin-bottom: 0.2em;
+    margin-right: 1em;
+}
+
+#task-review .buttons .hints {
+    display: none;
+}
+
+#task-review .task h2 {
+    padding-top: 0.5em;
+}
+
+#task-review .taskpage-done-checkbox,
+#task-review .taskpage-done-button {
+    display: none;
+}
+
+#task-review .argument-description {
+    width: 95%;
+}
+#task-review .task .argument-summary {
+    width: 98%;
+}
+
+#task-review label.argument-add_time_worked,
+#task-review label.argument-time_left
+{
+    width: 30%;
+}
+
+#task-review input.argument-add_time_worked { width: 5em; }
+
+#task-review .record_locator {
+}

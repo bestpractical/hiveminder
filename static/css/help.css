@@ -1,0 +1,126 @@
+#help-system {
+    font-size: 0.9em;
+    padding: 0.5em;
+}
+
+#help-system h1.title {
+    font-size: 1.8em;
+}
+
+#help-system h2, h3 {
+    font-size: 1em;
+    padding-top: 0.3em;
+}
+
+#help-system ul.menu {
+    list-style-type: square;
+}
+
+#help-system ul.submenu {
+    list-style-type: circle;
+    margin-left: 0;
+    padding-left: 2.5em;
+}
+
+#help-system ul li {
+    padding: 0.1em 0 0.1em 0;
+}
+
+#help-system ul.menu > li {
+    padding: 0 0 0.7em 0;
+}
+
+#help-system ol li {
+    padding: 0 0 0.5em 0;
+}
+
+#help-system dl {
+    margin-left: 2em;
+    padding-left: 0;
+}
+
+#help-system dd {
+    padding-bottom: 0.5em;
+}
+
+#help-system dd ul {
+    margin-left: 0;
+    padding-left: 0;
+    list-style: circle;
+}
+
+#help-system code, #help-system pre {
+    font-size: 1.1em;
+}
+
+p.note, div.note {
+    margin: 1.5em;
+    padding: 0.8em 0.8em 0.9em 25px;
+    background: #f8f1d3 url(/static/images/silk/note.png) no-repeat 5px 0.8em;
+    border: 1px solid #e48511;
+}
+
+p.warning {
+    margin: 1.5em;
+    padding: 0.8em 0.8em 0.9em 25px;
+    background: #ffe5dc url(/static/images/silk/exclamation.png) no-repeat 5px 0.8em;
+    border: 1px solid #eb6e5a;
+}
+
+p.hint {
+    color: #666;
+    font-size: 0.9em;
+    margin: 0;
+    padding-left: 0.5em;
+}
+
+a.help {
+    text-decoration: underline;
+    cursor: help;
+    font-weight: bold;
+    color: #666;
+}
+
+/* Styling for individual help links */
+
+/*#tagcloud h3,
+#braindump h3,*/
+#tasklist_braindump .hints
+{
+    position: relative;
+}
+
+#tagcloud h3 a.help,
+#braindump h3 a.help,
+#tasklist_braindump .hints a.help
+{
+/*    position: absolute;
+    top: 0.2em;
+    right: 0.3em;*/
+    text-decoration: underline;
+}
+
+/* Styling for help feedback */
+
+#help-system .feedbackhelp {
+    padding-top: 0.5em;
+    clear: both;
+}
+
+#help-system .feedbackhelp p,
+#help-system .feedbackhelp textarea
+{
+    font-size: 0.9em;
+}
+
+#help-system .feedbackhelp p,
+#help-system .feedbackhelp form
+{
+    margin: 0;
+    padding: 0;
+}
+#help-system .feedbackhelp h2 { margin-bottom: 0.3em; }
+#help-system .feedbackhelp textarea {
+    width: 98%;
+    height: 5em;
+}

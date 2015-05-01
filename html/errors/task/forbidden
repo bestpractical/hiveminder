@@ -1,0 +1,13 @@
+<&|/_elements/wrapper, title => "Forbidden task" &>
+
+<p>
+Sorry, but it looks like you don't have permission to view this task. 
+</p>
+
+<p>For now,  <% Jifty->web->link(  url =>"/todo", label => 'head on back to your To Do list')%> and try to forget that we let you down.</p>
+
+</&>
+<%init>
+Jifty->web->response->header( Status => '403 Forbidden' );
+
+</%init>

@@ -1,0 +1,18 @@
+<&| /_elements/wrapper, title => "Edit news" &>
+
+<% Jifty->web->form->start %>
+<% Jifty->web->form->next_page( url => "/news" ) %>
+
+<% $update_news->form_field('title') %>
+<% $update_news->form_field('content') %>
+
+<% Jifty->web->form->submit( label => "Update") %>
+<% Jifty->web->form->end%>
+
+</&>
+<%args>
+$id
+</%args>
+<%init>
+my $update_news = Jifty->web->new_action(class => 'UpdateNews', moniker => "updatenews", arguments => { id => $id } );
+</%init>

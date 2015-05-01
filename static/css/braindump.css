@@ -1,0 +1,24 @@
+#braindump p {
+    margin: 0 0 0.1em 0;
+}
+
+#braindump textarea {
+    font-size: 0.9em;
+    height: 8em;
+    width: 95%;
+    font-family: Verdana, sans-serif;
+    margin: 0;
+}
+
+#braindump label {
+    display: none;
+}
+
+#braindump form {
+    margin-top: 0;
+}
+
+#braindump .button {
+    margin-right: 0.1em;
+}
+

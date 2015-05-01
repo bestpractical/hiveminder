@@ -1,0 +1,10 @@
+<%    Jifty->web->region(
+        name     => 'address-' . $id,
+        path     => '/fragments/published_addr/view',
+        defaults => {
+            id        => $id,
+           },
+    ) %>
+<%args>
+$id => undef
+</%args>

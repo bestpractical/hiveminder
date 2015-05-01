@@ -1,0 +1,18 @@
+<&| /_elements/wrapper, title => "That's done" &>
+
+<p id="overview">
+  We're very sorry you've decided not to use Hiveminder. We'd
+  appreciate if you you'd send us feedback letting us know what about
+  the service you dislike, so we can make it useful for you.
+</p>
+
+<p>
+  If at any point in the future you'd like to reverse this decision,
+  just let us know by sending mail
+  to <a href="mailto:support@hiveminder.com">support@hiveminder.com</a>.
+</p>
+
+</&>
+<%init>
+Jifty->web->current_user(undef);
+</%init>

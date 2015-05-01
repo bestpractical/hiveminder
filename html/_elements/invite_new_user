@@ -1,0 +1,9 @@
+<%init>
+unless (     Jifty->web->request->path =~ /^\/account\/gift/
+         and Jifty->web->current_user->id
+         and Jifty->web->current_user->user_object->access_level ne 'nonuser' )
+{
+    return;
+}
+</%init>
+<% Jifty->web->region( name => 'invite_new_user', path => "/fragments/invite_new_user", defaults => { } ) %>

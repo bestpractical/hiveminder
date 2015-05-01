@@ -1,0 +1,60 @@
+<& /_elements/header, title => "Help - " . $title &>
+% $m->notes('in_body' => 1);
+<body <% Jifty->web->current_user->id ? '' : 'class="no-user"' |n %> id="help-system">
+
+  <div class="breadcrumbs">
+    <% Jifty->web->link( url     => '/',
+                         label   => 'Hiveminder',
+                         onclick => 'window.opener.focus(); window.close(); return false;' ) %>
+% for (@crumbs) {
+    &#187; <% Jifty->web->link( %$_ ) %>
+% }
+  </div>
+
+  <h1 class="title"><% $title %></h1>
+
+  <% $m->content |n %>
+
+  <script type="text/javascript"><!--
+     document.write('<div id="jifty-wait-message" style="display: none">&nbsp;</div>');
+  --></script>
+
+% if (Jifty->web->current_user->id) {
+<div class="feedbackhelp">
+<h2>Were we any help?</h2>
+<p>Still feeling lost, confused and adrift in a sea of software? Try the 
+<% Jifty->web->link( url  => '/about/faq.html',
+                     label=> 'FAQ') %>.  
+Failing that, please tell us what you were looking for help with and we'll try to answer you, improve the online help or at least commiserate. We can't promise that we'll respond to every request for help (unless you're paying us), but we'll do what we can.  Thanks!</p>
+<% Jifty->web->region( name => 'feedbackhelp', path => "/fragments/no_auth/feedback", defaults => { } ) %>
+</div>
+% }
+
+% if (BTDT->is_production) {
+<script type="text/javascript">
+_uacct = "UA-937869-1";
+urchinTracker();
+</script>
+% }
+
+</body>
+% $m->notes('in_body' => 0);
+</html>
+<%args>
+$title => ""
+</%args>
+<%init>
+my $path = Jifty->web->request->path;
+my @crumbs;
+my $url = '';
+
+for (split '/', $path) {
+    next if not $_;
+    last if $_ =~ /^index\.html$/;
+    
+    $url .= '/' . $_;
+    $_    =~ s/[_-]/ /g;
+    $_    =~ s/\.html$//g;
+    push @crumbs, { label => ucfirst($_), url => $url };
+}
+</%init>

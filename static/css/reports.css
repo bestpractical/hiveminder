@@ -1,0 +1,11 @@
+table.statistics td.label {
+    font-weight: bold;
+    text-align: right;
+    padding-right: 0.5em;
+}
+
+table.statistics td.negative {
+/*    color: red;*/
+}
+
+span.negative { color: red; }

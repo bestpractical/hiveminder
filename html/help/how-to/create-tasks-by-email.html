@@ -1,0 +1,69 @@
+<&| /help/_elements/wrapper, title => 'Create tasks by email' &>
+
+<p>Sending yourself a task by email is useful when you have access to email but not
+Hiveminder, such as when using a Blackberry or SMS.  Other people can use this address to send you 
+tasks by email as well.  You can create different emails and use them to manage who is sending 
+you tasks by email.  Creating a task by email is easy:</p>
+
+<ol>
+  <li>Go to <% Jifty->web->link( url    => '/prefs/addresses',
+                                 label  => 'Tasks by email',
+                                 class  => 'external' ) %>
+      under <% Jifty->web->link( url    => '/prefs',
+                                 label  => 'Preferences',
+                                 class  => 'external' ) %>.
+  </li>
+  <li>If no addresses are listed, click the "Add a new address" button.</li>  
+  <li>You can open an email by clicking on the linked address, or you can copy and paste
+  the address into the "to" field of your preferred mail client.</li>
+
+  <li>Type the task summary as the subject of the new email and the
+  task description as the body of the message.</li>
+
+  <li>Additionally, you can assign a default set of
+  <% Jifty->web->link( url    => '/help/reference/tasklists/braindump.html',
+                       label  => 'braindump tags' ) %>
+  which all tasks created via the address will have applied to them,
+  and whether tasks sent to the email address will automatically be
+  accepted.</li>
+</ol>
+
+<p>"Incoming address" under the "Manage" tab in a group you are the
+organizer for will also allow you to create an address for emailing
+tasks to your group.  If you are a Member or a Guest but think that
+this is something your group could use, notify one of the
+Organizers of the group.</p>
+
+<& /help/_elements/proheader &>
+
+<p>Additionally, <a href="/pro" class="external">pro users</a> can assign tasks by
+email to anyone with an email address.  By sending email to
+"<b>bob@example.com</b>.<i>secret</i>.with.hm", you will assign a task
+to <b>bob@example.com</b>.  In order to ensure that other people can't
+forge emails from you, and create tasks as you, you'll need to <a
+href="/prefs/addresses">set a secret</a>:</p>
+
+<ol>
+  <li>Go to <% Jifty->web->link( url    => '/prefs/addresses',
+                                 label  => 'Tasks by email',
+                                 class  => 'external' ) %>
+      under <% Jifty->web->link( url    => '/prefs',
+                                 label  => 'Preferences',
+                                 class  => 'external' ) %>.
+  </li>
+
+  <li>Fill in your secret in the box labelled "Email secret".  We find
+  that adverbs roll off the tongue particularly well for a secret --
+  for example, "merrily" would let you send email to
+  "bob@example.com.merrily.with.hm".</li>
+
+  <li>You can now use your mail client to write emails to
+  "<i>any-email-address</i>.<i>secret</i>.with.hm" -- even your own
+  email address.</li>
+
+  <li>Type the task summary as the subject of the new email and the
+  task description as the body of the message.</li>
+
+</ol>
+
+</&>

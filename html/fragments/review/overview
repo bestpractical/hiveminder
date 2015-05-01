@@ -1,0 +1,84 @@
+% if ( $tasks ) {
+<p>Buckle up, because you're about to head into the "Review" process.</p>
+
+<p>We're going to show you every task in this list. All <% scalar @tasks %> of them.  
+We'll start with the newest stuff - things you haven't even looked at yet - then we'll go through 
+everything that's due soon or that you haven't looked at in a while.  To make sure things get done, 
+we're going to give you <strong>very few</strong> options:</p>
+
+<ul>
+<li>Comment on the task</li>
+<li>Say you're already done</li>
+<li>Say you want somebody else to do it (and pick [on] them).</li>
+<li>Say you'll do it today</li>
+<li>Ask not to see it until Saturday, until Monday, or for a month.</li>
+</ul>
+
+<p>Once you start the review, it's a bit like a broken VCR - you can't 
+stop, fast-forward, or rewind. You have to work through the review, one task at a time, until you're done.  
+When you're done though, the pain stops, and you're that much closer to being an effective human 
+bee-ing.</p>
+
+<%perl>
+Jifty->web->form->submit(
+    label       => 'Okay!',
+    key_binding => 'n',
+    onclick     => {
+        replace_with => '/fragments/review/task',
+        arguments    => { tasks => $tasks, tokens => $tokens }
+    }
+);
+</%perl>
+% }
+% else {
+<div class="zilch_message">
+<p>
+  You've escaped the task review this time!
+</p>
+
+<p>
+  But you must have something you need to get done.  Why don't you think about
+  it and then write it down in the braindump to your left?
+</p>
+</div>
+% }
+<%args>
+$tasks => undef
+$tokens => undef
+</%args>
+<%init>
+use List::MoreUtils 'uniq';
+
+my $total;
+my @tasks;
+unless ($tasks) {
+    my $week = Jifty::DateTime->now->add(days =>7);
+    my $now = Jifty::DateTime->now();
+
+    my $unaccepted = BTDT::Model::TaskCollection->new();
+    $unaccepted->limit( column => 'complete',		                         value => 0 );
+    $unaccepted->limit( column => 'owner_id',					 value => Jifty->web->current_user->id );
+    $unaccepted->limit( column => 'accepted',		   operator => 'IS',     value => 'NULL');
+
+    my $due = BTDT::Model::TaskCollection->new();
+    $due->limit( column => 'due',		   operator => '<',      value => $week->ymd, case_sensitive => 1 );
+    $due->limit( column => 'complete',		                         value => 0 );
+    $due->limit( column => 'owner_id',					 value => Jifty->web->current_user->id );
+    $due->limit( column => 'accepted',					 value => 1 );
+    my $open = BTDT::Model::TaskCollection->new();
+    $open->limit( column => 'complete',		                         value => 0 );
+    $open->limit( column => 'owner_id',					 value => Jifty->web->current_user->id );
+    $open->limit( column => 'depends_on_count',    operator => '=',      value => 0);
+    $open->limit( column => 'accepted',					 value => 1 );
+    $open->limit( column => 'starts',		   operator => 'IS',     value => 'NULL',    entry_aggregator => 'OR');
+    $open->limit( column => 'starts',              operator => '<=',     value => $now->ymd, entry_aggregator => 'OR');
+    # XXX TODO, uniquify
+
+     @tasks = ((map { $_->id } @{ $unaccepted->items_array_ref }),
+                 uniq sort map { $_->id } @{ $due->items_array_ref }, @{ $open->items_array_ref });
+    $tasks = join( ',', @tasks);
+} else {
+    @tasks = split ',', $tasks;
+}
+</%init>
+

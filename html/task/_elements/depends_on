@@ -1,0 +1,6 @@
+<div class="depends_on">
+<& /_elements/tasklist, tokens => ['and', 'then', $task->record_locator, 'not', 'complete'], title => qq{But first...}, name => 'depends_on', brief => 1 &>
+</div>
+<%args>
+$task => undef
+</%args>

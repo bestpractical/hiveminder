@@ -1,0 +1,58 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+
+use BTDT::CurrentUser;
+use BTDT::Model::UserCollection;
+
+die "Already done.\n";
+
+my $users = BTDT::Model::UserCollection->new( current_user => BTDT::CurrentUser->superuser );
+$users->limit(
+    column      => 'access_level',
+    value       => 'guest',
+    case_sensitive => 1,
+);
+$users->limit(
+    column      => 'pro_account',
+    value       => 'f'
+);
+$users->limit(
+    column      => 'never_email',
+    value       => 'f'
+);
+$users->limit(
+    column      => 'email_service_updates',
+    value       => 't'
+);
+$users->limit(
+    column      => 'email_confirmed',
+    value       => 't'
+);
+$users->limit(
+    column      => 'accepted_eula_version',
+    operator    => '>=',
+    value       => Jifty->config->app('EULAVersion')
+);
+$users->join(
+    column1 => 'id',
+    table2  => 'tasks',
+    column2 => 'requestor_id',
+    is_distinct => 1,
+);
+my @columns = qw/id name email access_level never_email primary_account/;
+$users->columns(@columns);
+$users->group_by(map {column => $_}, @columns);
+
+while (  my $user = $users->next ) {
+    print $user->email,"\n";
+    eval {
+        BTDT::Notification::ProLaunch->new( to => $user )->send;
+    };
+    warn $@ if $@;
+}
+
+1;

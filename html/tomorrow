@@ -1,0 +1,6 @@
+<%init>
+my $search = 'owner/me/not/complete/due/tomorrow';
+my $title = "What's on tap for tomorrow";
+$m->comp('/_elements/simple_search_results_page', search => $search, title => $title );
+return;
+</%init>

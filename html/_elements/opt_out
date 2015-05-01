@@ -1,0 +1,10 @@
+<div class="round optout">
+  Never want to use Hiveminder?  Just tell us,
+  "<% Jifty->web->link( label => 'Stop sending me email', url => $letme->as_url ) %>," and you'll never hear from us again.
+</div>
+
+<%init>
+my $letme = Jifty::LetMe->new();
+$letme->email(Jifty->web->current_user->user_object->email);
+$letme->path("opt_out");
+</%init>

@@ -1,0 +1,36 @@
+#!/bin/sh
+
+backup_base="/var/home/hiveminder/backups"
+
+file=""
+if [[ "x$1" == "x" ]] ; then
+  echo "Usage:"
+  echo "  $0 2008-01-01"
+  echo "      or"
+  echo "  $0 8900"
+  exit
+elif [[ -e "$backup_base/by-revision/$1" ]] ; then
+  file="$backup_base/by-revision/$1"
+elif [[ -e "$backup_base/by-revision/${1}M" ]] ; then
+  file="$backup_base/by-revision/${1}M"
+elif [[ -e "$backup_base/by-date/$1" ]] ; then
+  file="$backup_base/by-date/$1"
+else
+  echo "Couldn't find that as a date or revision!"
+  exit
+fi
+
+line=`perl -e '$q=chr(39);$_=<>;chomp;print"recovery_target_time = $q$_$q"' $file`
+
+/etc/init.d/postgresql stop
+rm -rf /var/lib/postgresql/data/recovery.done /var/lib/postgresql/data-restore
+#mv /var/lib/postgresql/data /var/lib/postgresql/data-restore
+#cp -r /var/lib/postgresql/backup/snapshot/ /var/lib/postgresql/data/
+#cp -r /var/lib/postgresql/data-restore/pg_xlog /var/lib/postgresql/data/
+rsync -avz --delete /var/lib/postgresql/backup/snapshot/ /var/lib/postgresql/data/ --exclude=pg_xlog
+cat > /var/lib/postgresql/data/recovery.conf <<EOF
+restore_command = 'gunzip -c /var/lib/postgresql/backup/%f.gz > %p/%f || cp /var/lib/postgresql/backup/%f %p'
+$line
+EOF
+chown -R postgres.postgres /var/lib/postgresql/data
+/etc/init.d/postgresql start

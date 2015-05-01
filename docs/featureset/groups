@@ -1,0 +1,28 @@
+How groups work:
+[Things that don't currently work this way are in brackets.]
+
+Amy, Bob, and Carol are users.
+Amy creates a Yaks group. She automatically becomes the organizer of that group.
+
+Amy creates task 1 for the Yaks group and assigns it to herself.
+Amy finishes task 1. She doesn't get mail about this.
+
+Amy can look at information about the Yaks group. She can invite
+people to and remove them from the group.
+
+Amy invites Bob and Carol to the Yaks group. 
+
+Bob gets an invitation email. He accepts the invitation and can now 
+see all the tasks in the Yaks group. He can own any task in Yaks or 
+take any Yaks task away from any other Yaks member. (Except Amy, the organizer?)
+
+Carol doesn't accept the group invitation. She shouldn't be able to see
+anything about the group except the invitation.
+
+Amy asks Bob to do Yaks task 2. Bob gets an email request to do that task. 
+He can also see this request in the UI. Bob accepts the task via the web
+UI. Bob does the task and marks it done. Amy gets mail about this. The
+other members of the Yaks group don't.
+
+
+

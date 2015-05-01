@@ -1,0 +1,226 @@
+#tour #content-wrapper {
+    margin: 0;
+}
+
+#tour #content-wrapper2 {
+    margin: 0;
+}
+
+#tour .dropshadow_left_wrap1,
+#tour .dropshadow_left_wrap2,
+#tour .dropshadow_left_wrap3
+{
+    visibility: hidden;
+}
+
+#tour #content {
+    visibility: visible;
+    border: none;
+    padding: 0;
+    margin-top: 3.5em;
+}
+
+#tour.nonuser #content {
+    margin-top: 0.8em;
+}
+
+#tour #headers {
+    float: right;
+    margin-right: 1em;
+    position: absolute;
+    top: 0.2em;
+    right: 0.3em;
+}
+
+#tour #headers h1 { margin-top: 0; }
+#tour.nonuser #headers { top: 0.8em; }
+
+#tour h1.title {
+    width: 60%;
+}
+
+#tour #main {
+    padding-right: 1em;
+    padding-left: 1em;
+    background: none;
+}
+
+#tour p {
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+
+#tour #content-wrapper {
+    width: 100%;
+    float: none;
+    display: block;
+}
+
+#tour .tour_nav, #protour .tour_nav {
+    font-size: 1.5em;
+    float: right;
+    clear: both;
+    padding-top: 2em;
+    padding-bottom: 3em;
+}
+
+#tour .tour_nav span, #protour .tour_nav span {
+    font-weight: bold;
+    color: #0065ce;
+}
+
+#tour .screenshot {
+    border: 1px solid #aaa;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+}
+
+#tour .screenshot img {
+    display: none;
+}
+
+#tour #tour-todolist {
+    width: 785px;
+    height: 543px;
+    background: url(/static/images/tour/todolist.png) no-repeat top left;
+}
+
+#tour #tour-todolist ol {
+    padding: 0;
+    margin: 0;
+    z-index: 44;
+}
+
+#tour-todolist li {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+#tour-todolist li a.icon {
+    display: block;
+    
+    position: absolute;
+    
+    width: 23px;
+    margin-right: 195px;
+    
+    font-size: 1.3em;
+    text-decoration: none;
+
+    background: url(/static/images/tour/blue.overlay.png) no-repeat;
+    z-index: 50;
+}
+
+#tour-todolist li a.icon .number {
+    padding-bottom: 5px;
+    padding-left: 6px;
+    padding-top: 1px;
+    display: block;
+    font-weight: bold;
+    font-size: 15px;
+    color: white;
+}
+
+#tour-todolist a.icon .description {
+    display: none;
+    
+    width: 200px;
+    padding: 10px;
+    border: 1px solid rgb(230,224,173);
+
+    background-color: rgb(240,234,183);
+    color: black;
+    z-index: 51;
+}
+#tour-todolist li a.icon:hover .description { display: block; }
+
+/* individual positions */
+#feat-braindump a.icon {
+    left: 20px;
+    top: 270px;
+}
+
+#feat-checkboxes a.icon {
+    left: 210px;
+    top: 277px;
+}
+
+#feat-locators a.icon {
+    left: 250px;
+    top: 395px;
+}
+
+#feat-tags a.icon {
+    left: 390px;
+    top: 290px;
+}
+
+#feat-share a.icon {
+    left: 410px;
+    top: 238px;
+}
+
+#feat-bulkupdate a.icon {
+    left: 290px;
+    top: 75px;
+    margin-left: 197px;
+}
+
+#feat-bulkupdate a.icon .description {
+    margin-left: -197px;
+}
+
+#feat-procrastinate a.icon {
+    left: 583px;
+    top: 340px;
+}
+
+#feat-export a.icon {
+    left: 454px;
+    top: 111px;
+    margin-left: 197px;
+}
+
+#feat-export a.icon .description {
+    margin-left: -197px;
+}
+
+#feat-priorities a.icon {
+    left: 225px;
+    top: 225px;
+}
+
+/* part 2 */
+
+#tour .feature {
+    color: #0065ce;
+}
+
+#tour #content img {
+    padding: 2px;
+    border: 1px solid #aaa;
+}
+
+#tour #content #col-left {
+    width: 48%;
+    float: left;
+}
+
+#tour #content #col-right {
+    width: 48%;
+    float: right;
+}
+
+#tour #feat-search p,
+#tour #feat-groups p,
+#tour #feat-review p,
+#tour #feat-email p
+{
+    font-size: 1.5em;
+    margin-top: 1.5em;
+    text-align: justify;
+}
+

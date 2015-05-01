@@ -1,0 +1,16 @@
+<div id="feedback">
+  <% Jifty->web->form->start %>
+  <% $feedback->form_field('content', placeholder => "Tell us what's good, what's bad, and what else you want Hiveminder to do!") %>
+  <% Jifty->web->form->submit( 
+        label => "Send this feedback!", 
+        onclick => { submit => $feedback,
+                     refresh_self =>1}) 
+   %>
+  <% Jifty->web->form->end %>
+  <hr class="clear hidden" />
+</div>
+<%init>
+my $feedback = Jifty->web->new_action( 
+        class => "SendFeedback", 
+        moniker => "feedback" );
+</%init>

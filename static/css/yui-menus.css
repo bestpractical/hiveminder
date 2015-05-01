@@ -1,0 +1,121 @@
+/* Style YUI menus themselves consistently */
+
+/*  From: http://developer.yahoo.com/yui/examples/menu/example01_clean.html
+    Position and hide the Menu instance to prevent a flash of unstyled 
+    content when the page is loading.
+*/
+
+div.yuimenu {
+    position: absolute;
+    visibility: hidden;
+}
+
+.yuimenu li.active a, .yuimenu h6.active a, .yuimenu h6.active {
+    font-weight: bold;
+}
+
+.yuimenu, .yuimenu .bd {
+    background: white;
+}
+
+.yuimenu ul {
+    padding: 1px;
+}
+
+.yuimenu .yuimenuitemlabel {
+    padding: 0.2em 2.7em 0.2em 0.25em;
+    font-size: 1em;
+}
+
+.yuimenu .yuimenuitem .separator {
+    border-top: 1px solid #c4c4be;
+    margin-top: 2px;
+}
+
+.yuimenu .yuimenuitem .separator-bottom {
+    border-bottom: 1px solid #c4c4be;
+    margin-bottom: 2px;
+}
+
+.yuimenu li.yuimenuitem-selected {
+    background-color: rgb(82, 134, 181);
+}
+
+.yuimenu .yuimenuitemlabel-selected,
+.yuimenu .yuimenuitem-selected .jifty-menu-item-label
+{
+    color: white;
+    text-decoration: none;
+}
+
+.yuimenu h6:hover {
+    color: white;
+}
+
+.yuimenu .yuimenuitem-hassubmenu {
+    padding: 0.15em 0 0.2em 0.25em;
+    color: black;
+}
+
+.yuimenu .yuimenuitemlabel-hassubmenu {
+    padding: 0;
+}
+
+.yuimenu h6 {
+    padding: 0.15em 0 0.2em 0.25em;
+    border-left: 1px solid white;
+    margin: 0;
+    font-size: 1em;
+    color: #444;
+}
+
+.yuimenu h6:hover {
+    background-color: rgb(82, 134, 181);
+}
+
+.yuimenu h6:hover :link,
+.yuimenu h6:hover :visited
+{
+    color: white;
+}
+
+.yuimenu h6 :link,
+.yuimenu h6 :visited
+{
+    display: block;
+    text-decoration: none;
+}
+
+* html .yuimenu h6 :link,
+* html .yuimenu h6 :visited
+{
+    width: 100%;
+    white-space: nowrap;
+}
+
+.yuimenu ul.hastitle li {
+    padding-left: 0.7em;
+}
+
+.task .yui-menu-shadow {
+    display: block;
+    position: absolute;
+    visibility: hidden;
+    z-index: -1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.task .yui-menu-shadow-visible {
+    top: 2px;
+    right: -3px;
+    left: 3px;
+    bottom: -3px;
+    visibility: visible;
+    background-color: #000;
+
+    /* Opacity can be expensive, so defer the use of opacity until the
+       menu is visible. */
+    opacity: .15;
+    filter: alpha(opacity=15);  /* For IE */
+}

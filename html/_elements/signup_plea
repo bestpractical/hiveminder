@@ -1,0 +1,20 @@
+<div id="signupplea" class="round">
+<h4>Join us!</h4>
+<p>You can get more done with our configurable notifications, reminders, groups and the ability to assign tasks to other people, all on our easy-to-use web site!  What's more, we're still in development, cranking out plenty of cool features.  So go ahead and click to get busy!</p>
+
+<p>
+<% Jifty->web->link( url => (Jifty->web->current_user->id ? $letme->as_url : '/splash/signup/'),
+                     label => 'Get your FREE Hiveminder account now') %>!
+</p>
+
+</div>
+
+<%init>
+my $letme;
+
+if ( Jifty->web->current_user->id ) {
+    $letme = Jifty::LetMe->new;
+    $letme->email(Jifty->web->current_user->user_object->email);
+    $letme->path('activate_account');
+}
+</%init>

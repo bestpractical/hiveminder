@@ -1,0 +1,7 @@
+* Default views should only show "accepted tasks"
+* Front page should have "oldest unaccepted tasks" list with a
+  link to the full page.
+
+* Task display page should get a bar at the top prompting FOR TAsk acceptance.
+
+

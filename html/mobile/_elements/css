@@ -1,0 +1,285 @@
+body {
+font-family:sans-serif;
+background:#ccc;
+margin:0;
+}
+
+span.locator,a {
+text-decoration:none;
+color:#000;
+font-weight:700;
+padding:0.5em;
+}
+
+h1 {
+margin-left:2em;
+font-size:1.25em;
+padding-top:0.25em;
+overflow: hidden;
+}
+
+div.content,div#bplogo,div#hmlogo {
+background:#fff;
+-moz-border-radius:0.5em;
+-webkit-border-radius:0.5em;
+}
+
+.tasknav {
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pagenav-wrapper {
+    width: 100%;
+    margin-top: 1em;
+    padding-top: 1em;
+    padding-bottom: 0.75em;
+}
+
+div#bplogo,div#hmlogo {
+    padding:1em;
+    margin:0.25em;
+}
+
+
+
+div.content {
+background:#FFF url(/static/images/horizontal.flourish.flipped.png) no-repeat 5% 4%;
+}
+
+ul.menu li a {
+padding-left:1em;
+display:block;
+width:95%;
+}
+
+ul.menu li a:after {
+color:#ccc;
+text-align:right;
+content:" >";
+}
+
+ul {
+list-decoration:none;
+list-style:none;
+margin-left:0;
+padding:0;
+}
+
+ul.tasklist li:first-child,ul.menu li:first-child {
+border-top:1px solid #ccc;
+}
+
+ul.tasklist li,ul.menu li {
+padding-left:0.5em;
+padding-top:0.5em;
+padding-bottom:0.5em;
+border-bottom:1px solid #ccc;
+margin:0;
+overflow: hidden;
+}
+
+.locator {
+    display: block;
+    position: relative;
+}
+.locator a {
+    display: inline-block;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    color: #ccc;
+}
+
+ul.pagenav, ul.tasknav{ 
+    display:block;
+    white-space: nowrap;
+}
+ul.tasknav li, ul.pagenav li {
+    display:inline-block;
+}
+
+.tasknav a, .pagenav a,input[type=submit],button,#paging a {
+padding-top:0.25em;
+padding-bottom:0.25em;
+background:#eee;
+font-weight:700;
+-moz-border-radius:0.3em;
+-webkit-border-radius:0.3em;
+    border: 2px solid #ccc;
+    border-right:2px solid #999;
+    border-bottom:2px solid #999;
+}
+
+ul.tasknav{
+    padding-bottom: 3px;
+    border-bottom: 4px solid #999;
+}
+.tasknav a{
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+}
+
+
+.pagenav a:hover, .pagenav a:active,
+.tasknav a:hover, .tasknav a:active,
+input[type=submit]:hover,
+input[type=submit]:active,
+button:hover,button:active,
+#paging a:active,#paging a:hover {
+    color:#000;
+    background-color: #fe0;
+    border: 3px solid #c90;
+    border-bottom: 1px solid #da0;
+    border-right: 1px solid #da0;
+}
+
+.tasklist li:hover,.tasklist li:active, .tasklist li:hover,
+.menu>:hover,.menu>:active {
+    background-color: #fc0;
+}
+
+label,span.label {
+display:inline;
+width:5em;
+float:left;
+text-align:right;
+padding-right:1em;
+font-size:0.6em;
+}
+
+h3 {
+border-bottom:1px solid #000;
+}
+
+div#bplogo {
+margin-top:2em;
+float:right;
+text-align:right;
+}
+
+div#bplogo img {
+border:0;
+}
+
+div#hmlogo {
+margin-top:2em;
+text-align:left;
+float:left;
+}
+
+#messages {
+border:1px solid #f33;
+background-color:#fcc;
+padding:1em;
+}
+
+input[type="submit"],button {
+margin-left:5%;
+padding:0.25em 0.5em;
+margin-top:1em;
+display:block;
+background-color: #fc0;
+border-color: #eb0;
+border-right-color: #da0;
+border-bottom-color: #da0;
+}
+
+input[type="submit"] {
+    margin-left: auto;
+    margin-right: 3em;
+}
+
+input[type="checkbox"] {
+width:1.5em;
+height:1.5em;
+-moz-border-radius:0.25em;
+-webkit-border-radius:0.25em;
+}
+
+textarea {
+width:95%;
+margin-left: 1em;
+-moz-border-radius:0.25em;
+-webkit-border-radius:0.25em;
+}
+
+div.about {
+margin:0;
+padding:0;
+}
+
+div.details {
+display:inline;
+}
+
+div.details a {
+font-weight:400;
+text-color:#bbb;
+font-size:0.8em;
+}
+
+.due {
+font-size:0.8em;
+color:#bbb;
+}
+
+span.tag a,span.tag a:hover,span.tag a:active {
+-moz-border-radius:0.3em;
+-webkit-border-radius:0.3em;
+background-color:#fff;
+color:#194fdb;
+text-decoration:underline;
+}
+
+div#paging {
+text-align:right;
+padding:0.5em;
+padding-top: 1.5em;
+padding-bottom: 1.5em;
+margin-top: 1em;
+margin-bottom: 1em;
+border-top: 1px solid #999;
+border-bottom: 1px solid #999;
+}
+
+#quicksearch label,#quicksearch .hints,#quicksearch .preamble {
+display:none;
+}
+
+#quicksearch * {
+    white-space: nowrap;
+}
+
+#quicksearch input[type="submit"] {
+margin:0;
+margin-top:1em;
+margin-bottom:1em;
+display:inline-block;
+}
+
+div.basicpage,div.braindump-to-list {
+    padding: 0.5em;
+}
+
+.tasknav, .pagenav,#quicksearch {
+    margin: 0;
+    padding: 0;
+    text-align:center;
+    display: block;
+}
+
+span.save,div#logo-inner {
+text-align:right;
+}
+
+input[type=text]:focus, textarea:focus {
+    background: #ffc;
+}
+
+.form_field {
+    overflow-y: auto;
+}

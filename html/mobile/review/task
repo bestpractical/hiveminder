@@ -1,0 +1,84 @@
+<&| /mobile/_elements/wrapper, title => "(Review) " . $task->summary, task_review => 1, hide_title => 1 &>
+</h1>Task review</h1>
+<div class="basicpage">
+<span class="task">
+<small>#<%$task->record_locator%> (<%$complete%> of <%$total%>)</small>:
+<em><%$task->summary%></em><br/>
+% if ( my @taglist = $task->tag_array ) {
+<span title="Tags" class="tags">
+% for my $tag (@taglist) {
+    <span class="tag"><%Jifty->web->link( url => BTDT::Model::TaskCollection->join_tokens_url( "", qw|mobile search tag|, Text::Tags::Parser->join_tags($tag)), label => $tag ) %></span>
+% }
+</span>
+% }
+</span>
+<% Jifty->web->form->start %>
+<div class="buttons">
+<% $update_task->button( label       => 'Done!', key_binding => 'D', arguments   => { complete => 1 },) %> 
+<br/>
+Do this:
+<%
+$update_task->button(
+    label       => 'Today',
+    key_binding => 'T',
+    arguments   => { starts => "today"} )
+%>
+<br/>
+Hide until:
+% for my $date (@review_dates) {
+    <% $update_task->button(
+        %$date,
+        onclick => [
+            {
+                submit => {
+                    action    => $update_task, 
+                    arguments => {
+                        starts => $date->{date}->ymd,
+                    },
+                },
+            },
+        ],
+    ) %>
+% }
+</div>
+<% Jifty->web->form->end() %>
+</div>
+</&>
+<%init>
+
+my $total    = Jifty->web->get_variable('total');
+my $complete = Jifty->web->get_variable('done') || 1;
+my $tasks    = Jifty->web->get_variable('tasks');
+
+my @tasks = split /,/, $tasks;
+
+Jifty->web->goto( url => '/mobile/review/done' ) unless @tasks;
+
+my $id = shift @tasks;
+
+Jifty->web->set_variable(tasks => join(',', @tasks));
+Jifty->web->set_variable(done  => $complete + 1);
+Jifty->web->set_variable(total => $total);
+
+# load up the task we want to work with
+my $task = BTDT::Model::Task->new();
+
+$task->load_by_cols( id => $id );
+# This has to be not sticky on failure, or otherwise Jifty will get
+# confused if you click the trash button and use the old arguments for
+# the update action
+my $update_task = Jifty->web->new_action(
+    class             => "UpdateTask",
+    moniker           => 'taskreview',
+    record            => $task,
+    sticky_on_failure => 0
+);
+my $taskdelete = Jifty->web->new_action(
+    class => "DeleteTask",
+    moniker => 'taskdelete',
+    record => $task
+);
+
+require BTDT::View::Review;
+my @review_dates = BTDT::View::Review->review_dates;
+</%init>

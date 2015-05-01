@@ -1,0 +1,18 @@
+<&| /_elements/wrapper, title => "Are you sure?" &>
+
+<p id="overview">
+  Are you sure you'd like to stop receiving mail from Hiveminder? We
+  do our best to make sure we only send you useful emails.
+</p>
+ <% Jifty->web->form->start %>
+    <% Jifty->web->form->next_page(url => '/opted_out') %>
+    <% $opt_out->hidden(never_email => 1) %>
+    <% Jifty->web->form->submit( label  => "Yes, stop sending me mail" ) %>
+ <% Jifty->web->form->end %>
+  
+</&>
+<%init>
+my $opt_out = Jifty->web->new_action(class       => 'UpdateUser',
+				     moniker     => 'opt_out',
+				     arguments	 => {id => Jifty->web->current_user->id,});
+</%init>

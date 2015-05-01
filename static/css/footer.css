@@ -1,0 +1,40 @@
+#footer {
+    clear: right;
+    padding-top: 1em;
+    margin: 0 1.5em 1.5em 0.4em;
+}
+
+#footer .wrapper {
+    float: right;
+    margin: 0 1em 0 0;
+}
+
+#copyright, #bottom_nav {
+    margin: 0;
+
+    color: #888;
+    text-align: right;
+    font-size: 0.9em;
+}
+
+#bottom_nav {
+    font-size: 1em;
+}
+
+#bpslogo {
+    clear: right;
+    float: right;
+}
+
+#bpslogo img {
+    border: none;
+}
+
+/* splash footer */
+
+#splash #footer {
+    margin: 2.5em auto 2em auto;
+    padding-top: 0.5em;
+    border-top: 1px solid #ccc;
+    width: 75%;
+}

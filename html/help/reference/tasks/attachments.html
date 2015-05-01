@@ -1,0 +1,23 @@
+<&| /help/_elements/prowrapper, title => 'Attachments' &>
+
+<p>Tasks can sometimes have files associated with them. For example, a "make birthday card for mom" task might make use of photographs.</p>
+
+<p>Hiveminder Pro users can <em>attach</em> files to tasks, much like you do with email. There are a few ways you can add attachments to a task:</p>
+
+<ul>
+    <li>On a task's edit page, click the Attachments tab in the top menu. There you can upload, view, edit, and delete any attachments.</li>
+    <li>When you <a href="/help/how-to/create-tasks-by-email.html">create tasks by email</a>, any attachments in the email will be automatically added to created tasks.</li>
+</ul>
+
+<p>
+  Each attachment must be less than
+  <% BTDT->english_filesize(Jifty->config->app('MaxAttachmentSize'), 0) %>
+  and each user is limited to a total of
+  <% BTDT->english_filesize(Jifty->find_plugin('Jifty::Plugin::Quota')->default_cap('disk', 'User'), 0) %> for attachments across all tasks.  Pro users can check their quota usage on their
+  <% Jifty->web->link( url => '/account', label => 'account page', class => 'external' ) %>.
+</p>
+
+<p>Note that anyone who can see a task is able to see its attachments. Anyone who can edit a task is able to edit its attachments.</p>
+
+</&>
+

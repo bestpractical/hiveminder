@@ -1,0 +1,23 @@
+<%args>
+$logo => 'bp_logo_small_f6f6f6.gif'
+</%args>
+  <div id="footer">
+    <div id="bpslogo">
+      <a href="http://bestpractical.com/">
+        <img src="/static/images/<% $logo %>" alt="Best Practical Solutions logo" width="142" height="26"/>
+      </a>
+    </div>
+    <div class="wrapper">
+    <div id="bottom_nav">
+      <% Jifty->web->link( url => '/about/index.html', label => 'About' ) %> /
+      <% Jifty->web->link( url => '/about/faq.html', label => 'FAQ' ) %> /
+      <% Jifty->web->link( url => '/news', label => 'News' ) %> /
+      <% Jifty->web->link( url => '/tools/index.html', label => 'Tools' ) %> /
+      <a href="http://blog.bestpractical.com/">Blog</a> /
+      <% Jifty->web->link( url => "/legal/privacy",
+                           label => 'Privacy') %>
+    </div>  
+    <& /_elements/copyright &>
+    </div>
+    <hr class="clear hidden" />
+  </div>

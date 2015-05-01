@@ -1,0 +1,158 @@
+Keep track of what I need to do
+
+Keep track of what I need other people to do.
+
+
+
+
+
+
+Today, I want to:
+
+* See what I need to do
+* Work through my todo list
+* Grab my todo list for offline work
+
+    * Daytime
+    * HPDA
+    * RSS
+    * Printed todo list
+* Add some tasks
+
+* See what my teammates need to do
+* Assign some tasks
+
+* See what happened yesterday. 
+
+
+
+* Groups / teams
+
+    * groups let you set up who can see / edit tasks
+    * Groups != projects
+
+
+* Assignment
+
+    assign tasks to any existing or future user
+    
+* users / signup
+
+    * email new users when invited to the system / a group
+    * email confirmation of addresses
+
+    * we don't spam users per task unless they signup and say "ok"
+
+* Tasks
+
+    * 
+
+* Assignment access control
+    * You can invite users to groups that you create
+    * You can only assign tasks to users in groups that they've been
+      invited to.  
+    * Once a user is invited to a group, they can be assigned tasks.
+    * If a user rejects a group invitation, they reject all assigned tasks in that group
+     
+
+
+
+* acls
+    * see
+    * write 
+    * admin
+
+
+* groups
+* tags
+* invitations
+
+
+
+Use model of 1.0 system.
+
+
+    jesse signs up at site.
+    jesse creates a group.
+    jesse invites alex, dave, kevin to join the group.
+    dave has an account already, he gets a group confirmation.
+    alex has no account. he gets a site invite + a group invite. ideally 1 mail.
+    kevin has said he won't use the service before.  he's on a donotcall.
+        he gets no mail. 
+        jesse gets told kevin won't join.
+        this is not 1.0
+    jesse starts creating tasks for the group.
+
+    on the group page, he clicks an add tasks button.
+    he gets a magic textbox ala jesse's old demo.
+    jesse can assign tasks to alex and dave.
+    note that alex has no account yet.
+
+    each task generates a mail to the owner?
+    owners can update tasks by mail. even without an account.
+
+
+
+
+    jesse assigns a new task to dave:
+
+        fix quebec redirect bug by tuesday.
+
+    site sends mail to dave with content.
+    dave can reply by mail with html mail buttons
+    dave can reply by replying to email
+   
+    dave sees a few things on his homepage.
+
+
+
+        things due soon
+        things updated recently
+        "add more tasks" box
+
+        "Clear out my inbox" --
+            "triage tool" - may not be 1.0
+            work through my todo list in GTD style
+                do 
+                defer 1/3/5/7/30/365
+                delegate/assign
+                delete
+                file
+
+            no back/next
+
+        sub to calendar.
+        sub to tasks as rss
+
+        search for tasks
+
+        my groups -  quick overview of each
+
+        my invitations
+
+        friends list. - 1.0?
+            my groupies
+
+   
+History. 
+
+    show me task history
+
+    if you can view a task, you can sub to task updates
+
+
+
+Email
+
+    email to create a task - group or personal
+    email to update a task
+    
+    forward email from third party to create a task.
+
+    email to reply to task
+
+
+Ownership
+
+    tasks can have "nobody" owners.
+    both give and take work

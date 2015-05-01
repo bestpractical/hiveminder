@@ -1,0 +1,10 @@
+<&| /_elements/wrapper, title => "History for '".$task->summary."'",
+                        subtitle => "#".$task->record_locator &>
+
+<& /task/_elements/transactions, task => $task &>
+
+</&>
+
+<%args>
+$task
+</%args>

@@ -1,0 +1,39 @@
+File                                 |  Used by
+-------------------------------------------------------------------------------
+*jsan/JSAN.js
+*setup_jsan.js
+*jsan/Push.js                            NOTHING (jifty_subs.js theoretically, but commented out)
+*jsan/Upgrade/Array/push.js              behaviour.js
+*jsan/DOM/Events.js                      key_bindings.js, context_menu, calendar.js, bps_util.js, behaviour.js, app_behaviour.js, app.js
+json.js                                 jifty.js, login_hashing.js
+prototype.js
+*cssquery/cssQuery.js                    behaviour.js, jifty.js, app.js
+*cssquery/cssQuery-level2.js
+*cssquery/cssQuery-level3.js
+*cssquery/cssQuery-standard.js
+behaviour.js                            key_bindings.js, context_menu.js, app_behaviour.js
+scriptaculous/builder.js
+scriptaculous/effects.js
+scriptaculous/controls.js
+*formatDate.js                           NOTHING
+*dom-drag.js                             halo.js
+*rico.js                                 for rounding corners (app_behaviour.js)
+*css_browser_selector.js                 trivial use in tools.css
+*jsan/HTTP/Cookies.js                    storing tasklist state (app.js, app_behaviour.js)
+*jsan/Digest/MD5.js                      login_hashing.js
+
+jifty.js
+jifty_utils.js
+jifty_subs.js
+jifty_smoothscroll.js
+calendar.js
+halo.js
+*combobox.js
+key_bindings.js
+context_menu.js
+bps_util.js
+
+app.js
+app_behaviour.js
+login_hashing.js
+

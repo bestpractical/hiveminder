@@ -1,0 +1,39 @@
+<div class="tasklist_panel_wrapper">
+<div class="dropshadow_wrap1"><div class="dropshadow_wrap2"><div class="dropshadow_wrap3">
+<div class="tasklist_panel">
+<div id="tasklist_time_tracking">
+<div><strong>Time Tracking</strong></div>
+
+<% Jifty->web->region(
+    name          => Jifty->web->serial,
+    path          => '/reports/timetracking',
+    arguments     => {
+        tokens        => $region->parent->argument('tokens'),
+        list_metadata => 1,
+    },
+) %>
+
+<div class="button_line">
+<%
+   Jifty->web->link(
+        label => "Close",
+        onclick => {
+            replace_with => '/__jifty/empty',
+            toggle       => 1,
+        },
+        class => "cancel",
+        as_button => 1,
+   )
+%>
+</div>
+</div>
+</div>
+</div></div></div>
+</div>
+<%args>
+$region
+</%args>
+<%init>
+my $tasks = BTDT::Model::TaskCollection->new;
+$tasks->from_tokens($tasks->split_tokens());
+</%init>

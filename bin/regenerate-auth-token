@@ -1,0 +1,45 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+
+my $email;
+my $force = 0;
+
+for (@ARGV) {
+    next unless defined and length;
+    if ( lc $_ eq '--force' ) {
+        $force = 1;
+    } else {
+        $email = $_;
+    }
+}
+
+die "Usage: $0 [--force] email\n" if not defined $email;
+
+print "Email: $email\n";
+
+my $user = BTDT::Model::User->new( current_user => BTDT::CurrentUser->superuser );
+$user->load_by_cols( email => $email );
+
+die "Unable to find user with the address '$email'\n"
+    unless $user->id;
+
+if ($user->auth_token) {
+    if ($force) {
+        print "Forcibly regenerating the user's token\n";
+    } else {
+        die "User already has an auth_token!  Run with --force to regenerate anyway.\n";
+    }
+}
+
+my ($good, $msg) = $user->regenerate_auth_token;
+
+if ( $good ) {
+    print "New token: ", $user->auth_token, "\n";
+} else {
+    die "Error: $msg\n";
+}
+

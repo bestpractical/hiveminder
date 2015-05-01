@@ -1,0 +1,219 @@
+<%perl>
+my $wrap_tool = sub {
+    my $name        = shift;
+    my $content_sub = shift;
+    $m->out(qq(<div class="tool $name">));
+    $content_sub->();
+    $m->out('</div>');
+};
+
+if ( $task->owner->id == Jifty->web->current_user->id and not $task->accepted() ) {
+
+    $wrap_tool->(
+        'accept',
+        sub {
+            $update->button(
+                label   => "Accept",
+                onclick => [
+                    {   submit => {
+                            action    => $update,
+                            arguments => { accepted => 1 },
+                        },
+                        refresh => Jifty->web->qualified_region,
+                        args    => { maybe_view => 1, },
+                    },
+                    {   region       => "notices",
+                        replace_with => "/fragments/notices",
+                    },
+                ],
+                as_link => 1,
+                class   => 'suggested_option',
+            );
+        }
+    );
+}
+
+$wrap_tool->(
+    'take' => sub {
+        $update->button(
+            label   => "Take",
+            onclick => [
+                {   submit => [
+                        {   action    => $update,
+                            arguments => { owner_id => Jifty->web->current_user->user_object->email }
+                        }
+                    ],
+                    refresh => Jifty->web->qualified_region,
+                    args    => { maybe_view => 1 }
+                }
+            ],
+            as_link => 1
+        );
+    }
+    )
+    if (defined $task->owner_id
+    and $task->owner_id == BTDT::CurrentUser->nobody->id
+    and $task->current_user_can('update') );
+
+if ( Jifty->web->current_user->pro_account ) {
+
+    $wrap_tool->(
+        'track-time',
+        sub {
+            Jifty->web->out(
+                Jifty->web->link(
+                    label   => 'Timer',
+                    onclick => [
+                        {   element      => '#stopwatch-' . Jifty->web->current_region->qualified_name,
+                            replace_with => '/fragments/tasklist/stopwatch',
+                            args         => {
+                                task_id => $task->id,
+                                element => '#stopwatch-' . Jifty->web->current_region->qualified_name,
+                                parent  => Jifty->web->current_region->qualified_name
+                            },
+                        }
+                    ]
+                )
+            );
+        }
+    );
+}
+
+$wrap_tool->(
+    "butfirst",
+    sub {
+        $m->out(
+            Jifty->web->link(
+                label => 'But first...',
+
+                onclick => [
+                    {
+                        beforeclick => "jQuery('#task-".Jifty->web->current_region->qualified_name."').addClass('opened');"
+                    },
+                    {   element      => "#but-first-" . Jifty->web->qualified_region,
+                        replace_with => '/fragments/tasklist/list',
+                        effect       => 'BlindDown',
+                        toggle       => 1,
+                        args         => {
+                            tokens        => 'and then ' . $task->record_locator . " not complete",
+                            brief         => 1,
+                            parent_id     => $task->id,
+                            title         => 'But first...',
+                            new_item_path => '/fragments/tasklist/new_item_expands',
+                            item_path     => '/fragments/tasklist/view',
+                        },
+                    },
+                    ]
+
+            )
+        );
+    }
+);
+
+$wrap_tool->(
+    "andthen",
+    sub {
+        $m->out(
+            Jifty->web->link(
+                label   => 'And then...',
+                onclick => [
+                    {
+                        beforeclick => "jQuery('#task-".Jifty->web->current_region->qualified_name."').addClass('opened');"
+                    },
+                    {   element      => "#and-then-" . Jifty->web->qualified_region,
+                        replace_with => '/fragments/tasklist/list',
+                        toggle       => 1,
+                        effect       => 'BlindDown',
+                        args         => {
+                            tokens        => 'but first ' . $task->record_locator . " not complete",
+                            brief         => 1,
+                            parent_id     => $task->id,
+                            title         => 'And then...',
+                            new_item_path => '/fragments/tasklist/new_item_expands',
+                            item_path     => '/fragments/tasklist/view',
+                        },
+                    },
+                    ]
+
+            )
+        );
+
+    }
+);
+
+$wrap_tool->(
+    "comment",
+    sub {
+        $m->out(
+            Jifty->web->link(
+                label   => 'Comment',
+                onclick => {
+                    element      => "#add-comment-" . Jifty->web->qualified_region,
+                    replace_with => '/fragments/tasklist/comment',
+                    toggle       => 1,
+                    effect       => 'BlindDown',
+                    args         => { id => $task->id },
+                }
+            )
+        );
+    }
+);
+
+$wrap_tool->(
+    'edit',
+    sub {
+        $m->out(
+            Jifty->web->link(
+                label   => "Edit",
+                onclick => [
+                    {   region       => Jifty->web->qualified_region,
+                        replace_with => "/fragments/tasklist/edit",
+                        args         => { tokens => $tokens },
+                    }
+                ]
+            )
+        );
+    }
+);
+
+$wrap_tool->(
+    "edit_context_menu",
+    sub {
+
+        Jifty->web->region(
+            name      => 'action-menu',
+            class     => 'action-menu-region',
+            path      => '/fragments/tasklist/menu_button',
+            arguments => { task_id => $task->id, tokens => $tokens }
+        );
+    }
+);
+
+if ( !$prioritize_assign and $show_assign ) {
+    $wrap_tool->(
+        "assign",
+        sub {
+            Jifty->web->region(
+                name      => 'assign-menu',
+                class     => 'assign-menu-region',
+                path      => '/fragments/tasklist/menu_button',
+                arguments => {
+                    type        => 'assign',
+                    task_id     => $task->id,
+                    tokens      => $tokens,
+                    reassign    => $reassign
+                }
+            );
+        }
+    );
+}
+
+</%perl>
+<%args>
+$task => undef
+$update => undef
+$tokens => undef
+$prioritize_assign => undef
+$show_assign => 0
+$reassign => 0
+</%args>

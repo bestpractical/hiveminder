@@ -1,0 +1,37 @@
+<%args>
+$page => undef
+$collection => undef
+$per_page => undef
+</%args>
+% if ($collection->count != 0) {
+<div class="tasklist-nav">
+Page <span class="page-numbers">
+% use POSIX ();
+% my $last = ($page == -1) ? POSIX::ceil( $collection->count / $per_page) : $collection->pager->last_page;
+
+% my $last_num = 0;
+% foreach my $goto_page (1 ..  $last) {
+% # only show page numbers that are: 1, (within 3 of the current page), last
+% next if (($goto_page > 1) && ($goto_page < $last) && (abs($goto_page-$page) > 2));
+% if ( ($goto_page - $last_num) > 1) { 
+&hellip;
+% } 
+<span class="page-number <%$goto_page == $page ? 'current' : ''%>"><% Jifty->web->link( label => $goto_page, onclick => { args => { page => $goto_page } } ) %></span>
+% $last_num = $goto_page;
+% }
+
+% if ($collection->pager->previous_page) {
+<span class="prev-page"><% Jifty->web->link( label => "Back", class => "prev", onclick => { args => { page => $collection->pager->previous_page } } ) %></span>
+% }
+
+% if ($collection->pager->next_page) {
+<span class="next-page"><% Jifty->web->link( label => "Next", class => "next", onclick => { args => { page => $collection->pager->next_page } } ) %></span>
+% }
+% if ( $page == -1 || $collection->pager->last_page > 1) {
+<span class="page-number <%$page == -1 ? 'current' : ''%>">
+<% Jifty->web->link( label => "All", onclick => { args => { page => -1 } } ) %>
+</span>
+% }
+</span>
+</div>
+% }

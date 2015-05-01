@@ -1,0 +1,90 @@
+<%
+  Jifty->web->link(
+      label => $task->summary,
+      url   => '/task/'.$task->record_locator,
+      class => 'task',
+      target => '_new'
+  )
+%>
+
+<% $update->form_field('add_time_worked',
+                       class => 'stopwatch',
+                       ( defined $from ? (default_value => $from) : () )) %>
+<% $update->form_field('time_left',
+                       class => 'countdown',
+                       ( defined $left ? (default_value => $left) : () )) %>
+<div class="inline">
+  <% $update->form_field('comment') %>
+</div>
+
+<% 
+    Jifty->web->link(
+        label   => "Update",
+        class   => $type . 'Close',
+        onclick => [
+            qq[ jQuery('$element input.stopwatch').attr('submittingForm', 1); ],
+            qq[ jQuery('$element input.hasStopWatch').StopWatch('destroy'); ],
+            {
+                submit => $update,
+                replace_with => '/__jifty/empty',
+            },
+            ( $parent ? { refresh => $parent } : () )
+        ]
+    )
+%>
+
+<% 
+    Jifty->web->link(
+        label   => "Update and Complete",
+        class   => $type . 'Close',
+        onclick => [
+            qq[ jQuery('$element input.stopwatch').attr('submittingForm', 1); ],
+            qq[ jQuery('$element input.hasStopWatch').StopWatch('destroy'); ],
+            {
+                submit => {
+                    action      => $update,
+                    arguments   => { complete => 1 },
+                },
+                replace_with => '/__jifty/empty',
+            },
+            ( $parent ? { refresh => $parent } : () )
+        ]
+    )
+%>
+<%args>
+$task_id
+$parent => undef
+$from => undef
+$element => ''
+$type => undef
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new;
+$task->load($task_id);
+
+my $update = Jifty->web->new_action(
+    class   => "UpdateTask",
+    moniker => "edit-time-" . Jifty->web->serial,
+    record  => $task
+);
+
+my $left;
+my $seconds = $task->duration_in_seconds( $task->time_left );
+
+my $extract = sub {
+    my $unit  = shift;
+    my $secs  = shift;
+    $$unit    = int( $seconds / $secs );
+    $seconds -= $$unit * $secs;
+};
+
+if ( $seconds ) {
+    my ($h, $m, $s) = ("00" x 3);
+    $extract->(\$h, 3600);
+    $extract->(\$m, 60);
+    $extract->(\$s, 1);
+
+    $left = sprintf "%02d:%02d:%02d", $h, $m, $s;
+}
+</%init>
+

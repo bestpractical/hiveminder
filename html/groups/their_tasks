@@ -1,0 +1,22 @@
+<&| /_elements/wrapper, title => "Group ".$group->name,
+                        subtitle => "Everybody else's tasks",
+                        group_id => $group->id,
+                        tag_collection => $others,
+                        logo => 'hivemind' &>
+
+<& /_elements/tasklist,
+    collection => $others,
+    name => 'othersgrouptasks',
+    hide_if_empty => 0
+    &>
+
+</&>
+
+<%init>
+my $others = BTDT::Model::TaskCollection->new();
+$others->from_tokens(qw/owner anyone not owner nobody not owner me not complete but_first nothing group/, $group->id, qw/sort_by owner/);
+
+</%init>
+<%args>
+$group
+</%args>

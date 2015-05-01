@@ -1,0 +1,28 @@
+.calendar {
+    text-align: center;
+    margin: 2em 0 0 0;
+}
+
+.calendar td, .calendar th { padding: 0.1em 0.25em 0.1em 0.25em; }
+
+.calendar caption .month {
+    padding: 0 1em 0 1em;
+    font-size: 1.5em;
+}
+
+.select-free {
+    overflow: visible !important;
+    z-index:10;
+}
+
+.select-free iframe {
+    display:none;
+    display/**/:block;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:-1;
+    filter:mask();
+    width:3000px;
+    height:3000px;
+}

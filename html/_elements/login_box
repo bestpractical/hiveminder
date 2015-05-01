@@ -1,0 +1,22 @@
+<%init> 
+$m->redirect('/todo')
+  if Jifty->web->current_user->id;
+
+my $action = Jifty->web->new_action(class => 'Login', moniker => 'loginbox' );
+
+
+</%init>
+
+<div id="login-box">
+<h2>Sign in</h2>
+<% Jifty->web->form->start(call => Jifty->web->request->continuation, name => "loginbox") %>
+<% $action->form_field('token')%>
+<% $action->form_field('address', focus => 1) %>
+<% $action->form_field('hashed_password') %>
+<% $action->form_field('password') %>
+<% $action->form_field('remember') %>
+<% Jifty->web->return(to => "/todo", label => 'Sign in', submit =>  $action, onclick => "return getPasswordToken();" ) %>
+<% Jifty->web->form->end %>
+
+
+</div>

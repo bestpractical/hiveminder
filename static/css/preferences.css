@@ -1,0 +1,22 @@
+ul.email_addresses {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 2em;
+}
+
+ul.email_addresses li {
+    clear: left;
+}
+
+ul.email_addresses a {
+    float: left;
+    display: block;
+    width: 20em;
+    font-size: 1.3em;
+}
+
+ul.email_addresses .button {
+    font-size: 1em;
+    margin-top: 0;
+}
+

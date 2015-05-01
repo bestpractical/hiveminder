@@ -1,0 +1,39 @@
+% if (not $collection->count) {
+<p class="zilch_message">You don't belong to any groups yet! Why not start one for your next big (or little)
+project?</p>
+<h2>Create a group</h2>
+<& /_elements/newgroup &>
+% }
+% else {
+<dl class="groups">
+% while (my $item = $collection->next) {
+<dt>
+  <span class="group_name"><%Jifty->web->link( url => "/groups/".$item->id ."/my_tasks", label => $item->name )%></span>
+  <span class="member_role">
+<%perl>
+my $member = BTDT::Model::GroupMember->new();
+$member->load_by_cols( actor_id => Jifty->web->current_user->id,
+                       group_id => $item->id );
+</%perl>
+% if ( $member->id ) {
+    (<span class="group_role_<% $member->role %>"><% $member->role %></span>)
+% }
+  </span>
+</dt>
+<dd><% $item->description||'' %></dd>
+% }
+</dl>
+
+<& /_elements/paging, collection => $collection &>
+
+% }
+
+<%args>
+$page => 1
+</%args>
+<%init>
+my $collection = BTDT::Model::GroupCollection->new();
+$collection->limit_contains_user( Jifty->web->current_user->user_object );
+$collection->order_by( column => 'name', order => 'asc' );
+$collection->set_page_info( per_page => 25, current_page => $page );
+</%init>

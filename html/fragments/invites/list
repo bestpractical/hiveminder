@@ -1,0 +1,42 @@
+% if ( not $hide_title ) {
+<h2>Invitations</h2>
+% }
+
+% if ( $invites->count ) {
+<ul class="invitations">
+% while (my $item = $invites->next) {
+<li><span class="invite_line"><& /_elements/username, user => $item->sender &> (<% $item->sender->email %>) has invited you to become a <span class="group_role_<% $item->role %>"><% $item->role %></span> of 
+<% Jifty->web->link( url => "/groups/".$item->group->id, label => ($item->group->name || '(Unnamed group)' ))%>.</span>
+<% Jifty->web->link( url => "/groups/invitation/accept/".$item->id, label => 'Accept')%> or 
+<% Jifty->web->link( url => "/groups/invitation/decline/".$item->id, label  => 'decline this invitation.')%></li>
+% }
+</ul>
+
+<& /_elements/paging, collection => $invites &>
+
+<%perl>
+Jifty->web->form->start;
+my $all = Jifty->web->current_user->user_object->group_invitations;
+while (my $item = $all->next) {
+    Jifty->web->new_action( class => 'AcceptGroupInvitation' )
+      ->form_field('invitation', render_as => 'Hidden', default_value => $item->id)->render;
+}
+</%perl>
+<div class="button_line">
+<% Jifty->web->form->submit( label => 'Accept all') %>
+</div>
+<% Jifty->web->form->end %>
+% }
+% else {
+<p class="zilch_message">You have no outstanding invitations to groups.</p>
+% }
+
+<%args>
+$page => 1
+$hide_title => 0
+</%args>
+<%init>
+my $invites = Jifty->web->current_user->user_object->group_invitations;
+
+$invites->set_page_info( per_page => 5, current_page => $page );
+</%init>

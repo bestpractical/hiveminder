@@ -1,0 +1,19 @@
+.tasklist-nav {
+    float: right;
+    clear: right;
+}
+
+.tasklist-nav a {
+    color: grey;
+    text-decoration: none;
+}
+
+.page-numbers .current a {
+    font-weight: bold;
+    color: black;
+}
+
+.tasklist-nav a:hover {
+    text-decoration: underline;
+}
+

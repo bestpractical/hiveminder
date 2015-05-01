@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs
+      title="Hiveminder Tasks"
+      description="Create and manage your Hiveminder tasks"
+      author="Best Practical, LLC"
+      author_email="support@hiveminder.com"
+      title_url="http://hiveminder.com"
+      screenshot="http://hiveminder.com/static/images/google-gadget-screenshot.png"
+      thumbnail="http://hiveminder.com/static/images/google-gadget-thumbnail.png"
+      height="400"
+      scrolling="true" />
+  <Content type="url" href="http://hiveminder.com/mini/todo/on/today" />
+</Module>

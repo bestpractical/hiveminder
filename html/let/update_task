@@ -1,0 +1,58 @@
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load_by_cols( id => $ARGS{'id'} );
+my $update_task = Jifty->web->new_action(
+    class   => 'UpdateTask',
+    record  => $task
+);
+</%init>
+<&| /_elements/wrapper, title => $task->summary, hide_braindump => 1 &>
+<div class="task <% $task->complete ? 'complete' : 'todo' %>">
+% if (not $task->current_user_can('read')) {
+<h2>The scoop</h2>
+
+<p>You've already declined this task.</p>
+% } else {
+<% Jifty->web->form->start %>
+% Jifty->web->form->register_action($update_task);
+<div class="nonuser_update_task">
+% if ( not $task->accepted ) {
+<h2>The scoop</h2>
+<p>
+<& /_elements/username, user => $task->requestor &> (<% $task->requestor->email %>) has asked
+you to take care of the task "<% $task->summary ||'' %>."
+% if ( defined $task->description and $task->description !~ /^[\w\n]*$/o ) {
+
+<blockquote class="description">
+  <% $task->formatted_description |n%>
+</blockquote>
+% }
+</p>
+<& /task/_elements/accept_or_decline, task_id => $task->id, update_task => $update_task &>
+% } else {
+<div class="round edit_explain">
+  You can update information about the task below.  If you add a comment,
+  we'll let <& /_elements/username, user => $task->requestor &> (<% $task->requestor->email %>) know.
+  When you're done, just
+  check off the box next to the task summary and click "Save".
+  <a href="/help/" onclick="return BTDT.Util.openHelpWindow(this.href)">Need more help</a>?
+</div>
+<& /task/_elements/edit, task => $task,
+                         update_task => $update_task &>
+%# NOT AS A REGION, SO WE DON'T RUN INTO ACL ISSUES
+<& /fragments/task/history, task => $task, show_all => 1 &>
+
+  <div class="button_line">
+    <% Jifty->web->form->submit( label => 'Save' ) %>
+    <hr class="hidden clear" />
+  </div>
+% }
+</div>
+
+<% Jifty->web->form->end() %>
+% }
+</div>
+<hr class="hidden clear" />
+<& /_elements/opt_out &>  
+
+</&>

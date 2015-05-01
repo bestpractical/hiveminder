@@ -1,0 +1,19 @@
+<div>
+<% Jifty->web->form->start %>
+% while (my $n = $news->next) {
+  <% Jifty->web->region( name => 'news-'.$n->id, path => '/fragments/no_auth/news/view', defaults => {id => $n->id}) %>
+% }
+
+<& /_elements/paging, collection => $news &>
+
+<% Jifty->web->form->end %>
+</div>
+<%args>
+$page => 1
+</%args>
+<%init>
+my $news = BTDT::Model::NewsCollection->new();
+$news->unlimit;
+$news->order_by( column => 'created', order => 'desc' );
+$news->set_page_info( per_page => 10, current_page => $page );
+</%init>

@@ -1,0 +1,46 @@
+<%args>
+$title => 'Hiveminder'
+$tokens => undef
+</%args>
+<%init>
+Jifty->web->response->content_type('text/html; charset=utf-8');
+</%init>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+    <title><%$title%></title>
+    <style><& css &></style>
+    <meta name="apple-mobile-web-app-capable" content="yes" /> <!-- hide browser chrome in webclipped hiveminder -->
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body class="mobile">
+<%Jifty->web->render_messages %>
+<div class="content"><%$m->content()|n%>
+% if (Jifty->web->current_user->id) {
+<div class="pagenav-wrapper">
+<ul class="pagenav">
+    <li> <% Jifty->web->link( label => _('Home'), url => '/mobile/')%></li>
+    <li> <% Jifty->web->link( label => _('Todo'), url => '/mobile/list/not/complete/owner/me/starts/before/tomorrow/accepted/but_first/nothing')%></li>
+    <li> <% Jifty->web->link( label => _('Create'), url => '/mobile/braindump/'.$tokens )%></li>
+    <li> <% Jifty->web->link( label => _('Tags'), url => '/mobile/tags')%></li>
+</ul>
+</div>
+<& quicksearch &>
+% }
+</div>
+<div class="about">
+<div id="hmlogo">
+<div id="logo-inner">
+<img src="/static/images/hmlogo/default.white.png" alt="Hiveminder"/><br/>
+% if ( Jifty->web->current_user->pro_account ) {
+    <img src="/static/images/pro-text.png" alt="Pro" id="protext" /><br/>
+% }
+</div>
+</div>
+<div id="bplogo">
+<a href="http://bestpractical.com"><img alt="Best Practical Solutions, LLC" src="/static/images/bp_logo_small.png"/></a>
+</div>
+</div>
+</body>
+</html>

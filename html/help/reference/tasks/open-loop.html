@@ -1,0 +1,36 @@
+<&| /help/_elements/prowrapper, title => 'Open loop' &>
+
+<p>When two people are working on a task, there's often some back-and-forth. For example,</p>
+
+<ol>
+    <li>Jordan, your boss, assigns you a task: <i>Write a book on learning Russian</i>.</li>
+    <li>You begin writing and hit a stumbling block. Is this book for first time learners, or people who have some experience with Russian? You add a comment to the task for Jordan. <b>You wait for the response.</b></li>
+    <li>Jordan replies: it's for complete beginners.</li>
+    <li>You come up with a chapter outline. You'd like to know if this outline is acceptable. You add a comment to the task for Jordan. <b>You wait for the response.</b></li>
+    <li>Jordan replies: just needs a few tweaks.</li>
+    <li><i>(This back and forth continues a bunch more times, and you eventually finish the book, to much fanfare)</i></li>
+</ol>
+
+<p>As you can see, collaborative tasks often involve a lot of waiting for answers. The open loop system aims to alleviate this by letting you hide tasks that you're waiting on. Hiveminder does this by looking at who had the most recent comment on the task. If the other person made the most recent comment, the ball is in your court, and vice versa.</p>
+
+<p>As a pro user, you'll have some new task lists:</p>
+
+<dl>
+
+% for my $list (grep { $_->{openloop} } BTDT::Model::List->default_lists(1)) {
+%   if (Jifty->web->current_user->pro_account) {
+        <dt>
+            <a class="external" href="<% $list->{url} %>">
+                <% $list->{label} %>
+            </a>
+        </dt>
+%   } else {
+        <dt><b><% $list->{label} %></b></dt>
+%   }
+
+    <dd><% $list->{summary} %></dd>
+% }
+
+</dl>
+
+</&>

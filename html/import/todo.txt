@@ -1,0 +1,17 @@
+<&| /_elements/wrapper, title => "Todo.txt import" &>
+
+<p>If you have a <a href="http://todotxt.com/">todo.txt</a> file from
+Lifehacker.com's todo.sh script, you can upload it here to turn your
+todo list into Hiveminder tasks!</p>
+
+<% Jifty->web->form->start %>
+<% $action->hidden(format => 'todo.txt') %>
+% Jifty->web->form->next_page( url => "/create/upload" );
+<% $action->form_field('file') %>
+<% Jifty->web->form->submit( label => "Upload!") %>
+<% Jifty->web->form->end %>
+
+</&>
+<%init>
+my $action = Jifty->web->new_action(class => "UploadTasks", moniker => "uploadtasks");
+</%init>

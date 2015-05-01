@@ -1,0 +1,243 @@
+body#mini {
+    background: #fff;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+    max-width: 400px;
+    font-size: 0.6em;
+}
+
+body#mini .tasklist .task_container:hover .task_summary a {
+    text-decoration: underline;
+}
+
+
+body#mini .tasklist .task.update {
+    margin: 1em;
+    padding-right: 0.2em;
+    box-shadow: 2px 2px 1px #888;
+    -webkit-box-shadow: 2px 2px 1px #888;
+    -moz-box-shadow: 2px 2px 1px #888;
+
+}   
+
+body#mini .tasklist .task.update div.form_field {
+    width: 90%;
+}
+body#mini .tasklist .task.update input[type="text"] {
+    width: 90%;
+}
+
+body#mini .tasklist textarea.argument-description  {
+    width: inherit;
+}
+
+body#mini .tasklist dt.normal_priority .task_summary  {
+    margin-left: 0;
+}
+body#mini .tasklist .task .task_summary a,
+body#mini .context_menu li.toplevel .title {
+    font-weight: normal;
+}
+body#mini .tasklist .task .task_summary a {
+    display: block;
+}
+body#mini .tasklist .task input {
+    margin: 0.2em 0;
+}
+body#mini h2, body#mini h3 {
+    -moz-border-radius: 0;
+    background: none;
+}
+body#mini h2, body#mini h3, body#mini .tasklist {
+    margin: 0;
+/*    padding: 0 5px; */
+}
+body#mini .tasklist-nav {
+    position: relative;
+    right: 0;
+    padding-top: 0.5em;
+    padding-right: 1em;
+    padding-bottom: 0.25em;
+}
+
+body#mini .context_menu {
+    display:none;
+    border: none;
+    font-size: 1.2em;
+}
+
+body#mini .context_menu:hover  {
+    border:none;
+}
+
+body#mini .task_container:hover {
+    background: none;
+}
+
+
+body#mini .task_container {
+    position: relative;    
+}
+body#mini .task_container .context_menu:hover,
+body#mini .task_container:hover  .context_menu {
+    display: block;
+    position: absolute;
+    top: -0.1em;
+    padding-top: 0.1em;
+    padding-left: 0.5em;
+    padding-bottom: -0.25em;
+    margin-bottom: -0.25em;
+    background: #ffc;
+    right: 0;
+}
+
+body#mini .task_container:hover .context_menu li {
+    border: none;
+}
+  
+body#mini .context_menu li.toplevel .expand a {
+    height: 8px;
+}
+
+body#mini .context_menu li.toplevel .expand a {
+
+}
+
+body#mini .inline.create-task {
+    margin-left: 0em;
+    padding-left: 1em;
+    padding-bottom: 2em;
+    background-color: #eee;
+    margin-top: 2em;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+body#mini .context_menu span.expand a  {
+    padding-left: 12px;
+}
+body#mini #region-tasklist-new_item,
+body#mini #region-today-new_item {
+    clear: both;
+    margin-top: 10px;
+    padding: 0 5px;
+}
+body#mini #region-today {
+    margin-bottom: 0.2em;
+}
+/* message */
+body#mini div#messages {
+    border-width: 1px 0;
+}
+/* tab */
+body#mini .yui-navset .yui-nav li a {
+    border-width: 0 1px 0 0;
+}
+body#mini .yui-navset .yui-content {
+    border-width: 1px 0 0 0;
+}
+body#mini .overdue a:link, body#mini .overdue a:visited {
+    color: #900;
+}
+body#mini .yui-navset .yui-nav {
+    background-color:#fff6cf;
+}
+body#mini .yui-navset .yui-nav .selected a, .yui-navset .yui-nav a:hover, .yui-navset .yui-content {
+    background-color:#fff; /* active tab, tab hover, and content bgcolor */
+}
+body#mini .yui-navset .yui-nav a:hover {
+    border-bottom: 1px solid;
+}
+body#mini .yui-navset .yui-nav .selected a:hover {
+    border-bottom: none;
+}
+body#mini .yui-navset-top .yui-nav li, .yui-navset-bottom .yui-nav li {
+    margin: 0;
+}
+body#mini .yui-navset .yui-nav li a {
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+body#mini .yui-nav li em {
+    padding: 0.25em;
+}
+body#mini .yui-navset .yui-nav a:link,
+body#mini .yui-navset .yui-nav a:visited,
+body#mini .yui-navset .yui-nav a:hover,
+body#mini .yui-navset .yui-nav a:active {
+    text-decoration: none;
+}
+body#mini .yui-content:after {
+    content: ".";
+    display: block; 
+    height: 0; 
+    clear: both;
+    visibility: hidden;
+}
+* html .yui-content:after {height: 1%;}
+
+/* history */
+body#mini h1 {
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+    text-align: center;
+    margin: 0 10px;
+    padding: 5px 0 0 0;
+    font-size: 1.2em;
+    border-bottom: 1px dashed #999;
+}
+body#mini .date {
+    display: block;
+    color: #933;
+}
+body#mini .transaction dt {
+    background: none;
+    border: none;
+}
+body#mini .transaction {
+    border-left: 5px solid #8482ca;
+    margin: 5px 0 5px 2.5em;
+    padding: 0 0 0 5px;
+}
+body#mini .transaction dd:hover {
+    background: #f3f89b;
+}
+body#mini .transaction dt:hover {
+    background: #f3f89b;
+}
+body#mini .created_by {
+    color: #933;
+    font-weight: bold;
+}
+body#mini .datenav {
+    border-bottom: 1px dashed #999;
+    height: 1.2em;
+    margin: 0 10px;
+}
+body#mini .datenav a:link,
+body#mini .datenav a:visited,
+body#mini .datenav a:hover,
+body#mini .datenav a:active {
+    text-decoration: none;
+}
+
+body#mini input[type=submit], body#mini button {
+    font-size: 1em;
+}
+
+body#mini .task .priority .priority_text {  display: none;}
+
+body#mini #mini-footer {
+    padding-right: 0.5em;
+    padding-top: 1em;
+}
+
+body#mini #jGrowl.top-right { /* yeah, I know. positional css ew */
+  bottom: 0;
+  left: 0; 
+  right: 0.25em;
+  top: inherit;
+  font-size: 0.7em;
+}
+body #mini #jGrowl .jGrowl-notification {
+    width: 100%; 
+}

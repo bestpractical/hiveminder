@@ -1,0 +1,44 @@
+<&| /_elements/wrapper, title => "Preferences" &>
+<div id="overview">
+  <p>
+    On this page, you can change your name, email address, and other
+    preferences.  If you change your email address, we'll send you an email
+    message to verify the new address.
+  </p>
+
+  <p>
+    If you want to create tasks by sending email
+    <% BTDT->contextual_help("how-to/create-tasks-by-email") %>, click on the
+    <b><%Jifty->web->link( url => "/prefs/addresses", label  =>'Tasks by email')%></b>
+    tab.
+  </p>
+  <p>
+    If you want to create and update tasks by sending instant messages
+    <% BTDT->contextual_help("how-to/tasks-by-IM") %>, click on the
+    <b><%Jifty->web->link( url => "/prefs/IM", label  =>'Tasks by IM')%></b>
+    tab.
+  </p>
+</div>
+
+<% Jifty->web->form->start(name => "useredit") %>
+% for (qw(email name per_page time_zone notification_email_frequency email_service_updates calendar_starts_monday taskbar_on_bottom likes_ticky_boxes beta_features) ) {
+<% $edit_user->form_field($_)%>
+% }
+<div class="button_line">
+<% Jifty->web->form->submit( label => "Save" ) %>
+    <% 
+        Jifty::Web::Form::Field->new(
+            label   => "Reset",
+            type    => 'ResetButton',
+            class   => 'cancel',
+        ) %>
+</div>
+        
+<% Jifty->web->form->end%>
+</&>
+
+<%init>
+my $edit_user = Jifty->web->new_action(class => 'UpdateUser', moniker => 'useredit', arguments => { id => Jifty->web->current_user->id } );
+</%init>
+<%doc>
+</%doc>

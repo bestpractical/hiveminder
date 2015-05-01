@@ -1,0 +1,27 @@
+=== FIELDS
+
+estimate, worked
+
+=== CONTEXTS
+
+Show only estimate on task creation
+
+Never directly edit worked, always be additive
+
+Popout stopwatch
+
+"How long did you just work on this task?"
+"How much longer do you think you have?"
+
+
+=== REPORTING
+
+In the time tracking tab of a task, show not only the graphical
+and statistical report, but also the original estimate (first value for
+estimate) and current estimate.
+
+Check initial estimate calculation
+
+Rework BTDT::Model::Task::time_tracking
+
+Fix tests

@@ -1,0 +1,51 @@
+<&| /help/_elements/prowrapper, title => 'Setting up Mail.app for Hiveminder IMAP' &>
+
+<p>To add Hiveminder's IMAP server to your Mail.app client:</p>
+
+<ol>
+
+<li>In the <tt>File</tt> menu, select <tt>Add Account...</tt><br />
+<img src="/static/images/imap/mail.app_step1_add_account.png" />
+</li>
+
+<li>Enter your name, the email address you used to register for
+Hiveminder, and your Hiveminder password.  If you've already set up an
+account with that email address, Mail.app will complain -- you can
+enter a <a href="/prefs/addresses">Hiveminder incoming email
+address</a> instead.<br />
+<img src="/static/images/imap/mail.app_step2_set_address.png" /> </li>
+
+<li>Select <tt>IMAP</tt> as the account type, enter a description of
+your choice (like <tt>Hiveminder!</tt>), use <tt>hiveminder.com</tt>
+as the incoming mail server, and your full Hiveminder email address as
+your username.
+
+<p>Because Mail.app aggregates all <em>Inbox</em>es across all accounts,
+your Hiveminder tasks will appear in this aggregated mailbox.  If you
+don't like this, you can append "/noinbox" to your username (that is,
+<tt>username@example.com/noinbox</tt>), which will leave your
+<em>Inbox</em> on the Hiveminder server empty, and instead place your
+personal tasks in a folder named <em>Todo</em>.</p>
+
+<img src="/static/images/imap/mail.app_step3_set_server_and_username.png" />
+</li>
+
+<li>You will then be prompted to enter your outgoing mail server.
+Hiveminder does not provide an outgoing mail server; you should enter
+your regular email account's outgoing mail server here, <b>not</b>
+<tt>mail.bestpractical.com</tt> as shown here.  Your regular email
+account's outgoing mail server should be in the drop-down; if it is
+not, ask your local system administrator (nicely!) for what it should
+be.<br />
+<img src="/static/images/imap/mail.app_step4_regular_outgoing_server.png" />
+</li>
+
+<li>Once you've checked the details, you're done.<br />
+<img src="/static/images/imap/mail.app_step5_confirm_details.png" />
+</li>
+
+<li>You're all set to go with Hiveminder IMAP!<br />
+<img src="/static/images/imap/mail.app_step6_profit.png" />
+</li>
+
+</&>

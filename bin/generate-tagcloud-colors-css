@@ -1,0 +1,32 @@
+#!/usr/bin/env hmperl
+use warnings;
+use strict;
+
+# This is the base color
+my $cur = shift || 'b38600';
+
+use Color::Calc;
+
+my @color_for = ($cur);
+
+for (0..23) {
+    $cur = color_light_hex($cur, '0.02');
+    push @color_for, $cur;
+}
+
+#print "Colors generated (", scalar @color_for, ")\n";
+#print "\t$_\n" for @color_for;
+
+for my $level (0..24) {
+    my $size     = 90 + $level * 1.5;
+    my $adjusted = 24 - $level;
+    
+    print <<EOT;
+.tagcloud span.tagcloud$level :link,
+.tagcloud span.tagcloud$level :visited
+{
+    color: #$color_for[$adjusted];
+    font-size: $size%;
+}
+EOT
+}

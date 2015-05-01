@@ -1,0 +1,62 @@
+<div class="tasklist_panel_wrapper">
+<div class="dropshadow_wrap1"><div class="dropshadow_wrap2"><div class="dropshadow_wrap3">
+<div class="tasklist_panel">
+<div id="tasklist_braindump">
+<div><strong>Braindump</strong></div>
+<% $action->form_field('text', sticky => 0, placeholder => $ideas_to_show) %>
+<% $action->form_field('tokens', default_value => $region->parent->argument('tokens')) %>
+<div class="hints">
+<strong>Example:</strong> Pay kidnappers! [personal money] [due: tomorrow] [group: Family]
+<% BTDT->contextual_help( "reference/tasklists/braindump",
+                          tooltip => "See more syntax for braindump" ) %>
+</div>
+<div class="button_line">
+<% $action->button( url => "/create/braindump", label => "Create",
+		    # XXX TODO We need a way to do this through the API
+		    parameters => { 'J:V-region-'.$region->qualified_name => '/__jifty/empty' }
+)
+%>
+<%
+   Jifty->web->link(
+        label => "Cancel",
+        onclick => {
+            replace_with => '/__jifty/empty',		
+            toggle       => 1,
+        },
+        class => "cancel",
+        as_button => 1,
+   )
+%>
+</div>
+</div>
+</div>
+</div></div></div>
+</div>
+<%args>
+$region
+$suggest_tasks => 0
+</%args>
+<%init>
+my $action = Jifty->web->new_action(class => 'ParseTasksMagically', moniker => 'quickcreate');
+use List::Util qw(shuffle);
+my @ideas_to_do = ('Buy orange juice [personal]',
+		  'Plan vacation',
+		  'Balance checkbook [money]',
+		  'Buy a friend\'s birthday gift',
+		  'Buy new wardrobe',
+		  'Buy concert tickets',
+		  'Make veterinarian appointment for Spot',
+		  'Schedule dentist appointment',
+		  'Register for that conference [work]',
+		  'Visit the South Pole [fun]',
+		  'Find my pants',
+		  'Plan party [fun]',						    
+		  );
+@ideas_to_do = List::Util::shuffle(@ideas_to_do);
+my $ideas_to_show = '';
+if ($suggest_tasks) { 
+   $ideas_to_show = join("\r\n", @ideas_to_do[0..3]);
+}
+
+</%init>
+

@@ -1,0 +1,86 @@
+#print {
+    margin: 0.75em 1.5em 1.5em 1.5em;
+    background: white;
+}
+
+#print .tasklist .priority .context_menu li.toplevel .title,
+#print .tasklist .priority .context_menu li.toplevel ul,
+#print .tasklist .edit_context_menu,
+#print .tasklist .assign-menu,
+#print .tasklist .review_link
+{
+    display: none;
+}
+
+#print .task .priority ul.context_menu li.toplevel .expand {
+    display: block;
+}
+
+#print .print_note { clear: both }
+
+#print .url {
+    clear: both;
+    font-size: 1.2em;
+    color: #444;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 0.7em 0.3em 1em 0.3em;
+}
+
+#print .url a {
+    display: block;
+    margin-left: 2em;
+}
+
+#print .priority_icon {
+    color: white;
+    font-size: 1px;
+    width: 0;
+    display: block;
+}
+
+#print .tasklist .task .task_summary {
+    width: 90%;
+    height: auto;
+    overflow: visible;
+    white-space: normal;
+}
+
+#print .tasklist .task .task_summary a {
+    color: black;
+    -moz-binding: none;
+}
+
+#print .tasklist .metadata .record_locator a {
+    color: #888;
+}
+
+#print .blurb {
+    background: #eee;
+    padding: 0.3em 0.7em;
+    margin-top: 3em;
+    border-top: 1px dotted #888;
+}
+
+#print .blurb img {
+    float: left;
+    padding-right: 0.5em;
+}
+
+#print .print_command {
+    float: right;
+    margin: 0 0 1em 0;
+    padding: 0;
+    font-size: 1.1em;
+}
+
+#print .print_command a {
+    padding-left: 20px;
+    background: url(/static/images/silk/printer.png) no-repeat top left;
+}
+
+@media print {
+    #print { margin-top: 1.5em; }
+    #print .print_command { display: none; }
+    #print .print_note { display: none; }
+}

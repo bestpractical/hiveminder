@@ -1,0 +1,11 @@
+let users assign tasks to others by email
+
+qmail and postfix fu for *.with.hm mail handling
+perl-script mail gateway for handling .with.hm 
+jifty action for creating a task from a .with.hm message?
+    or could we use a CreateTask action?
+authentication - only let users who are marked as 'paid user' create .with.hm addresses
+better email notification on task create for a non-user
+make sure that non-users get only a single message
+docs
+come up with a sane security plan - how do we prevent abuse and spam?

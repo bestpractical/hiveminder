@@ -1,0 +1,10 @@
+<%args>
+$tasks => undef
+$tokens => undef
+</%args>
+<&| /_elements/wrapper, title => "Task review " , task_review => 1, hide_title => 1 &>
+<% Jifty->web->form->start %>
+<% Jifty->web->region( name => 'task', path => '/fragments/review/overview', arguments => {tasks => $tasks, tokens => $tokens}, force_arguments => { start => time() } ) %>
+<% Jifty->web->form->end %>
+  <p>Head back to <%Jifty->web->return( to => '/todo', label => 'where you came from')%>.</p>
+</&>

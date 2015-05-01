@@ -1,0 +1,16 @@
+#!/bin/sh
+# This script is run by daemontools. It should be symlinked from
+# /service/hm-imap/run which runs as root, hence the need to drop privs.
+
+executable=$0
+if [ -L $executable ]
+then
+    executable=$(readlink $0)
+fi
+export BIN=$(dirname $executable)
+cd "$BIN/.."
+export ROOT=`pwd`;
+
+# Perl will drop the privs
+
+exec $ROOT/bin/imap

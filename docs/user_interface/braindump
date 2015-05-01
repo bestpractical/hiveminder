@@ -1,0 +1,32 @@
+braindump lets the user enter items that need to get done in a freeformish way and then processes them into actions/projects.
+
+
+Let the user type in something like the following.  try to divine what's a task.
+for extra prettieness use xmlhttprequest to show the user what we're doing as they type.
+
+
+
+
+
+
+    pick up laundry on tuesday
+
+    write proposal for jesse@fsck.com
+
+    build gtd system
+
+        figure out what that means
+                
+            meet with alexmv and get ideas on paper
+
+
+
+        software development
+
+            set up repository
+
+            figure out namespace
+
+            prototype UI
+
+

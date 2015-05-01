@@ -1,0 +1,111 @@
+<%args>
+$brief => 0
+$tokens => undef
+$ids => undef
+$page => undef
+$render_submit => undef
+$item_path => undef
+$new_item_path =>undef
+$all => undef
+$title => undef
+$moniker => undef
+$search_open => 0
+$search_open_when_empty => 0
+$bulk_edit => 0
+$hide_paging => 0
+$hide_actions => 0
+$suggest_tasks => 1
+</%args>
+<%init>
+my $PER_PAGE = 15;
+
+my $collection = BTDT::Model::TaskCollection->new();
+my @tokens = $collection->split_tokens($tokens);
+if ($ids) {
+    for (split ' ', $ids) {
+        my $task = BTDT::Model::Task->new;
+        $task->load($_);
+        $collection->add_record($task);
+    }
+} else {
+
+    $collection->from_tokens(@tokens);
+
+    if ($page and $page != -1) {
+        $collection->set_page_info( current_page => $page,
+                                   per_page     => $PER_PAGE
+                                  );
+    }
+}
+
+my $nothing_to_do = ($collection->pager->total_entries == 0 && $collection->count == 0);
+
+my $searchpath = BTDT::Model::TaskCollection->join_tokens_url("", "list", @tokens);
+
+my $tasklist_id = 'tasklist-' . $tokens;
+   $tasklist_id =~ s/ /-/g;
+
+my $bulk_edit_action;
+if($bulk_edit) {
+    $bulk_edit_action = Jifty->web->new_action(
+	class       => 'BulkUpdateTasks',
+	moniker     => 'bulk_edit');
+    Jifty->web->form->register_action($bulk_edit_action);
+}
+
+</%init>
+%  Jifty->web->form->print_action_registration('bulk_edit') if $bulk_edit;
+
+<span class="tasklist-fragment">
+
+% if ($title) {
+<h2 class="inline">
+  <%$title%>
+%     if ( $title eq 'But first...' or $title eq 'And then...' ) {
+(<% Jifty->web->link(
+        label   => "close",
+        onclick => { replace_with => '/__jifty/empty' }
+   )
+%>)
+%     }
+</h2>
+% }
+
+<dl class="mini tasklist" id="<% $tasklist_id %>">
+<%perl>
+
+
+while ( my $item = $collection->next ) {
+    Jifty->web->region(
+        name     => 'item-' . $item->id,
+        path     => $item_path,
+        defaults => {
+	    id        => $item->id,
+	    tokens    => $tokens,
+	    bulk_edit => $bulk_edit ? $bulk_edit_action->moniker : undef,
+	   },
+    );
+}
+</%perl>
+</dl>
+% unless ( $hide_paging or $collection->count < 4) {
+<& /_elements/tasklist_paging, page => $page, collection => $collection, per_page => $PER_PAGE &>
+% }
+% if ( $new_item_path) {
+<% Jifty->web->region(
+        name => 'new_item',
+        path => $new_item_path,
+        defaults => {   
+                        tokens => $tokens,
+                        refresh_list => ($nothing_to_do ? 1 : 0),
+                        },
+        ) %>
+
+% }
+
+% if ($collection->count and $render_submit) { 
+<% Jifty->web->form->submit( label =>  "Save", class => "ajaxduplicates" ) %>
+% }
+
+</span>
+<% Jifty->web->region( name => 'popout')%>

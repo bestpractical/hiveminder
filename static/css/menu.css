@@ -1,0 +1,24 @@
+#navigation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+#navigation :link, #navigation :visited {
+    color: #793300;
+}
+
+#navigation div.container {
+    margin: 0;
+    padding-bottom: 4px;
+    background: url(/static/images/shadow.gif) repeat-x bottom left;
+}
+
+#navbar-bd {
+    /*max-width: 880px; */
+    /*
+    margin-left: auto;
+    margin-right: auto;
+    */
+}

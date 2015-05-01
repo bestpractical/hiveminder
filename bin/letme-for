@@ -1,0 +1,32 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+
+my $email = shift;
+my $path = shift;
+
+die "Usage: $0 email [path]\n" if not defined $email;
+
+if ( not $path ) {
+    warn "No path specified, defaulting to 'activate_account'\n";
+    $path = 'activate_account';
+}
+
+my $user = BTDT::Model::User->new( current_user => BTDT::CurrentUser->superuser );
+$user->load_by_cols( email => $email );
+
+die "Unable to find user with the address '$email'\n"
+    unless $user->id;
+
+die "User doesn't have an auth token (probably deleted?) so a letme won't work.\n".
+    "Run ./bin/regenerate-auth-token EMAIL first if appropriate.\n"
+    unless $user->auth_token;
+
+my $letme = Jifty::LetMe->new( current_user => BTDT::CurrentUser->superuser );
+$letme->email($email);
+$letme->path($path);
+print $letme->as_url, "\n";
+

@@ -1,0 +1,31 @@
+<&| /help/_elements/wrapper, title => 'IM Command: Alias' &>
+
+%# terse: aliases let you abbreviate commands. e.g. "alias w=create [@work]" "w tps report". http://tinyurl.com/263go8
+
+<p>Aliases let you abbreviate commonly-used commands.</p>
+
+<p>If you're like me, you're meticulous about your tagging. But it's a pain to continually type <b>create ... [hm im @work]</b>. So I can use an alias to make it easier:</p>
+
+<p><b>alias bot=create [hm im @work]</b></p>
+
+<p>Now I can type <b>bot document the new alias command</b> which expands to <b>create [hm im @work] document the new alias command</b>. It's OK that the tags come before the summary, the braindump syntax is forgiving.</p>
+
+<p>With some commands (like "due") you have to type the task IDs first (then the due date), which doesn't work well with aliases. Instead you can use <b>command (stuff): (tasks)</b>. More concretely, say we want a command that takes some tasks and sets their due date to today. Ordinarily we'd write <b>due (tasks) on today</b>. But aliases only let you add text to the end, so at best we could write an alias to set the due date of a specific set of tasks -- not too useful. But we can also use <b>due today: (tasks)</b> which does work the way we want it to. To create this alias, use: <b>alias imm=due today:</b>. You can then use this command like: <b>imm 7rno</b> or even <b>imm /essay</b>.</p>
+
+<p>You can see all your aliases by typing <b>alias</b></p>
+
+<p>To remove an alias, type <b>alias aliasname=</b></p>
+<p>If you think of a particularly clever alias, please let us know!</p>
+
+<p>Examples:</p>
+<ul>
+    <li>alias bot=create [hm im @work]</li>
+    <li>alias imm=due today:</li>
+    <li>alias now=create [due: today] [priority: high]</li>
+    <li>alias shawn=give sartak@bestpractical.com /<br />Note the / at the end, it indicates a search for the tasks!</li>
+    <li>alias w=review /@work</li>
+    <li>alias ez=tag easy:</li>
+    <li>alias imm=<br />This removes the imm alias</li>
+</ul>
+
+</&>

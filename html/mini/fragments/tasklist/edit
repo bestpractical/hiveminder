@@ -1,0 +1,71 @@
+<%args>
+$id
+$tokens => undef  
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load($id);
+my $update_task = Jifty->web->new_action(
+    class   => "UpdateTask",
+    moniker => "edit-" . Jifty->web->serial,
+    record  => $task
+);
+</%init>
+<div class="task update inline round" id="<% $update_task->moniker %>">
+<dt class="<% $task->complete ? 'complete' : 'todo' %>
+           task
+           <% $task->text_priority %>_priority
+          ">
+    <span class="record_locator"><% Jifty->web->link( url => '/task/'.$task->record_locator, label=> 'Details for task.hm/'.$task->record_locator, target => 'blank' ) %></span>
+    <div class="line">
+    <% $update_task->form_field('summary') %>
+    </div>
+    <div class="line">
+    <% $update_task->form_field('priority') %>
+    </div>
+    <div class="line">
+    <% $update_task->form_field('tags') %>
+    </div>
+    <div class="line">
+    <% $update_task->form_field('starts') %>
+    </div>
+    <div class="line">
+    <% $update_task->form_field('due') %>
+    </div>
+    <div class="line">
+    <% $update_task->form_field('description', cols => 40) %>
+    </div>
+    <div class="line">
+    <% $update_task->form_field('group_id') %>
+    </div>
+    <div class="line">
+    <% $update_task->form_field('owner_id') %>
+    </div>
+    <div class="button_line">
+    <% 
+        Jifty->web->link(
+            label   => "Save",
+            onclick => [
+                {
+                    replace_with => "/mini/fragments/tasklist/view",
+                    submit       => $update_task,
+                    args	 => {tokens => $tokens, maybe_view => 1},
+                },
+            ]
+        )
+                        %>
+    <% 
+        Jifty->web->link( 
+            label     => "Cancel",
+            as_button => 1,
+            class     => 'cancel',
+            onclick   => [
+              { replace_with => "/mini/fragments/tasklist/view" }
+            ],
+        ) %>
+     </div>
+     <& /_elements/clear &>
+    </dt>
+    <& /_elements/clear &>
+</div>
+<script type="text/javascript">Jifty.Utils.scrollToShow("<% $update_task->moniker %>")</script>

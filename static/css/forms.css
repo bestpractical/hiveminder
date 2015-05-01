@@ -1,0 +1,250 @@
+/* buttons */
+
+input.button, button {
+    margin: 0.6em 0 0 0;
+    padding: 0.2em 0.5em;
+    color: black;
+    font-weight: bold;
+    border: 1px solid #ea3;
+    border-right: 1px solid #d92;
+    border-bottom: 1px solid #d92;
+    background-color: #fb5;
+    -moz-border-radius: 0.35em;
+    -webkit-border-radius: 0.35em;
+    
+
+}
+
+input.button:hover, button:hover {
+    background-color: #ea3;
+}
+
+input.button:active, button:active,
+input.button:focus, button:focus {
+    border-top: 1px solid #c81;
+    border-left: 1px solid #c81;
+    border: 1px solid #d92;
+    background-color: #d92;
+}
+
+
+
+input.button.cancel, button.cancel {
+}
+
+input.button.delete, button.delete, button.sw-pause, input.button.attention {
+    border: 1px outset #CF4E8C;
+    background: #CF4E8C; /* ce0063 */
+    color: #fff;
+}
+
+button.sw-pause, button.sw-resume {
+    margin-left: 0.5em;
+}
+
+.tasklist .task_edit_inline input.button {
+    margin: 0;
+}
+
+.button_line .submit_button {
+    display: inline;
+}
+
+/* fields */
+
+input.text, input.date, input.password, input.combo-text, textarea, select {
+    border-top: 1px solid #7c7c7c;
+    border-left: 1px solid #c3c3c3;
+    border-right: 1px solid #c3c3c3;
+    border-bottom: 1px solid #ddd;
+    background: #fff url(/static/images/css/fieldbg.gif) repeat-x top;
+    padding: 0.2em;
+    font-size: 1em;
+    font-family: Verdana, sans-serif;
+    color: black;
+}
+
+input.upload {
+    border-color: #7C7C7C #c3c3c3 #ddd;
+}
+
+form input.ajaxautocompletes {
+    background: #fff url(/static/images/css/fieldbg-autocomplete.gif) repeat-x top right;
+    padding-right: 18px;
+}
+
+input.date {
+    width: 8em;
+}
+
+input.argument-time_left,
+input.argument-time_estimate,
+input.argument-time_worked
+{
+    width: 5em;
+}
+
+input.argument-add_time_worked { width: 9em; }
+
+.update div.argument-add_time_worked {
+    padding-left: 3em;
+}
+
+label, span.label {
+    font-size: 0.9em;
+}
+
+.form_field .hints {
+    font-size: 0.9em;
+    color: #777;
+}
+
+/* layout */
+
+.form_field {
+    clear: both;
+}
+
+label, span.label {
+    display: block;
+    width: 20%;
+    float: left;
+    text-align: right;
+    margin-right: 0.5em;
+}
+
+form .hints {
+    display: block;
+    clear: both;
+}
+
+body form .hints {
+    padding: 0.2em 0 0.2em 21%;
+}
+
+form .error {
+    display: block;
+    clear: both;
+}
+
+div.form_field {
+    padding: 0.3em 0 0 0;
+}
+
+.inline .hints {
+    padding-left: 0;
+}
+
+.inline label, .inline span.label {
+    float: none;
+    width: auto;
+    text-align: left;
+    margin-right: auto;
+    font-weight: bold;
+}
+
+.inline .form_field {
+    float: left;
+    clear: none;
+    margin-right: 0.5em;
+}
+
+.inline .button {
+    margin-top: 1.3em;
+}
+
+.button_line {
+    border-top: 1px solid #ccc;
+    padding-right: 5em;
+    margin-top: 1.5em;
+    clear: both;
+    direction: rtl;
+}
+
+form .line {
+    clear: both;
+}
+
+/* new task */
+
+.create input.argument-summary {
+    width: 25em;
+}
+
+.create textarea.argument-description {
+    width: 35em;
+    height: 5em;
+}
+
+.create .combo-text {
+    width: 12em !important;
+}
+
+/* accept/decline/ignore */
+
+.task div.argument-accepted .widget {
+    display: inline;
+    float: none;
+}
+
+.task div.argument-accepted input {
+    display: inline;
+    float: none;
+}
+
+/* Priority icons in select */
+
+select.argument-priority option[value],
+select.argument-priority_above option[value],
+select.argument-priority_below option[value]
+{
+    padding-left: 16px;
+}
+
+select.argument-priority option[value="5"],
+select.argument-priority_above option[value="5"],
+select.argument-priority_below option[value="5"]
+{
+    background: url(/static/images/silk-derived/priorities/bullet_arrow_up_red.png) no-repeat;
+}
+
+select.argument-priority option[value="4"],
+select.argument-priority_above option[value="4"],
+select.argument-priority_below option[value="4"]
+{
+    background: url(/static/images/silk/bullet_orange.png) no-repeat;
+}
+
+select.argument-priority option[value="3"],
+select.argument-priority_above option[value="3"],
+select.argument-priority_below option[value="3"]
+{
+    background: url(/static/images/silk-derived/priorities/bullet_green_square.png) no-repeat;
+}
+
+select.argument-priority option[value="2"],
+select.argument-priority_above option[value="2"],
+select.argument-priority_below option[value="2"]
+{
+    background: url(/static/images/silk/bullet_blue.png) no-repeat;
+}
+
+select.argument-priority option[value="1"],
+select.argument-priority_above option[value="1"],
+select.argument-priority_below option[value="1"]
+{
+    background: url(/static/images/silk-derived/priorities/bullet_arrow_down_purple.png) no-repeat;
+}
+
+input.placeholder, textarea.placeholder {
+    color: #666;
+}
+
+.crud-List .crud-column-header {
+    display: none;
+}
+
+/* turn off zebra tables for saved lists */
+.crud-list div.odd {
+    background: #FFFFFF;
+}

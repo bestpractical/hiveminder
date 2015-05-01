@@ -1,0 +1,19 @@
+<& /_elements/header, %ARGS &>
+  <body id="mini">
+% unless ($hide_title) {
+  <h1><% defined $title ? $title : '' %></h1>
+% } 
+    <% Jifty->web->render_messages %>
+    
+    <% $m->content |n %>
+
+    <& /_elements/clear &>
+    <& /mini/_elements/footer &>
+
+    <div id="jifty-wait-message" style="display: none;">&nbsp;</div>
+  </body>
+</html>
+<%args>
+$title => undef
+$hide_title => undef
+</%args>

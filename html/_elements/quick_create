@@ -1,0 +1,33 @@
+<div id="braindump">
+<h3>Braindump <% BTDT->contextual_help( "reference/tasklists/braindump",
+                          tooltip => "Learn more about braindump" ) %></h3>
+<% Jifty->web->form->start %>
+<% $action->form_field('text', sticky => 0, placeholder => "Example: Buy milk! [shopping food] [due: tomorrow]") %>
+
+% if ($task_review) {
+<% Jifty->web->form->submit( label        => "Create",
+                             continuation => $continuation,
+                             parameters   => { task_review => $task_review } ) %>
+% } else {
+<% Jifty->web->form->submit( label        => "Create") %>
+% }
+<% Jifty->web->form->end %>
+<& /_elements/clear &>
+</div>
+<%args>
+$task_review => 0
+</%args>
+<%init>
+my $action = Jifty->web->new_action(class => 'ParseTasksMagically', moniker => 'quickcreate');
+Jifty->web->form->next_page( url => "/create/braindump" );
+
+my $continuation;
+if ($task_review) {
+    Jifty->web->request->argument( task_review => 1 );
+    $continuation = Jifty::Continuation->new(
+        request  => Jifty->web->request,
+        response => Jifty->web->response,
+        parent   => Jifty->web->request->continuation,
+    );
+}
+</%init>

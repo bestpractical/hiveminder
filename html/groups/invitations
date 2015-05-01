@@ -1,0 +1,6 @@
+<&| /_elements/wrapper, title => "Your Invitations" &>
+
+<% Jifty->web->region( name => 'invites',
+                       path => '/fragments/invites/list',
+                       defaults => { hide_title => 1 }) %>
+</&>

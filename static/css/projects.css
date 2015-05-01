@@ -1,0 +1,250 @@
+.title .subtitle .remove {
+    text-decoration: none;
+    font-size: 0.8em;
+}
+
+/* Overview */
+
+.projects-dashboard .overview .name {
+    color: #222;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin: 0 0 0.3em 0;
+    padding: 0;
+    line-height: 1em;
+}
+
+.projects-dashboard .overview .name .complete a.editable {
+    color: #666 !important;
+    text-decoration: line-through; 
+}
+
+.projects-dashboard .overview .name .complete a.editable:hover {
+    text-decoration: none;
+}
+
+.projects-dashboard .overview .properties {
+    color: #444;
+}
+
+.projects-dashboard .overview .properties .property {
+    font-weight: bold;
+}
+
+.projects-dashboard .overview .type {
+    color: #bbb;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+/* Inline editable stuff */
+
+.projects-dashboard .overview form .jifty-region,
+.projects-dashboard .overview form .jifty-region input
+{
+    display: inline;
+}
+
+.projects-dashboard .overview form .jifty-region .hidden {
+    display: inline;
+    visibility: hidden;
+}
+
+.projects-dashboard .overview form .jifty-region input.argument-summary { width: 50%; }
+/*.projects-dashboard .overview form .jifty-region input.argument-owner_id { width: 60%; }*/
+
+.projects-dashboard .overview .editable-inline a.editable { text-decoration: none; }
+.projects-dashboard .overview .editable-inline a.editable:hover { background-color: #ffff9c; }
+.projects-dashboard .overview .name .editable-inline a.editable { color: #222; }
+.projects-dashboard .overview .properties .editable-inline a.editable { color: #444; }
+
+.projects-dashboard .overview .actions form,
+.projects-dashboard .overview .actions div.submit_button
+{
+    display: inline;
+}
+
+.projects-dashboard .overview .actions form div.hidden {
+    display: inline;
+    visibility: hidden;
+}
+
+
+/* Main dashboard */
+
+.group_role_invited {
+    background: url(/static/images/silk/user_orange.png) no-repeat center left;
+    padding-left: 20px;
+}
+
+.projects-dashboard dl.projects,
+.projects-dashboard dl.milestones,
+.projects-dashboard dl.people
+{
+    padding: 0;
+    margin: 0;
+}
+
+.projects-dashboard dl.people {
+    padding-left: 0.5em;
+}
+
+.projects-dashboard dl.people dt a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.projects-dashboard dl.people dt a:hover {
+    text-decoration: underline;
+}
+
+.projects-dashboard dl.people dt.invited {
+    padding-left: 30px;
+}
+
+.projects-dashboard dl.people dt .graph,
+.projects-dashboard dl.projects dt .graph,
+.projects-dashboard dl.milestones dt .graph
+{
+    display: block;
+    float: left;
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    width*: 30px;
+}
+
+.projects-dashboard dl.people dt .graph img,
+.projects-dashboard dl.projects dt .graph img,
+.projects-dashboard dl.milestones dt .graph img
+{
+    position: absolute;
+    clip: rect(8px 33px 33px 8px);
+    top: -8px;
+    left: -7px;
+}
+
+.projects-dashboard dl.projects dt a,
+.projects-dashboard dl.milestones dt a
+{
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.projects-dashboard dl.projects dt.complete a,
+.projects-dashboard dl.milestones dt.complete a
+{
+    color: #666;
+    text-decoration: line-through; 
+}
+
+.projects-dashboard dl.projects dt a:hover,
+.projects-dashboard dl.milestones dt a:hover
+{
+    text-decoration: underline;
+}
+
+.projects-dashboard dl.projects dd,
+.projects-dashboard dl.milestones dd,
+.projects-dashboard dl.people dd
+{
+    color: #666;
+    padding: 0 0 0.5em 30px;
+    margin: 0;
+}
+
+.projects-dashboard dl.projects dd a,
+.projects-dashboard dl.milestones dd a,
+.projects-dashboard dl.people dd a
+{
+    color: #666;
+    text-decoration: none;
+}
+
+.projects-dashboard dl.projects dd a:hover,
+.projects-dashboard dl.milestones dd a:hover,
+.projects-dashboard dl.people dd a:hover
+{
+    text-decoration: underline;
+}
+
+/* Status box */
+
+.projects-dashboard .status .tasks,
+.projects-dashboard .status .timetracking
+{
+    width: 100%;
+    margin: 0 0 1em 0;
+    padding: 0;
+}
+
+.projects-dashboard .status .timetracking caption {
+}
+
+.projects-dashboard .status .tasks {
+}
+
+.projects-dashboard .status td {
+    text-align: center;
+    width: 33%;
+}
+
+.projects-dashboard .status tbody td {
+    font-size: 1.4em;
+}
+
+.projects-dashboard .status thead td {
+    font-style: italic;
+}
+
+/* ff9900 ffc266 ffebcc complete started unstarted */
+/*
+.projects-dashboard .status table.tasks thead td.in-progress { border: 2px solid #ffc266; }
+.projects-dashboard .status table.tasks thead td.complete    { border: 2px solid #ff9900; }
+.projects-dashboard .status table.tasks thead td.unstarted   { border: 2px solid #ffebcc; }
+*/
+
+/* ff9900 ffc266 a26100 worked left estimate */
+.projects-dashboard .status table.timetracking thead td.worked   { border: 2px solid #ff9900; }
+.projects-dashboard .status table.timetracking thead td.left     { border: 2px solid #ffc266; }
+.projects-dashboard .status table.timetracking thead td.estimate { border: 2px solid #a26100; }
+
+.projects-dashboard .status table caption {
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+}
+
+.projects-dashboard .status .time-overview {
+    text-align: center;
+    font-size: 1.1em;
+    margin-bottom: 0.5em;
+}
+
+.projects-dashboard .status .no-estimate {
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.projects-dashboard .status .no-estimate-complete {
+    text-align: center;
+    font-size: 0.9em;
+}
+
+/* Tasklists */
+
+.projects-dashboard dl.tasklist {
+    margin-top: 0;
+    clear: none;
+}
+
+.projects-dashboard h3 {
+    clear: none;
+}
+
+.projects-dashboard ul.feed-list {
+    margin-top: -2.5em;
+}

@@ -1,0 +1,26 @@
+<%args>
+$item_path
+$ids
+$use_link => 1
+</%args>
+<%init>
+my @ids = split ' ', $ids;
+
+if ($use_link) {
+    $m->out(Jifty->web->link(
+        url   => '/fragments/tasklist/sublist',
+        label => 'Expand',
+    ));
+} else {
+    for my $id (@ids) {
+        Jifty->web->region(
+            name     => 'item-' . $id,
+            path     => $item_path,
+            defaults => {
+                %ARGS,
+                id => $id,
+            },
+        );
+    }
+}
+</%init>

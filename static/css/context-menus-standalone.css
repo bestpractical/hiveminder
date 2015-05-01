@@ -1,0 +1,146 @@
+ul.context_menu {
+    clear: none;
+    float: left;
+    margin: 0;
+}
+
+ul.context_menu, ul.context_menu ul {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.context_menu li.toplevel {
+    float: left;
+    margin: 0 0.5em 0 0;
+    padding: 0.2em;
+    border: 1px solid white;
+    color: lightgrey;
+}
+
+.context_menu li.toplevel:hover {
+    color: #793300;
+    border-bottom-color: #ccc;
+    border-right-color: #ccc;
+}
+
+.context_menu li ul li a:hover {
+    background: rgb(82, 134, 181);
+    color: white;
+}
+
+.context_menu li.toplevel .title {
+    float: left;
+}
+
+.context_menu li.toplevel .title a {
+    color: lightgrey;
+}
+
+.context_menu li.toplevel:hover .title a  {
+    color: gray; 
+}
+
+.context_menu li.toplevel .title a.suggested_option  {
+    color: rgb(82, 134, 181);
+}
+
+.context_menu li.toplevel .expand a {
+    color: #fff;
+    width: 0;
+    height: 12px;
+    font-size: 1px;
+    text-decoration: none;
+}
+
+.context_menu li.toplevel ul li {
+    color: gray;
+}
+
+.context_menu li.toplevel .title {
+    font-weight: bold;
+}
+
+.context_menu li.toplevel ul {
+    font-size: 0.9em;
+    display: none;
+    z-index: 42;
+    padding: 0.1em 0.2em 0.5em 0.1em;
+    background: white;
+    border-top: 1px dotted lightgrey;
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.context_menu li.toplevel ul a {
+    width: 100%;
+    display: block;
+}
+
+.context_menu .open span.expand a {
+    background-image: url(/static/images/silk/bullet_arrow_up.png);
+}
+
+.context_menu span.expand a {
+    background: url(/static/images/silk/bullet_arrow_down.png) no-repeat center center;
+    padding-left: 16px;
+    background-color: #eee;
+    border: 1px solid lightgrey;
+    margin-left: 4px;
+    float: left;
+}
+
+.context_menu li.toplevel:hover .expand a {
+    border-top: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+}
+
+.context_menu li.open a {
+    border-bottom-color: transparent;
+}
+
+.context_menu li.open, .context_menu li.closed:hover {
+    border-top: 1px solid lightgrey;
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid gray;
+    border-bottom-color: transparent;
+}
+
+.context_menu li.closed:hover {
+    border-bottom-color: gray;
+}
+
+.context_menu li.toplevel span.expand a:active {
+    border-top: 1px solid white;
+    border-left: 1px solid white;
+    border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+
+    position: relative;
+    top: 1px;
+    left: 1px;
+}
+
+.context_menu li ul li a {
+    padding: 0.1em 0 0.1em 0.1em;
+    text-decoration: none;
+}
+
+.context_menu li ul li {
+    padding: 0.1em;
+}
+
+.context_menu li.toplevel ul li a.separator {
+    border-top: 1px solid #ddd;
+    padding-top: 0.3em;
+    margin-top: 0.3em;
+}
+
+.context_menu li.toplevel ul li a.bseparator {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.3em;
+    margin-bottom: 0.3em;
+}

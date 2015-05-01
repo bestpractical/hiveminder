@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/sbin/apache2 -f /home/chmrr/work/bps/BTDT/etc/standalone-apache.conf -DFASTCGI -DSSL -k "$@"

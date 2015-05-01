@@ -1,0 +1,23 @@
+<&| /_elements/wrapper, title => "Discussion for '".$task->summary."'",
+                        subtitle => "#".$task->record_locator &>
+
+<% Jifty->web->form->start %>
+<& /task/_elements/transactions, task => $task, discussion_only => 1 &>
+
+<& /task/_elements/add_comment, task => $task, update_task => $update_task &>
+    <div class="button_line">
+      <span class="submit_button"><% Jifty->web->return( label => "Save", submit => $update_task)->render_widget %></span>
+    </div>
+<% Jifty->web->form->end()%>
+
+</&>
+
+<%args>
+$task
+</%args>
+<%init>
+my $update_task = Jifty->web->new_action(
+    class   => 'UpdateTask',
+    record  => $task
+);
+</%init>

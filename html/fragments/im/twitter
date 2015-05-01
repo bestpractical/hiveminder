@@ -1,0 +1,54 @@
+<p>
+  Currently, we support Twitter, <a href="/prefs/IM">AOL Instant Messenger and
+  Jabber</a>, but we hope to catch up soon for the Yahoo, MSN, and yes, IRC
+  addicts out there.
+</p>
+
+<ol>
+    <li>Start out by <a target="_blank" href="http://twitter.com/home?status=follow+<%$sn%>">following <b><%$sn%></b></a>, so we can send you messages.</li>
+    <li>Have us follow you by telling us your Twitter ID, so you can send us direct messages:
+
+        <div class="inline">
+            <div class="line">
+                <% Jifty->web->form->start %>
+                    <% $twitter->form_field('name', size => 15) %>
+                    <% Jifty->web->form->submit(
+                        label => "Follow me",
+                        onclick => [
+                            { submit => $twitter },
+                            { refresh_self => 1 },
+                        ],
+                    )%>
+                <% Jifty->web->form->end %>
+            </div>
+        </div>
+        <br />
+
+    </li>
+    <li>Get a secret IM password by clicking the "Give me a password!" button below.</li>
+    <li>Do a Twitter update of
+
+% if ($password) {
+    <a target="_blank" href="http://twitter.com/home?status=d+<%$sn%>+<%$password%>"><tt>d <%$sn%> <i>password</i></tt></a>
+% } else {
+    "<tt>d <%$sn%> <i>password</i></tt>"
+% }
+
+(which you can do by just clicking the password). This will link your Twitter and Hiveminder accounts. And don't worry, it's a direct message and not a tweet, so no one else will see it.</li>
+    <li>Send commands with "<tt>d <%$sn%> <i>command</i></tt>". For example, "<tt>d <%$sn%> c lose ten pounds [due next month]</tt>". The <tt>c</tt> is shorthand for <tt>create</tt>.</li>
+    <li>You can also use "<tt>@<%$sn%>: <i>command</i></tt>". Other people can see this type of command. You might do this if you want to let other people to know you're actually adding the task to your todo list.</li>
+    <li>If you <a href="http://help.twitter.com/forums/59008/entries">link</a> up your cell phone to Twitter, you can interact with Hiveminder on the go!</li>
+</ol>
+
+<%init>
+my $twitter = Jifty->web->new_action(class => 'TwitterFollow');
+my $sn = Jifty->config->app("IM")->{twitter_screenname};
+
+# Get an unused password
+my $passwords = BTDT::Model::UserIMCollection->new;
+$passwords->limit(column => 'user_id', value => Jifty->web->current_user->id);
+$passwords->limit(column => 'confirmed', value => 0);
+
+my $password = $passwords->first;
+$password &&= $password->auth_token;
+</%init>

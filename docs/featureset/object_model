@@ -1,0 +1,77 @@
+Users
+
+    Have many skills
+    Have many things
+    Have many modalities.
+    Have many friends with tags
+    
+   
+    Have many groups/people they'll do favors for
+    Have many groups/people who can assign things to them
+
+    Have some attribute that determines how far out they're willing to do favors for people
+
+        1st degree
+        2nd degree
+        3rd degree
+
+
+Tags
+    
+    Contain a name. that's it.
+    If we're feeling clever, we can allow synonyms with /  programmer/hacker/coder
+
+Stuff
+    Are a type of tag
+Skills
+    Are a type of tag
+    
+
+Modalities:
+
+    Describe what you can do 
+
+
+
+Groups
+
+    Contain a name
+    Contain a description
+
+    Have Stuff
+
+    Have many members
+    Have many organizers
+    Have many guests
+
+    Have many tasks     
+
+
+
+Tasks:
+    Contain
+
+        Summary
+        Description
+        Due date
+        Start date
+
+    Have a requestor
+    Have a group ?
+    Have many tags
+    Have an owner. (responsible party). Either it was assigned or it was a favor
+    
+    Are a favor for ___ by ____
+
+
+Favor requests:
+
+    Contain
+
+        Message
+
+    Have a requestor
+    Have a target audience?
+        Audience is either a hand-picked set of people, a single person or all people who meet certain criteria 
+
+

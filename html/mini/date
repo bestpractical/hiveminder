@@ -1,0 +1,52 @@
+<%args>
+$date => undef;
+</%args>
+<%init>
+$date ||= BTDT::DateTime->now;
+my $tomorrow  = $date->clone->add(days => 1);
+my $yesterday = $date->clone->subtract(days => 1);
+
+my @tokens = qw(not complete owner me starts before tomorrow accepted but_first nothing);
+
+my $overdue = BTDT::Model::TaskCollection->new();
+$overdue->from_tokens(@tokens, 'due', 'before', $date->ymd);
+my $show_overdue = $overdue->count > 0 ? 1 : 0;
+
+my $today = BTDT::Model::TaskCollection->new();
+$today->from_tokens(@tokens, 'due', 'before', $tomorrow->ymd, 'due', 'after', $yesterday->ymd);
+
+my $open = BTDT::Model::TaskCollection->new();
+$open->from_tokens(@tokens,'not', 'due', 'before', $date->ymd);
+
+</%init>
+<&| /mini/_elements/wrapper, title => "To Do", hide_title => 1 &>
+
+<div id="minitab" class="yui-navset">
+    <ul class="yui-nav">
+    <li class="selected"><a href="#tab1"><em>Due today</em></a></li>
+    <li><a href="#tab2"><em>Coming up</em></a></li>
+% if($show_overdue) {
+    <li class="overdue"><a href="#tab3"><em>Overdue</em></a></li>
+% }
+    </ul>
+
+    <div class="yui-content">
+        <div>
+        <& /mini/_elements/tasklist, collection => $today, name => 'today' &>
+        </div>
+        <div>
+        <& /mini/_elements/tasklist, collection => $open, name => 'open'&>
+        </div>
+% if($show_overdue) {
+        <div>
+        <& /mini/_elements/tasklist, collection => $overdue, name => 'overdue'&>
+        </div>
+% }
+    </div>
+</div>
+
+<script type="text/javascript">
+    var myTabs = new YAHOO.widget.TabView("minitab");
+</script>
+
+</&>

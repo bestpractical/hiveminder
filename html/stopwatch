@@ -1,0 +1,37 @@
+<& /_elements/header, title => "$title - Stopwatch" &>
+% $m->notes('in_body' => 1);
+<body class="stopwatch-widget">
+<% Jifty->web->form->start %>
+  <% Jifty->web->render_messages %>
+
+  <%
+    Jifty->web->region(
+      name      => 'stopwatch',
+      path      => '/fragments/stopwatch',
+      defaults  => {
+          task_id => $task->id,
+          from    => $from,
+          element => 'body.stopwatch-widget',
+          type    => 'popup',
+      }
+    )
+  %>
+
+  <script type="text/javascript"><!--
+     // Close the window on update (like the .modalClose class closes the modal dialog)
+     jQuery("body.stopwatch-widget .popupClose").click( function(){ window.close() } );
+     document.write('<div id="jifty-wait-message" style="display: none">&nbsp;</div>');
+  --></script>
+<% Jifty->web->form->end %>
+</body>
+% $m->notes('in_body' => 0);
+</html>
+<%args>
+$task_id
+$from => undef
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load( $task_id );
+my $title = $task->summary;
+</%init>

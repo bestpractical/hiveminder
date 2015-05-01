@@ -1,0 +1,85 @@
+<&| /_elements/wrapper, title => "Preferences", subtitle => "Tasks by email" &>
+
+<h2>Add tasks to your todo list by email</h2>
+<p>You can create a special email address which you (or anybody you share the
+address with) can use to add tasks to your
+todo list <% BTDT->contextual_help("how-to/create-tasks-by-email") %>.
+You can create a separate address for each person you want to let
+email you tasks.  You can use different addresses to set due dates,
+set priority, use different tags and other handy "automatic filing"
+features that will help you get busy!</p>
+
+<% Jifty->web->form->start %>
+<% $create->button(
+        arguments => {user_id => Jifty->web->current_user->id},
+        onclick => {
+            element => 'dl.email_addresses',
+            append => '/fragments/published_addr/view.region',
+            effect => 'Appear',
+            disable => 0,
+            args   => {
+                        id         => { result_of => $create, name => 'id' },
+                      },
+            submit => $create,
+
+    },
+    label => 'Add a new address now!',
+    ) %>
+<% Jifty->web->form->end %>
+
+<dl class="email_addresses">
+% while (my $addr = $published_addresses->next) {
+<& /fragments/published_addr/view.region, id => $addr->id &>
+% } 
+</dl>
+
+
+% if ( Jifty->web->current_user->pro_account ) {
+<h2>Assign tasks by email (Pro feature)</h2>
+
+<p>
+  As a Hiveminder Pro user, you can assign tasks by email to people
+  by sending an email to an address like "<b>bob@example.com.<i>yoursecret</i>.with.hm</b>".
+  This would assign the task to <b>bob@example.com</b>.  We require you to
+  include <i>yoursecret</i> to prevent people from forging tasks as you.
+  The recipient can be anyone with an email address (including yourself).
+  Your secret is currently <b><% Jifty->web->current_user->user_object->email_secret %>.with.hm</b>.
+  You can change your secret at any time below.
+</p>
+
+<% Jifty->web->form->start %>
+<% Jifty->web->form->next_page( url => '/prefs/addresses' ) %>
+<div class="inline">
+<% $update_secret->form_field('email_secret') %>
+<% Jifty->web->form->submit( label => 'Save' ) %>
+</div>
+<% Jifty->web->form->end %>
+
+<h2>Access your tasks from your email client using IMAP! (Pro feature)</h2>
+
+<p>
+You have access to Hiveminder's IMAP server which integrates your tasks into
+your mail client, such as Outlook, Thunderbird, Mail.app, and many others.
+This lets you work with your tasks as emails to do everything you'd need, and
+it even works offline!
+<a href="/help/reference/IMAP/Introduction.html">Learn more and get it setup</a>.
+</p>
+% }
+
+</&>
+<%init>
+#Set up the action
+my $create = Jifty->web->new_action( class=> 'CreatePublishedAddress', 
+);
+
+#Get their current addresses
+my $published_addresses = Jifty->web->current_user->user_object->published_addresses;
+
+my @updates;
+
+my $update_secret = Jifty->web->new_action(
+    class       => 'UpdateUser',
+    moniker     => 'updatesecret',
+    arguments   => { id => Jifty->web->current_user->id }
+);
+</%init>

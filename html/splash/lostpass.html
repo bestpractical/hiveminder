@@ -1,0 +1,23 @@
+<&| /_elements/splash_wrapper, title => "Lost your password?" &>
+
+% if (Jifty->web->current_user->id) {
+  <p>
+    You're already logged in as <% Jifty->web->current_user->user_object->name %>; you can just change your password
+    on  <%Jifty->web->link( url => "/prefs/", label => "the preferences page")%>.
+  </p>
+% } else {
+<p id="overview">
+  Forgot your password? Don't worry. It's not a big deal. Just enter your email address below, and we'll send you a link
+  you can use to reset it.
+</p>
+    <% Jifty->web->form->start(name => "lostpassword") %>
+    <% $sendlost->form_field('address') %>
+    <% Jifty->web->form->submit( label => "Get a new password") %>
+    <% Jifty->web->form->end%>
+% }
+</&>
+
+<%init>
+my $sendlost = Jifty->web->new_action(class => "SendLostPasswordConfirmation", moniker => "lostconf");
+</%init>
+

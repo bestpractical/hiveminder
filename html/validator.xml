@@ -1,0 +1,33 @@
+<%init>
+Jifty->web->response->content_type('text/xml');
+
+my $output = "";
+use XML::Writer;
+my $writer = XML::Writer->new( OUTPUT => \$output );
+$writer->xmlDecl( "UTF-8", "yes" );
+$writer->startTag("validation");
+for my $ra ( Jifty->web->request->actions ) {
+    my $action = Jifty->web->new_action_from_request($ra);
+    $writer->startTag( "action", id => $action->register_name );
+    for my $arg ( $action->argument_names ) {
+        if ( not $action->arguments->{$arg}->{ajax_validates} ) {
+            $writer->emptyTag( "ignored", id => $action->error_div_id($arg) );
+        } elsif ( not defined $action->argument_value($arg)
+            or length $action->argument_value($arg) == 0 ) {
+            $writer->emptyTag( "blank", id => $action->error_div_id($arg) );
+        } elsif ( $action->result->field_error($arg) ) {
+            $writer->dataElement(
+                "error",
+                $action->result->field_error($arg),
+                id => $action->error_div_id($arg)
+            );
+        } else {
+            $writer->emptyTag( "ok", id => $action->error_div_id($arg) );
+        }
+    }
+    $writer->endTag();
+}
+$writer->endTag();
+$m->out($output);
+$m->abort();
+</%init>

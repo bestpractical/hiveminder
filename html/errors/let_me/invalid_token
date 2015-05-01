@@ -1,0 +1,12 @@
+<&|/_elements/wrapper, title => "Invalid URL" &>
+
+<p>Sorry, it looks like you've followed an invalid link to Hiveminder. 
+If you got the link in an email, check to make sure your link is working
+correctly in your browser.</p>
+
+<p>For now,  <% Jifty->web->link(  url =>"/todo", label => 'head on back to your To Do list')%> and try to forget that we let you down.</p>
+
+</&>
+<%init>
+Jifty->web->response->header( Status => '403 Forbidden' );
+</%init>

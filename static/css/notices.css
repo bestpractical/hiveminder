@@ -1,0 +1,133 @@
+.zilch_message {
+    font-size: 1.1em;
+    padding-left: 23px;
+    padding-top: 1px;
+    background: url(/static/images/silk/asterisk_yellow.png) no-repeat top left;
+    min-height: 20px;
+}
+
+div.zilch_message p {
+    margin-top: 0;
+}
+
+.message {
+    background: url(/static/images/silk/information.png) no-repeat center left;
+    padding-left: 20px;
+}
+
+.error {
+    background: url(/static/images/silk/error.png) no-repeat center left;
+    padding-left: 20px;
+}
+
+.error {
+    color: #b71111;
+}
+
+#notices p {
+    font-size: 1em;
+    padding-left: 20px;
+    min-height: 16px;
+}
+
+#notices .notice_unaccepted_tasks {
+    background: url(/static/images/silk/package.png) no-repeat top left;
+}
+
+#notices .notice_invitations {
+    background: url(/static/images/silk/email_go.png) no-repeat top left;
+}
+
+#notices .notice_news {
+    background: url(/static/images/silk/newspaper.png) no-repeat top left;
+}
+
+div#messages {
+    background: #a9b7ff;
+    border: 1px solid #004e75;
+}
+
+div#errors {
+    background: #ffa8a8;
+    border: 1px solid #b71111;
+    color: #b71111;
+}
+
+div#messages,  div#errors {
+    margin-top: 0.5em;
+    margin-bottom: 10px;
+    padding: 5px;
+    font-size: 1.2em;
+}
+
+#dismiss_messages,
+#dismiss_errors
+{
+    padding-left: 16px;
+    background: url(/static/images/silk/cancel_grey.png) no-repeat;
+    float: right;
+    width: 0;
+    display: block;
+    text-indent: -9999em;
+}
+html>body #dismiss_messages,
+html>body #dismiss_errors {
+    overflow : hidden; /* opera */
+}
+
+#jifty-wait-message {
+    background: white url(/static/images/loading.indicator.bee.gif) no-repeat center center;
+    width: 35px;
+    height: 35px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 42;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.loading {
+    background: white url(/static/images/loading.indicator.bee.gif) no-repeat center center;
+    width: 100%;
+    height: 40px;
+    z-index: 42;
+    color: transparent;
+}
+
+#jGrowl .result-message {
+    background: #004e75;
+}
+
+#jGrowl .result-error {
+    background: #b71111;
+}
+
+#jGrowl .result-message .message {
+    background: url(/static/images/silk/information.png) no-repeat center left;
+    padding-left: 20px;
+}
+
+#jGrowl .result-error .message {
+    background: url(/static/images/silk/error.png) no-repeat center left;
+    padding-left: 20px;
+}
+
+.jquery-corner { display: none; }
+
+div.jGrowl div.jGrowl-notification { min-height: inherit; }
+div.jGrowl div.jGrowl-notification a { color: white; }
+
+#pro-pitch {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0 0 0.4em 0;
+}
+
+#pro-pitch .pro_link {
+    padding-left: 20px;
+    background: url(/static/images/silk/ie/star-f6f6f6-bg.png) no-repeat center left;
+}
+
+

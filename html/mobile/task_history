@@ -1,0 +1,67 @@
+<&| _elements/wrapper, title => 'History for '.$task->summary &>
+<span class="locator"><a href="http://task.hm/<%$task->record_locator%>">http://task.hm/<%$task->record_locator%></a></span>
+<h1><%$task->summary%></h1>
+<div class="basicpage">
+<& _elements/task_nav, task => $task &>
+
+<% Jifty->web->form->start %>
+
+<dl class="transactions">
+% while (my $t = $transactions->next) {
+% next unless $t->summary;
+<div class="transaction">
+<dt><% $t->summary %> at  <% $t->modified_at %></dt>
+% my $changes = $t->visible_changes;
+% if ($t->type eq "update" and $changes->count > 1) {
+%     while (my $c = $changes->next) {
+% next unless ($c->as_string);
+  <dd><%$c->as_string%></dd>
+%     }
+% }
+
+% my $comments = $t->comments;
+% while (my $email = $comments->next) {
+  <div class="comment">
+% if (my $sub = $email->header('Subject')) {
+<div class="messageheader">Subject: <% Encode::decode('MIME-Header', $sub) %></div>
+% }
+<% $email->formatted_body |n %></div>
+% }
+
+% my $attachments = $t->attachments;
+% while ( my $file = $attachments->next ) {
+  <div class="attachment content_type_<% $file->short_content_type %>">
+    <span class="name">
+      <% $file->name %>
+% if ( $file->filename and $file->name ne $file->filename ) {
+      <span class="filename"><% $file->filename %></span>
+% }
+    </span>
+    <% Jifty->web->link( url => $file->url, label => 'View' ) %>,
+    <% Jifty->web->link( url => $file->url('download'), label => 'Download' ) %>
+  </div>
+% }
+
+</div>
+% }
+</dl>
+
+  <div id="taskpage-comments">
+    <h2>Add a comment</h2>
+    <% $update_task->form_field('comment')->render_widget %>
+  </div>
+
+<% Jifty->web->form->submit(label => 'Save') %>
+<% Jifty->web->form->end %>
+</div>
+</&>
+<%args>
+$id
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load_by_locator($id);
+my $update_task = Jifty->web->new_action(class => 'UpdateTask', record => $task);
+my    $transactions = $task->transactions;
+    $transactions->prefetch_common;
+</%init>

@@ -1,0 +1,30 @@
+/group/#/project/FOO
+    milestones, people (involved + owner), stats, tasks
+
+/group/#/milestone/FOO
+    projects, people (involved + owner), stats, tasks
+
+/group/#/person/foo@bar
+    projects (involved + owned), milestones (involved + owned), stats, tasks
+
+/group/#/project/FOO/milestone/BAR
+/group/#/milestone/FOO/project/BAR
+    people (involved + owner), stats, tasks
+
+/group/#/project/FOO/person/foo@bar
+/group/#/person/foo@bar/project/FOO/
+    milestones (involved + owner), stats, tasks
+
+/group/#/milestone/BAR/person/foo@bar
+/group/#/person/foo@bar/milestone/BAR
+    projects (involved + owner), stats, tasks
+
+/group/#/person/foo@bar/project/FOO/milestone/BAR
+/group/#/person/foo@bar/milestone/BAR/project/FOO
+/group/#/project/FOO/milestone/BAR/person/foo@bar
+/group/#/project/FOO/person/foo@bar/milestone/BAR
+/group/#/milestone/BAR/person/foo@bar/project/FOO
+/group/#/milestone/BAR/project/FOO/person/foo@bar
+    stats, tasks
+
+

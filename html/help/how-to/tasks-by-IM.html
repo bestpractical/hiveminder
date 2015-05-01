@@ -1,0 +1,81 @@
+<&| /help/_elements/wrapper, title => 'Tasks by IM' &>
+
+% # I like little things like this :)
+% my $parser = DateTime::Format::Natural->new(prefer_future => 1);
+% my $sunday = $parser->parse_datetime('sunday')->ymd;
+
+<p>Using the instant messaging system, you can perform all of the common
+Hiveminder operations. You can quickly create new tasks and update existing
+tasks (mark them as done, set their due date and priority, give them to other
+people, and so on). It's much quicker than loading up your browser, so you're
+more likely to actually keep track of even the little tasks.</p>
+
+<p>Before you begin, you need to link an IM account to your Hiveminder account.
+It's easy:</p>
+
+<ol>
+  <li>Go to <% Jifty->web->link( url    => '/prefs/IM',
+                                 label  => 'Tasks by IM',
+                                 class  => 'external' ) %>
+      under <% Jifty->web->link( url    => '/prefs',
+                                 label  => 'Preferences',
+                                 class  => 'external' ) %>.
+  </li>
+  <li>Click the "Give me a password!" button.</li>  
+  <li>Send an IM to <b>HM Tasks</b> (or, if you're on Jabber or Google Chat,
+      <b>HMTasks@hiveminder.com</b>) with the password we just gave
+      you. (Not your account's password!)</li>
+</ol>
+
+<p>After that, any command HM Tasks receives from that screenname will affect your account. Here's a sample session. See
+  <% Jifty->web->link( url    => '/help/reference/IM',
+                       label  => 'the IM help' ) %>
+for more specific help.
+</p>
+
+<pre>
+Me: hello?
+
+HM Tasks: Hi, I'm Hiveminder. I can help you keep track of what you need to do
+and what you need other folks to do. Make an account at http://hiveminder.com/
+then configure IM support at http://hiveminder.com/prefs/IM so we can chat!
+Visit http://hiveminder.com/legal/privacy to see our privacy policy.
+
+Me: gredredreme
+
+HM Tasks: Your account has been activated, Shawn. Hooray!
+I know most of the basic Hiveminder commands, like todo and create. Type help
+for a list of what I can do! Visit http://hiveminder.com/legal/privacy to see
+our privacy policy.
+
+Me: create proofread essay [homework @home]
+
+HM Tasks: Created 1 task: #73JO: proofread essay [@home homework]
+
+Me: hide #73JO until sunday
+
+<% "HM Tasks: Hiding task #73JO until $sunday." %>
+
+Me: create empty inbox [mail @home] [priority low]
+
+HM Tasks: Created 1 task: #73K2: empty inbox [priority: low] [@home mail]
+
+Me: create clean room
+
+HM Tasks: Created 1 task, #73KE: clean room
+
+Me: todo
+
+HM Tasks: Things to do:
+#73KE: clean room
+#73K2: empty inbox [priority: low] [@home mail]
+
+Me: done 73KE
+
+HM Tasks: Marking task #73KE as done.  (Tip: you can use 'undone' if this was a mistake)
+
+Me: feedback Hiveminder IM rocks!
+
+HM Tasks: Thanks for the feedback. We appreciate it!
+</pre>
+</&>

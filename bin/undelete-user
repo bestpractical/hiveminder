@@ -1,0 +1,45 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new };
+
+my $email = shift;
+
+die "Usage: $0 email\n" if not defined $email;
+
+print "Email: $email\n";
+
+my $user = BTDT::Model::User->new( current_user => BTDT::CurrentUser->superuser );
+$user->load_by_cols( email => $email );
+
+die "Unable to find user with the address '$email'\n"
+    unless $user->id;
+
+die "User doesn't seem to be deleted, bailing!\n"
+    if not $user->is_deleted;
+
+# Set sane values for email prefs
+$user->set_never_email( 0 );
+$user->set_notification_email_frequency( 'daily' );
+$user->set_email_service_updates( 1 );
+$user->set_email_confirmed( 0 );
+$user->set_time_zone('America/New_York');
+print "Reset email prefs\n";
+
+# Regenerate the auth token
+my ($good, $msg) = $user->regenerate_auth_token;
+
+if ( $good ) {
+    print "Regenerated auth_token\n";
+} else {
+    die "Error regenerating auth_token: $msg\n";
+}
+
+# Create letme we can send to the user
+my $letme = Jifty::LetMe->new( current_user => BTDT::CurrentUser->superuser );
+$letme->email($email);
+$letme->path('activate_account');
+print "New activation url: \n\t", $letme->as_url, "\n";
+

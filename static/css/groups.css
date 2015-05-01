@@ -1,0 +1,102 @@
+dl.groups {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+dl.groups .group_name {
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+dl.groups dd {
+    margin: 0.2em 0 1em 1.5em;
+    padding-left: 0;
+    color: #333;
+}
+
+ul.invitations {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 1em;
+}
+
+ul.invitations li .invite_line {
+    font-size: 1.1em;
+    display: block;
+}
+
+ul.invitations li {
+    padding-left: 23px;
+    padding-top: 1.25em;
+    margin-bottom: 0.2em;
+    background: url(/static/images/silk/email_open.png) no-repeat center left;
+}
+
+ul.group_members {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 2em;
+}
+
+ul.group_members .group_member {
+    display: block;
+}
+
+.member_role {
+    color: #777;
+}
+
+ul.group_members .member_role {
+    font-size: 0.9em;
+    padding-left: 20px;
+    display: block;
+}
+
+.group_member {
+    min-height: 16px;
+    line-height: 1.6em;
+}
+
+.group_member_email {
+    padding-left: 20px;
+    padding-right: 0.5em;
+    float: left;
+    font-size: 0.9em;
+    color: #777;
+}
+
+.group_role_organizer {
+    background: url(/static/images/silk/user_suit.png) no-repeat center left;
+    padding-left: 20px;
+}
+
+.group_role_guest {
+    background: url(/static/images/silk/user_green.png) no-repeat center left;
+    padding-left: 20px;
+}
+
+.group_role_member {
+    background: url(/static/images/silk/user.png) no-repeat center left;
+    padding-left: 20px;
+}
+
+ul.group_members .button {
+    float: left;
+}
+
+ul.group_members li div {
+    float: left;
+    width: 25em;
+    clear: left;
+}
+
+ul.group_members li {
+    clear: left;
+    padding-bottom: 0.5em;
+}
+
+.group-manage .argument-never_email span.hints,
+.group-manage .argument-broadcast_comments span.hints {
+    display: inline;
+    padding-left: 0.5em;
+}

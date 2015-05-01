@@ -1,0 +1,40 @@
+<&| /_elements/wrapper, title => "Time tracking for '".$task->summary."'",
+                        subtitle => "#".$task->record_locator &>
+
+<% Jifty->web->region(
+    name          => Jifty->web->serial,
+    path          => '/reports/timetracking',
+    arguments     => {
+        tokens        => $task->id,
+        list_metadata => 1,
+    },
+) %>
+
+<h2>History</h2>
+
+<dl class="transactions">
+<div class="transaction">
+% for my $txn (@$txns) {
+%    next unless $txn->summary;
+%    my $changes = $txn->visible_changes;
+
+%    while (my $c = $changes->next) {
+%        next unless $c->field eq 'time_worked'
+%                 || $c->field eq 'time_left';
+
+         <dt><% $txn->author %> <% $c->as_string %> at <% $txn->modified_at %>.</dt>
+%    }
+
+% }
+</div>
+</dl>
+
+</&>
+
+<%args>
+$task
+</%args>
+<%init>
+my $txns = $task->transactions;
+</%init>
+

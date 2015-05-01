@@ -1,0 +1,15 @@
+<%args>
+$collection
+</%args>
+<div class="paging">
+% if ($collection->pager->previous_page) {
+<span class="prev-page">
+  <% Jifty->web->link( label => "Previous Page", onclick => { args => { page => $collection->pager->previous_page } } ) %>
+</span>
+% }
+% if ($collection->pager->next_page) {
+<span class="next-page">
+  <% Jifty->web->link( label => "Next Page", onclick => { args => { page => $collection->pager->next_page } } ) %>
+</span>
+% }
+</div>

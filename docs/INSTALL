@@ -1,0 +1,31 @@
+Setting up a development environment for BTDT:
+---------------------------------------------------------------------
+
+You'll need:
+- a recent perl (5.8.8 works)
+- CPAN modules: Jifty and all its dependencies, DBD::Pg
+- Postgres 8.x with the development packages installed.
+
+From the BTDT directory:
+
+  $ perl Makefile.PL && make && make test
+  [Install whatever CPAN modules are required. There are Many.]
+
+Start up the Postgres server.
+Create a Postgres user for yourself, probably using /usr/local/bin/createuser.
+
+Set up the Jifty database schema:
+  
+  $ ./bin/jifty schema
+
+Create a test user for BTDT:
+
+  $ ./bin/create_admin --email username@wherever
+
+(The password will default to "password".)
+
+Start up the BTDT server:
+
+  $ ./bin/jifty server
+
+

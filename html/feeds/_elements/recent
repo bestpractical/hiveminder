@@ -1,0 +1,19 @@
+<%args>
+$feed
+$as
+</%args>
+<%init>
+my $tasks = BTDT::Model::TaskCollection->new;
+$tasks->recent;
+
+$as = "as_$as";
+
+foreach my $task ( @{ $tasks->items_array_ref } ) {
+    my $txns = $task->transactions;
+    $txns->limit( column => 'modified_at', operator => '>', value => DateTime->now->subtract( days => 7 ) );
+    $txns->order_by( column => 'modified_at', order => 'ASC' );
+
+    $feed->add_entry($_->$as)
+      for @{ $txns->items_array_ref };
+}
+</%init>

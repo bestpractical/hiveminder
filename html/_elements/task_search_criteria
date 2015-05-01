@@ -1,0 +1,220 @@
+<%args>
+$search
+</%args>
+<%init>
+my $has_groups = Jifty->web->current_user->user_object->groups->count ? 1 : 0;
+</%init>
+<div class="search_options">
+
+  <fieldset class="basic_options">
+    <legend>Basics</legend>
+    <div class="basic_search_simple">
+      <span class="label_is">
+        <% $search->form_field('query')->label %> contain
+      </span>
+      <% $search->form_field('query')->render_widget %>
+      <span class="label_isnt">and lack</span>
+      <% $search->form_field('query_not')->render_widget %>
+      <& /_elements/clear &>
+    </div>
+
+% if ( $has_groups ) {
+    <div class="basic_search_group">
+      <span class="label_is">
+        <% $search->form_field('group')->label %> is
+      </span>
+      <% $search->form_field('group')->render_widget %>
+      <& /_elements/clear &>
+    </div>
+% }
+    
+    <div class="search_sort">
+      <span class="label_is">Sort tasks by</span>
+      <% $search->form_field('sort_by')->render_widget %>
+      or by the tags <% $search->form_field('sort_by_tags')->render_widget %>
+      <% BTDT->contextual_help("reference/tasklists/default-sort") %>
+    </div>
+    <& /_elements/clear &>
+  </fieldset>
+
+  <fieldset class="advanced_options">
+    <legend onclick="jQuery(this).toggleClass('open').siblings('.criteria').toggle();">Status, tags, people, dates, and more</legend>
+    <div class="criteria search_status_checkboxes search_complete_status">
+      <div class="inline">
+      <span class="label_is">Task is</span>
+% my $item = $search->form_field('complete', label => 'done');
+      <% $item->render_widget %><% $item->render_label %>
+% $item = $search->form_field('complete_not', label => 'not done');
+      <% $item->render_widget %><% $item->render_label %>
+      </div>
+      <& /_elements/clear &>
+    </div>
+
+    <div class="criteria search_status_checkboxes search_accepted_status">
+      <div class="inline">
+      <span class="label_is">Task is</span>
+% $item = $search->form_field('accepted', label => 'accepted');
+      <% $item->render_widget %><% $item->render_label %>
+% $item = $search->form_field('accepted_not', label => 'declined');
+      <% $item->render_widget %><% $item->render_label %>
+% $item = $search->form_field('unaccepted', label => 'unaccepted');
+      <% $item->render_widget %><% $item->render_label %>
+      </div>
+    </div>
+
+    <div class="criteria search_status_checkboxes search_will_do_status">
+      <div class="inline">
+      <span class="label_is">Task is</span>
+% $item = $search->form_field('will_complete_not', label => 'hidden forever');
+      <% $item->render_widget %><% $item->render_label %>
+% $item = $search->form_field('will_complete', label => 'not hidden forever');
+      <% $item->render_widget %><% $item->render_label %>
+      </div>
+    </div>
+
+% if (Jifty->web->current_user->user_object->pro_account) {
+    <div class="criteria search_status_checkboxes search_attachment_status">
+      <div class="inline">
+      <span class="label_is">Task has</span>
+% $item = $search->form_field('has_attachment', label => 'attachment(s)');
+      <% $item->render_widget %><% $item->render_label %>
+% $item = $search->form_field('has_no_attachments', label => 'no attachments');
+      <% $item->render_widget %><% $item->render_label %>
+      </div>
+    </div>
+% }
+
+    <div class="criteria search_task">
+% for (qw/summary description/) {
+%     my $positive = "contains";
+%     my $negative = "lacks";
+    <div class="search_task_field">
+      <span class="label_is">
+        <% $search->form_field($_)->label %>
+        <% $positive %>
+      </span>
+      <% $search->form_field($_)->render_widget %>
+      <span class="label_isnt">and <% $negative %></span>
+      <% $search->form_field($_ . "_not")->render_widget %>
+    </div>
+% }
+      <& /_elements/clear &>
+    </div>
+
+    <div class="criteria search_tags">
+      <span class="label_is">Tagged</span>
+      <% $search->form_field('tag')->render_widget %>
+      <% $search->form_field('tag')->render_autocomplete %>
+      <span class="label_isnt">but not</span>
+      <% $search->form_field('tag_not')->render_widget %>
+      <% $search->form_field('tag_not')->render_autocomplete %>
+      <& /_elements/clear &>
+    </div>
+
+    <div class="criteria search_task">
+% for (qw/group owner requestor next_action_by/) {
+%     next if $_ eq 'group'          and $has_groups;
+%     next if $_ eq 'next_action_by' and not Jifty->web->current_user->pro_account;
+%     my $positive = $_ eq 'next_action_by' ? ''       :"is";
+%     my $negative = $_ eq 'next_action_by' ? 'not by' : "isn't";
+    <div class="search_task_field">
+      <span class="label_is">
+        <% $search->form_field($_)->label %>
+% if ( /^(?:owner|requestor)$/ ) {
+        <% BTDT->contextual_help("reference/tasks/owner-and-requestor") %>
+% } elsif ( $_ eq 'next_action_by' ) {
+        <% BTDT->contextual_help("reference/tasks/open-loop") %>
+% }
+        <% $positive %>
+      </span>
+      <% $search->form_field($_)->render_widget %>
+      <% /^(?:owner|requestor|next_action_by)$/ && $search->form_field($_)->render_autocomplete %>
+% if ( $_ ne 'group' ) {
+      <span class="label_isnt">and <% $negative %></span>
+      <% $search->form_field($_ . "_not")->render_widget %> 
+      <% /^(?:owner|requestor|next_action_by)$/ && $search->form_field($_ . "_not")->render_autocomplete %>
+% }
+    </div>
+% }
+
+      <& /_elements/clear &>
+    </div>
+
+    <div class="criteria search_dates">
+      <div class="search_start">
+        <span class="label_is">Hidden until after</span>
+        <% $search->form_field("starts_after", ajax_canonicalizes => 0)->render_widget %>
+        <span class="label_isnt">and before</span>
+        <% $search->form_field("starts_before", ajax_canonicalizes => 0)->render_widget %>
+      </div>
+
+      <div class="search_due">
+        <span class="label_is">Due after</span>
+        <% $search->form_field("due_after", ajax_canonicalizes => 0)->render_widget %>
+        <span class="label_isnt">and before</span>
+        <% $search->form_field("due_before", ajax_canonicalizes => 0)->render_widget %>
+      </div>
+
+      <div class="search_completed">
+        <span class="label_is">Completed after</span>
+        <% $search->form_field("completed_after", ajax_canonicalizes => 0)->render_widget %>
+        <span class="label_isnt">and before</span>
+        <% $search->form_field("completed_before", ajax_canonicalizes => 0)->render_widget %>
+      </div>
+    
+      <& /_elements/clear &>
+    </div>
+
+    <div class="criteria search_priority">
+      <span class="label_is">Priority between</span>
+      <% $search->form_field("priority_above")->render_widget %>
+      <span class="label_isnt">and</span>
+      <% $search->form_field("priority_below")->render_widget %>
+      <& /_elements/clear &>
+    </div>
+
+    <div class="criteria search_dependencies">
+      <span class="label_is">
+        But first
+        <% BTDT->contextual_help("reference/tasklists/searching-dependencies") %>
+      </span>
+      <% $search->form_field("but_first")->render_widget %>
+      <span class="label_isnt">
+        And then
+        <% BTDT->contextual_help("reference/tasklists/searching-dependencies") %>
+      </span>
+      <% $search->form_field("and_then")->render_widget %>
+      <& /_elements/clear &>
+    </div>
+    
+%# XXX TODO ACL
+% if ( Jifty->web->current_user->has_group_with_feature('Projects') ) {
+    <div class="criteria search_projects">
+      <span class="label_is">
+        Project
+      </span>
+      <% $search->form_field("project")->render_widget %>
+      <span class="label_isnt">
+        Milestone
+      </span>
+      <% $search->form_field("milestone")->render_widget %>
+      <& /_elements/clear &>
+    </div>
+% }
+
+% if ( Jifty->web->current_user->has_feature('TimeTracking') ) {
+    <div class="criteria search_times">
+% for my $field (qw(estimate worked left)) {
+      <div class="search_time_<% $field %>">
+        <span class="label_is"><% ucfirst($field) %> less than</span>
+        <% $search->form_field("time_${field}_lt", ajax_canonicalizes => 0)->render_widget %>
+        <span class="label_isnt">and greater than</span>
+        <% $search->form_field("time_${field}_gt", ajax_canonicalizes => 0)->render_widget %>
+      </div>
+% }
+      <& /_elements/clear &>
+    </div>
+% }
+  </fieldset>
+</div>
+

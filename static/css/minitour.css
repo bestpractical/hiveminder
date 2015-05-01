@@ -1,0 +1,53 @@
+#minitour h2 {
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    letter-spacing: 0;
+    padding: 0;
+    margin: 0.1em 0 0 0;
+    float: left;
+    width: 80%;
+    clear: none;
+    color: #f0b53a;
+    color: rgb(82, 134, 181);
+    color: #0065ce;
+}
+
+#minitour span.number {
+    float: left;
+/*    font-family: "Trebuchet MS", Arial;*/
+    font-family: Verdana, sans-serif;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffc64a;
+    padding-right: 0.1em;
+}
+
+#minitour p {
+    float: left;
+    clear: none;
+    padding: 0;
+    margin: 0;
+    width: 80%;
+}
+
+#minitour .minitour_step {
+    width: 25%;
+    float: left;
+}
+
+* html #minitour .minitour_step {
+    width: 24.9%;
+}
+
+#minitour_to_fulltour {
+    display: block;
+    width: 100%;
+    font-size: 1.5em;
+    text-align: right;
+}
+
+#minitour_to_fulltour span {
+    color: #0065ce;
+    font-weight: bold;
+}

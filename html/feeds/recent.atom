@@ -1,0 +1,22 @@
+<%init>
+my $feed = XML::Atom::Feed->new;
+my $uri  = 'http:/'.Jifty->web->request->uri;
+$feed->title( "Recent changes for " . Jifty->web->current_user->user_object->name );
+$feed->id($uri);
+my $link = XML::Atom::Link->new();
+$link->rel('self');
+$link->href($uri);
+$feed->add_link($link);
+my $now = DateTime->now();
+$feed->updated( $now->ymd('-') . 'T' . $now->hms(':') . 'Z' );
+
+Jifty->web->response->content_type('application/atom+xml; charset=utf-8');
+
+
+
+$m->comp("_elements/recent", feed => $feed, as => "atom_entry");
+Jifty->web->response->content_type('application/atom+xml');
+$m->out( $feed->as_xml() );
+$m->abort();
+</%init>
+

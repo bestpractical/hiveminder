@@ -1,0 +1,15 @@
+<%args>
+$collection
+</%args>
+<%init>
+Jifty->web->response->content_type('text/plain');
+Jifty->web->response->header('Content-Disposition' => 'attachment; filename="tasks.txt"');
+my $sync = BTDT::Sync::TextFile->new;
+my $text =  $sync->as_text($collection);
+ eval { $text= Text::FixEOL->new->eol_to_network( $sync->as_text($collection))};
+if (my $err = $@) {
+    warn $err unless ( $err =~ /Malformed UTF-8 character/);
+}
+$m->out($text);
+$m->abort(200);
+</%init>

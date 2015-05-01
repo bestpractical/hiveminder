@@ -1,0 +1,24 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+my $tag = shift;
+
+die "find-missing tag files\n" if not $tag;
+
+undef $/;
+
+for ( @ARGV ) {
+    open my $fh, '<', $_ or warn "$!\n";
+    
+    my $f = <$fh>;
+    my $o = 0;
+    my $c = 0;
+    
+    $o++ while $f =~ m|<\Q$tag\E[ >]|g;
+    $c++ while $f =~ m|</\Q$tag\E[ >]|g;
+    
+    print "$_\n$tag $o:$c\n" if $o != $c;
+
+    close $fh;
+}

@@ -1,0 +1,43 @@
+#page_nav {
+    border-bottom: 1px dotted #888;
+    margin-bottom: 1em;
+}
+
+* html #page_nav {
+    margin-top: 1em;
+}
+
+#page_nav ul.menu {
+    background: white;
+    list-style: none;
+    white-space: nowrap;
+    padding: 0 0 0 1.4em;
+    margin: 0;
+    float: none;
+}
+
+#page_nav ul.menu :link, #page_nav ul.menu :visited {
+    text-decoration: none;
+}
+
+#page_nav ul.menu li {
+    background: #fedc91 url(/static/images/nav.gradient.png) repeat-x 0 -5px; /* #ffc64a */
+    text-align: center;
+    margin: 0 0.2em;
+    padding: 0.3em 0.4em;
+    float: left;
+    position: relative;
+    top: 1px;
+}
+
+#page_nav ul.menu li:hover,
+#page_nav ul.menu li.active:hover
+{
+    background: #fedc91 none;
+}
+
+#page_nav ul.menu li.active {
+    font-weight: bold;
+    background: #fedc91 url(/static/images/quicker.nav.gradient.png) repeat-x 0 2px; /* #ffc64a */
+}
+

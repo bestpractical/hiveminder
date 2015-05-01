@@ -1,0 +1,6 @@
+<%init>
+$m->comp('../_elements/text', collection => $collection);
+</%init>
+<%args>
+$collection
+</%args>

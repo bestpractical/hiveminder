@@ -1,0 +1,118 @@
+<%args>
+$tokens
+$tasklist_region
+$moniker
+</%args>
+<%init>
+my $action = Jifty->web->new_action(
+    class   => "BulkUpdateTasks",
+    moniker => $moniker,
+   );
+my @tokens =  BTDT::Model::TaskCollection->split_tokens($tokens);
+@tokens = grep { lc($_) ne 'accepted' } @tokens;
+push @tokens, 'unaccepted';
+my $unaccepted = BTDT::Model::TaskCollection->new();
+$unaccepted->from_tokens(@tokens);
+
+my %defaults = $unaccepted->all_defaults;
+my @groups = grep { $_ != 0 } @{ $defaults{group_id} || [] };
+my $group;
+if (@groups == 1) {
+    $group = BTDT::Model::Group->new;
+    $group->load($groups[0]);
+
+    $action->set_valid_projects($group->projects);
+    $action->set_valid_milestones($group->milestones);
+}
+
+my %save_args = (
+    label   => 'Save Changes',
+    onclick => [
+        { submit => $action },
+        {
+            refresh => $tasklist_region,
+            args    => { bulk_edit => 0 },
+        },
+        {
+            region       => "tagcloud",
+            replace_with => "/fragments/tagcloud"
+        },
+    ],
+    submit         => $action,
+);
+
+my %delete_args = ( %save_args, class => 'delete' );
+
+$delete_args{label} = 'Delete Tasks';
+$delete_args{onclick} = [
+  { confirm => 'Really delete these tasks?' },
+  @{$save_args{onclick}}
+ ];
+$delete_args{arguments} = {delete => 1};
+
+my $more = Jifty->web->serial;
+</%init>
+<div class="task bulk_edit inline round">
+  <% $action->hidden(tokens => $tokens) %>
+  <div class="line">
+    <% $action->form_field('complete') %>
+    <% $action->form_field('add_tags') %>
+    <% $action->form_field('remove_tags') %>
+% if($unaccepted->count) {
+      <% $action->form_field('accepted') %>
+% }    
+    <% Jifty->web->form->submit(%save_args) %>
+    <a class="more" href="#" onclick="jQuery('#<% $more %>').toggle(500); this.innerHTML = this.innerHTML == 'more...' ? 'less...' : 'more...'; return false;">more...</a>
+    <div class="hidden clear"></div>
+  </div>
+  <div class="extra" style="display: none;" id="<% $more %>">
+    <div class="line">
+      <% $action->form_field('priority') %>
+      <% $action->form_field('starts') %>
+      <% $action->form_field('due') %>
+      <% $action->form_field('time_left') %>
+    </div>
+    <div class="line">
+      <% $action->form_field('group') %>
+      <% $action->form_field('owner_id') %>
+    </div>
+
+% if ($group && $group->has_feature("Projects")) {
+    <div class="line">
+      <% $action->form_field('project') %>
+      <% $action->form_field('milestone') %>
+    </div>
+% }
+
+    <div class="line">
+      <% $action->form_field('add_dependency_on') %>
+      <% $action->form_field('add_depended_on_by') %>
+    </div>
+    <div class="line">
+      <% $action->form_field('remove_dependency_on') %>
+      <% $action->form_field('remove_depended_on_by') %>
+    </div>
+    <div class="line">
+      <% $action->form_field('comment') %>
+    </div>
+    <div class="line">
+      <% $action->form_field('will_complete') %>
+      <% $action->form_field('will_not_complete') %>
+    </div>
+    <div class="button_line delete_tasks">
+      To delete all the tasks shown below: <% $action->button(%delete_args) %>
+    </div>
+    <div class="button_line">
+      <% Jifty->web->form->submit(%save_args) %>
+      <% Jifty->web->link( as_button => 1,
+                           label     => "Cancel",
+                           class     => "cancel",
+                           onclick   => { refresh => $tasklist_region,
+                                          args    => { bulk_edit => 0 }, }
+                         )
+      %>
+    </div>
+    <div class="hidden clear"></div>
+  </div>
+</div>
+

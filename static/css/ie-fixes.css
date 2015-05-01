@@ -1,0 +1,235 @@
+/* We use the "html.ie" hack to target rules at only IE instead of conditional
+   comments because otherwise IE users would have to clear the cache to get
+   updates (since we couldn't include this stylesheet in the CSS::Squished one
+   */
+
+/* emulating position: fixed */
+
+html.ie body { font-size: 73%; }
+html.ie #jifty-wait-message { position: absolute; }
+
+
+html.ie body { behavior: url("/static/htc/csshover.htc"); }
+
+
+/* menu */
+#navigation div.container {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+html.ie #navigation .yuimenubaritemlabel {
+}
+
+html.ie #navigation .yuimenubaritem {
+    padding-bottom: 0px;
+}
+
+html.ie #navigation .yuimenubar {
+}
+html.ie #navigation .yuimenubaritemlabel {
+    padding-bottom: -0.2em;
+    margin-bottom: -0.2em;
+
+}
+
+html.ie #navigation ul.menu { border-bottom-style: solid;  }
+html.ie #navigation hr.clear { display: none; }
+
+/* feedlist */
+
+html.ie ul.feed-list { width: 7.5em; }
+html.ie ul.feed-list li a { height: 20px; }
+
+/* forms */
+
+/* Hack for IE: causes it to crush the box when there is no content */
+html.ie .form_field .hints,
+html.ie .form_field .warning,
+html.ie .form_field .error
+{
+    border: 1px solid white;
+}
+
+html.ie #info .form_field .hints,
+html.ie #info .form_field .warning,
+html.ie #info .form_field .error
+{
+    border: 1px solid #f6f6f6;
+}
+
+html.ie .tasklist .create .form_field .hints,
+html.ie .tasklist .create .form_field .warning,
+html.ie .tasklist .create .form_field .error,
+html.ie .bulk_edit .form_field .hints,
+html.ie .bulk_edit .form_field .warning,
+html.ie .bulk_edit .form_field .error,
+html.ie .tasklist .update .form_field .hints,
+html.ie .tasklist .update .form_field .warning,
+html.ie .tasklist .update .form_field .error
+{
+    border: 1px solid #eee;
+}
+
+html.ie .tasklist .update .argument-complete .hints,
+html.ie .tasklist .update .argument-complete .warning,
+html.ie .tasklist .update .argument-complete .error,
+html.ie .bulk_edit .argument-complete .hints,
+html.ie .bulk_edit .argument-complete .warning,
+html.ie .bulk_edit .argument-complete .error
+{
+    display: none;
+}
+
+html.ie .tasklist_panel .form_field .hints,
+html.ie .tasklist_panel .form_field .warning,
+html.ie .tasklist_panel .form_field .error
+{
+    display: none;
+}
+
+html.ie #feedback .form_field .hints,
+html.ie #feedback .form_field .warning,
+html.ie #feedback .form_field .error
+{
+    display: none !important;
+}
+
+html.ie #taskpage-basics .form_field .hints,
+html.ie #taskpage-basics .form_field .warning,
+html.ie #taskpage-basics .form_field .error
+{
+    border: 1px solid #eee;
+}
+
+html.ie form span.value {
+    padding-bottom: 0.3em;
+}
+
+/* notices */
+
+
+/* layout hacks */
+
+html.ie #content,
+html.ie #info
+{ height: 1%; }
+
+html.ie .search_options .search_complete_status { height: 1%; }
+
+/* page nav */
+
+html.ie #page_nav ul.menu li div { display: none; }
+html.ie #page_nav { border-bottom-style: solid; }
+html.ie #page_nav ul.menu { border: 1px solid white; }
+html.ie #page_nav ul.menu li { top: 2px; padding-top: 0.2em; }
+
+
+/* context menu */
+
+html.ie .context_menu li.toplevel .title a:hover { color: #777; }
+
+/* tour */
+
+html.ie #tour-todolist a.icon {
+    z-index: 50;
+    height: 0;
+    border: 1px solid white;
+}
+
+html.ie #tour-todolist a.icon:hover {
+    border: 1px dashed white;
+}
+
+html.ie #tour-todolist a.icon .description { position: relative; }
+
+/* dealing with the fact that IE doesn't do transparent pngs */
+
+html.ie ul.about_pages li a { background-image: url(/static/images/silk/ie/bullet_go.png); }
+html.ie .menu span.expand a { background-image: url(/static/images/silk/ie/bullet_arrow_down.gif); }
+html.ie .context_menu .open span.expand a { background-image: url(/static/images/silk/ie/bullet_arrow_up.png); }
+html.ie .context_menu span.expand a { background-image: url(/static/images/silk/ie/bullet_arrow_down.png); }
+html.ie .action-menu-button .submenu-toggle { background-image: url(/static/images/silk/ie/bullet_arrow_down.png); }
+html.ie .action-menu-button span.open .submenu-toggle { background-image: url(/static/images/silk/ie/bullet_arrow_up.png); }
+html.ie .assign-menu-button .submenu-toggle { background-image: url(/static/images/silk/ie/bullet_arrow_down.png); }
+html.ie .assign-menu-button span.open .submenu-toggle { background-image: url(/static/images/silk/ie/bullet_arrow_up.png); }
+html.ie ul.feed-list li a.atom { background-image: url(/static/images/silk/ie/feed.png); }
+html.ie ul.feed-list li a.plaintext { background-image: url(/static/images/silk/ie/page_white_text.png); }
+html.ie ul.feed-list li a.print { background-image: url(/static/images/silk/ie/printer.png); }
+html.ie ul.invitations li { background-image: url(/static/images/silk/ie/email_open.png); }
+html.ie .group_role_organizer { background-image: url(/static/images/silk/ie/group_key.png); }
+html.ie .group_role_guest { background-image: url(/static/images/silk/ie/user_gray.png); }
+html.ie .group_role_member { background-image: url(/static/images/silk/ie/user.png); }
+html.ie p.note { background-image: url(/static/images/silk/ie/note-f8f1d3-bg.png); }
+html.ie p.warning { background-image: url(/static/images/silk/ie/exclamation-ffe5dc-bg.png); }
+html.ie .zilch_message { background-image: url(/static/images/silk/ie/asterisk_yellow.png); }
+html.ie #notices .notice_unaccepted_tasks { background-image: url(/static/images/silk/ie/package.png); }
+html.ie #notices .notice_invitations { background-image: url(/static/images/silk/ie/email_go.png); }
+html.ie #notices .notice_news { background-image: url(/static/images/silk/ie/newspaper.png); }
+html.ie #dismiss_messages { background-image: url(/static/images/silk/ie/cancel_grey-a9b7ff-bg.png); }
+html.ie #dismiss_errors   { background-image: url(/static/images/silk/ie/cancel_grey-ffa8a8-bg.png); }
+html.ie .tasklist span.task_group a { background-image: url(/static/images/silk/ie/group.png); }
+html.ie .tasklist span.tags { background-image: url(/static/images/silk/ie/tag_blue.png); }
+html.ie .tasklist .due { background-image: url(/static/images/silk/ie/date.png); }
+html.ie .tasklist span.repeat a { background-image: url(/static/images/silk-derived/ie/arrow_repeat_gray.png); }
+html.ie .tasklist span.attachments a { background-image: url(/static/images/silk/ie/attach.png); }
+html.ie .search_options .search_sort { background-image: url(/static/images/silk/ie/table_sort-f0f0f0-bg.png); }
+html.ie .search_options .search_dates { background-image: url(/static/images/silk/ie/date-f0f0f0-bg.png); }
+html.ie .search_options .search_tags { background-image: url(/static/images/silk/ie/tag_blue-f0f0f0-bg.png); }
+html.ie .search_options .search_complete_status { background-image: url(/static/images/silk/ie/tick-f0f0f0-bg.png); }
+html.ie .search_options .search_accepted_status { background-image: url(/static/images/silk/ie/thumb_up-f0f0f0-bg.png); }
+html.ie .search_options .search_priority { background-image: url(/static/images/silk/ie/bullet_black-f0f0f0-bg.png); }
+html.ie .search_options .search_times { background-image: url(/static/images/silk/ie/time-f0f0f0-bg.png); }
+html.ie #jGrowl .result-message .message { background-image: url(/static/images/silk/ie/information.gif); }
+html.ie #jGrowl .result-error .message { background-image: url(/static/images/silk/ie/error.gif); }
+html.ie .task #taskpage-comments h2 { background-image: url(/static/images/silk/ie/comment_add-eee-bg.png); }
+html.ie .task #taskpage-depends-on h2 { background-image: url(/static/images/silk/ie/arrow_join-eee-bg.png); }
+html.ie .task #taskpage-depended-on h2 { background-image: url(/static/images/silk/ie/arrow_divide_rotated-eee-bg.png); }
+html.ie #taskpage-basics label.argument-tags { background-image: url(/static/images/silk/ie/tag_blue-eee-bg.png); }
+html.ie #taskpage-basics label.argument-group_id { background-image: url(/static/images/silk/ie/group-eee-bg.png); }
+html.ie #taskpage-basics label.argument-due { background-image: url(/static/images/silk/ie/date-eee-bg.png); }
+html.ie #taskpage-basics label.argument-priority { background-image: url(/static/images/silk/ie/bullet_black-eee-bg.png); }
+
+/* IE can't handle this nicely w/ AJAX validation */
+
+html.ie .message, html.ie .error {
+    background: none;
+    padding-left: 0;
+}
+
+/* dismiss links */
+
+html.ie #dismiss_messages, html.ie #dismiss_errors { width: 16px; }
+
+/* contextual help */
+
+html.ie #tagcloud h3,
+html.ie #braindump h3 {
+    width: 94%;
+}
+html.ie #tasklist_braindump .hints { width: 98% }
+
+/* footer */
+
+html.ie #footer { padding-top: 0; }
+
+/* form spacing */
+
+html.ie #info #braindump form { border: 1px solid #f6f6f6; }
+html.ie #invite_new_user form { border: 1px solid #f6f6f6; margin: 0; }
+
+/* tasklist */
+
+html.ie dl.tasklist { margin-top: 0; }
+
+/* tools */
+html.ie #service-list #taskbyemail h3 { background-image: url(/static/images/silk/ie/email.png); }
+html.ie #service-list #mobile h3 { background-image: url(/static/images/silk/ie/phone.png); }
+html.ie #application-list #cli h3 { background-image: url(/static/images/silk/ie/script_lightning.png); }
+html.ie #application-list #widget h3 { background-image: url(/static/images/silk/ie/plugin.png); }
+html.ie #application-list .latest, #service-list .latest { background-image: url(/static/images/silk/ie/new.png); }
+
+/* IE z-index implementation has bug with relative elements; the symptom we see
+ * is rounded corners cause menus to hide behind tasklist panels */
+html.ie div.round { position: static !important; }
+

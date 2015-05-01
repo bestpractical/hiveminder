@@ -1,0 +1,25 @@
+<%args>
+$user
+$field      => 'name'
+$useyou     => 0
+$showtype   => 1
+$url        => undef
+</%args>
+<%init>
+my $label = $user->$field;
+   $label = 'you' if $useyou and $user->id == Jifty->web->current_user->id;
+
+# The use of $m->out is so that we don't get extra newlines and space
+# from Mason that we really don't want
+$m->out('<span class="username">');
+$m->out('<span class="pro_user">') if $showtype and $user->pro_account;
+
+if ( defined $url ) {
+    $m->out( Jifty->web->link( label => $label, url => $url ) );
+} else {
+    $m->out( Jifty->web->escape( $label ) );
+}
+
+$m->out('</span>') if $showtype and $user->pro_account;
+$m->out('</span>');
+</%init>

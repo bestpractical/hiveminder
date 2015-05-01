@@ -1,0 +1,32 @@
+#quicksearch {
+    /*margin: 0 auto;*/
+    /*max-width: 880px; */
+}
+
+#quicksearch form {
+    float: right;
+    margin: -2.9em 0 0 0;
+    padding-right: 10px;
+}
+
+#quicksearch input.argument-query {
+    width: 10em;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#quicksearch label,
+#quicksearch .hints,
+#quicksearch .preamble
+{
+    display: none;
+}
+
+#quicksearch input[type="submit"] {
+    margin-top: 0;
+    margin-bottom: 0;
+    border: none;
+    background: inherit;
+    display: none;
+}
+

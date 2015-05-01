@@ -1,0 +1,43 @@
+<%args>
+$searchpath => ""
+</%args>
+<&| /_elements/wrapper, title => $title, subtitle => $subtitle, tag_collection => $tasks, group_id => $group, logo => $logo &>
+
+% if ($tasks) {
+<& /_elements/tasklist, collection => $tasks, moniker => "search", search_open_when_empty => ($searchpath ? 0 : 1), group_id => $group &>
+% }
+
+</&>
+<%init>
+my $tasks = Jifty->web->response->result("search")->content("tasks");
+my $group = Jifty->web->response->result("search")->content("group") || 0;
+if ($group) {
+    Jifty->web->page_navigation->child(
+        "Your search",
+        url     => '/list/' . join( '/', $tasks->tokens ),
+        active  => 1
+    );
+}
+
+my %title_for = map { $_->{token_url} => $_->{label} } BTDT::Model::List->default_lists( Jifty->web->current_user->pro_account );
+
+# Add in saved list titles
+my $lists = BTDT::Model::ListCollection->new;
+$lists->limit( column => 'owner', value => Jifty->web->current_user->id );
+
+while ( my $list = $lists->next ) {
+    $title_for{ $list->tokens_as_url } = $list->name;
+}
+
+my $title    = 'Search for tasks';
+my $subtitle = ucfirst join ' ', $tasks->tokens;
+
+if ( defined $title_for{$searchpath} ) {
+    $title    = $title_for{$searchpath};
+    $subtitle = "";
+}
+
+my $logo = 'default';
+if    ( $title eq 'Overdue!' )      { $logo = 'minder'; }
+elsif ( $title eq 'My requests' ) { $logo = 'hivemind'; }
+</%init>

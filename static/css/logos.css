@@ -1,0 +1,9 @@
+.logo_default   #headers h1.hiveminder { background-image: url(/static/images/hmlogo/default.png); }
+.logo_hi        #headers h1.hiveminder { background-image: url(/static/images/hmlogo/hi.png); }
+.logo_hive      #headers h1.hiveminder { background-image: url(/static/images/hmlogo/hive.png); }
+.logo_hivemind  #headers h1.hiveminder { background-image: url(/static/images/hmlogo/hivemind.png); }
+.logo_mind      #headers h1.hiveminder { background-image: url(/static/images/hmlogo/mind.png); }
+.logo_er        #headers h1.hiveminder { background-image: url(/static/images/hmlogo/er.png); }
+.logo_minder    #headers h1.hiveminder { background-image: url(/static/images/hmlogo/minder.png); }
+#tour           #headers h1.hiveminder { background-image: url(/static/images/hmlogo/default.white.png); }
+#protour        #headers h1.hiveminder { background-image: url(/static/images/hmlogo/default.white.png); }

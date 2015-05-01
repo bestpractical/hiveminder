@@ -1,0 +1,98 @@
+<%args>
+$tokens => undef
+$searchpath => undef
+$region
+$refresh_list => 0
+</%args>
+<%init>
+my $is_subtask =0;
+
+my $tasks = BTDT::Model::TaskCollection->new();
+if ($tokens =~ /^(depends_on|depended_on_by|and then|but first) ([A-Za-z\d]+) not complete$/) {
+    my ($key, $value) = ($1, $2);
+    if ( $value !~ /^(?:no|some)thing$/ ) {
+        my $id = $BTDT::Record::LOCATOR->decode($value)
+            if $key =~ /^(?:but first|and then)$/;
+
+        $is_subtask = 1;
+        my $task = BTDT::Model::Task->new;
+        $task->load($id);
+        
+        my @tokens;
+        push @tokens, depends_on     => $id if $key =~ /^(?:but first|depends_on)$/i;
+        push @tokens, depended_on_by => $id if $key =~ /^(?:and then|depended_on_by)$/i;
+
+        push @tokens, group => $task->group->id if $task->group->id;
+        push @tokens, owner => $task->owner->email if $task->owner->id;
+        push @tokens, priority => $task->priority;
+        push @tokens, tag => $task->tags;
+        $tasks->from_tokens( @tokens );
+    }
+} else {
+    $tasks->from_tokens($tasks->split_tokens($tokens));
+}
+my $create = $tasks->create_from_defaults(Jifty->web->qualified_region . "_create");
+my $more = Jifty->web->serial;
+
+my %submit_args = (
+    label    => 'Create',
+);
+
+if ( $refresh_list ) {
+    push @{ $submit_args{'onclick'} },
+        { refresh => $region->parent,
+          submit  => $create
+        };
+}
+else {
+    push @{ $submit_args{'onclick'} },
+        {   refresh_self => 1 },
+        {
+            element => $region->parent->get_element('.tasklist'),
+            append => '/mini/fragments/tasklist/view',
+            effect => 'Appear',
+            args   => {
+                        tokens     => $tokens,
+                        searchpath => $searchpath,
+                        id         => { result_of => $create, name => 'id' },
+                        maybe_view => 1
+                      },
+            submit => $create,
+        };
+}
+
+</%init>
+<div class="inline create-task">
+  <div class="line">
+    <% $create->form_field('summary', label => ($is_subtask ? 'Add a new task (or the #id of an old one)': 'Add a new task'), size=>40 ) %>  
+    <% Jifty->web->form->submit(%submit_args) %>
+  </div>
+  <div class="create extra" style="display: none;" id="<% $more %>">
+  <div class="line">
+     <% $create->form_field('priority') %>
+    <% $create->form_field('tags') %>
+  </div>
+    <div class="line">
+      <% $create->form_field('starts', default_value => '') %>
+      <% $create->form_field('due', default_value => '') %>
+    </div><div class="line">
+      <% $create->form_field('description') %>
+    </div><div class="line">
+      <% $create->form_field('group_id') %>
+      <% $create->form_field('owner_id') %>
+    </div>
+% for my $field (grep {$_ !~ /^(?:priority|starts|owner_id|group_id|complete|summary|tags|due|description)$/} $create->argument_names) {
+    <% $create->form_field($field, render_as => 'Hidden') %>
+% }
+  </div>
+  <div class="line">
+    <a href="#" onclick="jQuery('#<% $more %>').toggle(500); this.innerHTML = this.innerHTML == 'more...' ? 'less...' : 'more...'; return false;">more...</a>
+  </div>
+</div>
+<%doc>
+
+When you hit "save" and create a task, you want to put a fragment
+containing the new item in the associated tasklist and refresh this
+fragment.
+
+</%doc>

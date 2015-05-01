@@ -1,0 +1,20 @@
+<%init>
+
+
+$m->redirect('/error/feed/group/parsefail')  unless ( $m->dhandler_arg =~ '^(\d+)/(.*?)$' );
+
+my $id = $1;
+my $component = $2;
+
+$m->redirect('/error/feed/group/unknown-feed') unless $m->comp_exists($component) ;
+
+my $group = BTDT::Model::Group->new();
+$group->load_by_cols( id => $1);
+
+die("permission denied") unless $group->id and $group->has_member(Jifty->web->current_user);
+
+my $collection = BTDT::Model::TaskCollection->new();
+$collection->limit( column => 'group_id', operator => '=', value => $group->id);
+$collection->order_by( column => 'id' );
+$m->comp($component, collection => $collection);
+</%init>

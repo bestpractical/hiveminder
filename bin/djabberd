@@ -1,0 +1,57 @@
+#!/usr/bin/env hmperl
+
+# This is a slightly stripped-down version of the original djabberd,
+# mainly to ensure that we run with hmperl, not some random perl.
+
+use strict;
+use warnings;
+
+# We explicitly add 'lib/' to @INC because we're not loading Jifty here,
+# which is what normally does that for us.
+use lib 'lib';
+
+use vars qw($DEBUG $daemonize $conffile $logconf);
+use Getopt::Long;
+
+BEGIN {
+    # We need to set up the logger before we "use DJabberd", because
+    # most of the DJabberd libs will immediately make calls into
+    # DJabberd::Log.
+
+    $DEBUG = 0;
+    $daemonize = 0;
+    $conffile = undef;
+    $logconf = undef;
+
+    $ENV{ROOT} ||= `pwd`; chomp $ENV{ROOT};
+
+    Getopt::Long::GetOptions(
+        'd|daemon'     => \$daemonize,
+        'debug=i'      => \$DEBUG,
+        'conffile=s'   => \$conffile,
+        'logconf=s'    => \$logconf,
+    );
+
+    my @try_logconf_conf = ();
+    if (defined($logconf)) {
+        die "Can't find logging configuration file $logconf" unless -e $logconf;
+        @try_logconf_conf = ( $logconf );
+    }
+    else {
+        @try_logconf_conf = ( "etc/log.conf", "/etc/djabberd/log.conf", "etc/log.conf.default" );
+    }
+    use DJabberd::Log;
+    DJabberd::Log->set_logger(@try_logconf_conf);
+
+}
+
+use DJabberd;
+my $server = DJabberd->new(
+    daemonize => $daemonize
+);
+
+die "No configuration file found; please specify --conffile argument.\n" unless $conffile;
+die "Can't find configuration file $conffile\n" unless -e $conffile;
+
+$server->load_config($conffile);
+$server->run;

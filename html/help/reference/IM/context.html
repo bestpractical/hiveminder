@@ -1,0 +1,23 @@
+<&| /help/_elements/wrapper, title => 'Context' &>
+
+%# terse: I remember what tasks you're working on so you don't need to repeat yourself. e.g. "c sleep" "priority high". http://tinyurl.com/2wuhrf
+
+<p>Hiveminder's IM system supports the notion of context. Isn't it annoying to have to tell me what tasks you're talking about all the time?</p>
+
+<pre>create finish reading Dune [book dune]
+due #6NCO by thursday
+comment #6NCO wow what a great book!
+tag #6NCO [favorite]
+done #6NCO</pre>
+
+<p>Instead, with the context system, you can use <b>this</b> or <b>these</b> (makes no difference which one you use) in place of task IDs, like so:</p>
+
+<pre>create finish reading Dune [book dune]
+due this by thursday
+comment this wow what a great book!
+tag this [favorite]
+done this</pre>
+
+<p>The <b>show</b> command will list the tasks are in your current context.</p>
+
+</&>

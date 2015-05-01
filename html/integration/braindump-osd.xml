@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Create Hiveminder task</ShortName>
+  <Description>Create Hiveminder tasks using braindump syntax</Description>
+  <Contact>support@hiveminder.com</Contact>
+  <Developer>Zak Greant/Best Practical Solutions, LLC</Developer>
+  <Url type="text/html" 
+        method="POST"
+        enctype="text/plain"
+        template="http://hiveminder.com/create/braindump">
+    <Param name="J:A-quickcreate"        value="BTDT::Action::ParseTasksMagically" />
+    <Param name="J:A:F-text-quickcreate" value="{searchTerms}" />
+  </Url>
+  <Image height="16" width="16" type="image/png">http://hiveminder.com/static/images/bee-plus-favicon.png</Image>
+  <Language>*</Language>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

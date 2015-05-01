@@ -1,0 +1,84 @@
+    <h2 class="inline">
+    <span class="taskpage-done-checkbox"><% $update_task->form_field('complete')->render_widget %></span>
+    <% $update_task->form_field('summary')->render_widget %>
+    <% $update_task->form_field('summary')->render_canonicalization_notes %>
+     <div class="submit_buttons">
+       <% Jifty->web->return( label => "Save", submit => $update_task)->render_widget %>
+       <div class="taskpage-<% $task->complete ? "incomplete" : "complete" %>-button">
+<%
+$update_task->button(
+    label  => ( $task->complete ? "Save and Mark incomplete" : "Save and Complete" ),
+    submit => {
+        action    => $update_task,
+        arguments => { complete => ( $task->complete ? 0 : 1 ) },
+    }
+)
+%>
+      </div>
+     </div>
+    </h2>
+
+   <div id="taskpage-basics" class="round">
+    <div class="form_field">
+      <span class="label">Status</span>
+      <span class="text">
+% if ( not $task->accepted ) {
+        <% ( not defined $task->accepted or not length $task->accepted )
+                    ? 'Unaccepted' : 'Declined' %>, 
+% }
+        <% $task->complete ? "Complete" : "Incomplete" %>
+      </span>
+    </div>
+    <div class="form_field">
+      <span class="label">Task ID</span>
+      <span class="text"><% $task->record_locator %></span>
+    </div>
+    <% $update_task->form_field('tags') %>
+    <% $update_task->form_field('description') %>
+    <% $update_task->form_field('group_id') %>
+%# XXX TODO ACL
+% if ( $task->group->has_feature('Projects') ) {
+    <% $update_task->form_field('project') %>
+    <% $update_task->form_field('milestone') %>
+% }
+    <% $update_task->form_field('requestor_id', render_mode => 'read') %>
+    <% $update_task->form_field('owner_id') %>
+    <% $update_task->form_field('starts') %>
+    <% $update_task->form_field('due') %>
+    <% $update_task->form_field('priority') %>
+% if ( $task->owner_id == Jifty->web->current_user->id ) {
+    <% $update_task->form_field('hidden_forever') %>
+% }
+
+% if (Jifty->web->current_user->has_feature("TimeTracking")) {
+    <h2>Time tracking</h2>
+    <div class="inline">
+    <% $update_task->form_field('time_worked',   label => 'Worked') %>
+    <% $update_task->form_field('time_left',     label => 'Left') %>
+    </div>
+% }
+
+    <h2>Repeat</h2>
+% if ( $task->repeat_period ne 'once' and $task->repeat_of ) {
+%     my $repeat = $task->repeat_of;
+      <div class="form_field">
+        <span class="label">Repeat Of</span>
+        <span class="text">
+%   if ( $repeat->id == $task->id ) {
+          <% _("itself") %>
+%   } else {
+          <% Jifty->web->link(
+                label => '#' . $repeat->record_locator,
+                url   => '/task/' . $repeat->record_locator ) %>
+%   }
+        </span>
+      </div>
+% }
+% for (qw(repeat_period repeat_every repeat_stacking repeat_days_before_due)) {
+    <%$update_task->form_field($_)%>
+% }
+</div>
+<%args>
+$task
+$update_task
+</%args>

@@ -1,0 +1,22 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+use BTDT::CurrentUser;
+use YAML;
+
+my $user = BTDT::CurrentUser->new( email => 'alexmv@mit.edu' );
+my $sync = BTDT::Sync::TextFile->new();
+$sync->current_user($user);
+
+undef $/;
+my $outcome = $sync->from_text(<>);
+print scalar( @{ $outcome->{updated} } )
+    . " tasks updated, "
+    . scalar( @{ $outcome->{created} } )
+    . " tasks created, "
+    . scalar( @{ $outcome->{completed} } )
+    . " tasks marked completed\n";
+

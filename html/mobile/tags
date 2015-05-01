@@ -1,0 +1,37 @@
+<&| _elements/wrapper, title  => 'Tasks by tag' &>
+<div class="basicpage">
+  <h1>Find tasks by tag</h1>
+  <% $cloud->html | n %>
+</&>
+</div>
+<%init>
+my $task_collection = BTDT::Model::TaskCollection->new();
+my @tokens = qw/owner me not complete starts before tomorrow/;
+$task_collection->from_tokens(@tokens);
+
+my %tag_count;
+my %display;
+
+# Ignore case for the sake of the count, but keep track of the first
+# tag we saw to determine how to display the tag.
+
+while ( my $task = $task_collection->next ) {
+    for my $tag ( $task->tag_array ) {
+        $display{lc $tag} = $tag unless $display{lc $tag};
+        $tag_count{lc $tag}++;
+    }
+}
+
+
+# '' to get us a leading and trailing slashes
+my $path = BTDT::Model::TaskCollection->join_tokens_url('', @tokens, '');
+
+my $cloud = HTML::TagCloud->new;
+for my $tag ( keys %tag_count ) {
+        my $tagpath = BTDT::Model::TaskCollection->add_tag_tokens($path, $tag);
+
+        $cloud->add( Jifty->web->escape($display{$tag}),
+                     "/mobile/list$tagpath",
+                     $tag_count{$tag} );
+}
+</%init>

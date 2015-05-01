@@ -1,0 +1,19 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+for (my $parallel = 10; $parallel <= 60; $parallel += 2) {
+    my $output = `./bin/fake-clients --parallel $parallel`;
+    my %times;
+    my %count;
+    while ($output =~ /^(\S+) = (\S+) \(\@ (\d+)/mg) {
+        $times{$1} += $2 * $3;
+        $count{$1} += $3;
+    }
+
+    if ($parallel == 5) {
+        print join("\t", parallel => sort keys %times),"\n";
+    }
+    print $parallel, "\t";
+    print join("\t", map {sprintf "%16.14f", $times{$_}/$count{$_}} sort keys %times), "\n";
+}

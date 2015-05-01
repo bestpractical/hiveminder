@@ -1,0 +1,45 @@
+<%args>
+$id => undef
+</%args>
+<%init>
+my $task = BTDT::Model::Task->new();
+$task->load($id);
+return unless $task->id;
+
+my $update_task = Jifty->web->new_action(
+    class   => "UpdateTask",
+    moniker => "add-comment-" . Jifty->web->serial,
+    record  => $task
+);
+</%init>
+<div class="task update inline round" id="<% $update_task->moniker %>">
+  <div class="line">
+    <% $update_task->form_field('comment') %>
+  </div>
+  <div class="button_line">
+    <% 
+        Jifty->web->link(
+            label   => "Add comment",
+            onclick => [
+                {
+                    toggle => 1,
+                    submit => $update_task,
+                    args   => { maybe_view => 1 },
+                },
+            ]
+        )
+                        %>
+    <% 
+        Jifty->web->link( 
+            label     => "Cancel",
+            as_button => 1,
+            class     => 'cancel',
+            onclick   => [
+              { replace_with => '/__jifty/empty' }
+            ]
+        ) %>
+  </div>
+  <hr class="hidden clear" />
+  <div>&nbsp;</div>
+</div>
+<script type="text/javascript">Jifty.Utils.scrollToShow("<% $update_task->moniker %>")</script>

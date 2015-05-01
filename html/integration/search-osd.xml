@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Search Hiveminder</ShortName>
+  <Description>Search Hiveminder</Description>
+  <Contact>support@hiveminder.com</Contact>
+  <Developer>Jesse Vincent/Best Practical Solutions LLC</Developer>
+  <Url type="text/html" 
+        method="GET"
+        enctype="text/plain"
+        template="http://hiveminder.com/search/query/{searchTerms}">
+  </Url>
+  <Image height="16" width="16" type="image/png">http://hiveminder.com/static/images/bee-favicon.png</Image>
+  <Language>*</Language>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

@@ -1,0 +1,26 @@
+#!/usr/bin/env hmperl
+use strict;
+use warnings;
+
+use Jifty;
+BEGIN { Jifty->new }
+use BTDT::CurrentUser;
+use BTDT::Model::User;
+use Getopt::Long;
+my $email;
+GetOptions(
+    'email=s' => \$email,
+);
+
+die "Need to specify --email" unless $email;
+
+my $u = BTDT::Model::User->new( current_user => BTDT::CurrentUser->superuser );
+
+warn "Loading user $email";
+$u->load_by_cols( email => $email);
+
+unless ($u->id) { die "couldn't load user" };
+use BTDT::Notification::AccountDeleted;
+    BTDT::Notification::AccountDeleted->new( to => $u )->send;
+my ($val,$msg) =    $u->delete;
+print ($val,$msg);

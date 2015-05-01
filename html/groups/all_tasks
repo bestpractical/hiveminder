@@ -1,0 +1,20 @@
+<&| /_elements/wrapper, title => "Group ".$group->name,
+                        subtitle => "All tasks",
+                        group_id => $group->id,
+                        tag_collection => $archive &>
+
+<& /_elements/tasklist,
+    collection => $archive,
+    name => 'mygrouptasks',
+    &>
+
+</&>
+
+<%init>
+my $archive = BTDT::Model::TaskCollection->new();
+$archive->from_tokens(group => $group->id);
+
+</%init>
+<%args>
+$group
+</%args>

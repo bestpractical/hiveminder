@@ -1,0 +1,6 @@
+<%args>
+$badge
+</%args>
+<%init>
+$m->comp("/badges/$badge.png");
+</%init>

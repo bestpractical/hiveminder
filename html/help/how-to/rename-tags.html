@@ -1,0 +1,17 @@
+<&| /help/_elements/wrapper, title => 'Rename tags' &>
+
+<p>Tags are really useful for finding tasks. However, sometimes you want to change the name of a tag. Hiveminder supports this through its <% Jifty->web->link(url => "/help/reference/tasklists/bulk-update.html", label => "bulk update") %> feature.</p>
+
+<p>Say you want to rename the <tt>baby</tt> tag to <tt>adult</tt>.
+
+<ol>
+    <li>Go to your <% Jifty->web->link(url => "/todo", label => "todo list") %>.</li>
+    <li>Click the tag you want to rename, <tt>baby</tt>, in the tag cloud on the left. This will show you all tasks with that tag.</li>
+    <li>Click <tt>bulk update</tt> at the top of your tasklist. This will open a new pane.</li>
+    <li>If you have more than one page of tasks, click <tt>all</tt> in the paging links in the top right to show all tasks instead of just the first page. This will make bulk update update all tasks.</li>
+    <li>Put your new tag, <tt>adult</tt>, into the "Add Tags" text box.</li>
+    <li>Put the old tag, <tt>baby</tt>, into the "Remove Tags" text box.</li>
+    <li>Click the <tt>Save Changes</tt> button to perform the bulk update.</li>
+</ol>
+
+</&>

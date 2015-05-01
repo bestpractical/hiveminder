@@ -1,0 +1,68 @@
+<&| /_elements/wrapper, title => $task->summary, subtitle => $subtitle, escape_subtitle => 0 &>
+
+<% Jifty->web->form->start %>
+
+<div class="task <% $task->complete ? 'complete' : 'todo' %>">
+
+    <& /task/_elements/accept_or_decline, task_id => $task->id, update_task => $update_task&>
+    <& /task/_elements/edit, task => $task, update_task => $update_task &>
+    <& /fragments/task/history, task => $task, show_all => 1 &>
+    <div class="button_line">
+      <div class="taskpage-<% $task->complete ? "incomplete" : "complete" %>-button">
+<%
+$update_task->button(
+    label  => ( $task->complete ? "Save and Mark incomplete" : "Save and Complete" ),
+    submit => {
+        action    => $update_task,
+        arguments => { complete => ( $task->complete ? 0 : 1 ) },
+    }
+)
+%>
+      </div>
+      <span class="submit_button"><% Jifty->web->return( label => "Save", submit => $update_task)->render_widget %></span>
+    <% 
+        Jifty::Web::Form::Field->new(
+            label   => "Reset",
+            type    => 'ResetButton',
+            class   => 'cancel',
+        ) %>
+    </div>
+        <& /fragments/task/dependencies, task => $task &>
+</div>
+
+<% Jifty->web->form->end()%>
+
+</&>
+
+<%args>
+$task
+</%args>
+<%init>
+my $update_task = Jifty->web->new_action(
+    class   => 'UpdateTask',
+    moniker => 'mainlist' . Jifty->web->serial,
+    record  => $task
+);
+
+my $subtitle = "#".$task->record_locator;
+
+# XXX TODO ACL
+if ( $task->group->has_feature('Projects') ) {
+    my @links;
+    if ($task->project->id) {
+        push @links, 'P: ' . Jifty->web->link(
+            url   => $task->project->url,
+            label => $task->project->summary,
+        )->as_string;
+    }
+
+    if ($task->project->id) {
+        push @links, 'M: ' . Jifty->web->link(
+            url   => $task->milestone->url,
+            label => $task->milestone->summary,
+        )->as_string;
+    }
+    
+    $subtitle .= join ", ", '', @links if @links;
+}
+</%init>

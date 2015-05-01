@@ -1,0 +1,22 @@
+#feedback_wrapper p {
+    margin-top: 0.4em;
+    margin-bottom: 0.3em;
+}
+
+#feedback textarea {
+    width: 95%;
+    height: 10em;
+    float: left;
+}
+
+#feedback input.button {
+    float: right;
+}
+
+#feedback label {
+    display: none;
+}
+
+#feedback form {
+    margin: 0;
+}

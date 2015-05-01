@@ -1,0 +1,12 @@
+<&| /_elements/wrapper, title => "To Do", tag_collection => $open &>
+
+<& /_elements/tasklist, collection => $open &>
+
+</&>
+
+
+<%init>
+my $tokens = (BTDT::Model::List->default_lists)[0]->{'token_url'};
+my $open = BTDT::Model::TaskCollection->new();
+$open->from_tokens(split '/', $tokens);
+</%init>

@@ -1,0 +1,21 @@
+<%init>
+my $action = Jifty->web->new_action(class => 'CreateTask', moniker => 'newtaskbox');
+</%init>
+<div>
+<h2>New task</h2>
+<% Jifty->web->form->start %>
+<h2 class="inline"><% $action->form_field('summary') %></h2>
+<% $action->form_field('owner_id') %>
+% $action->form_field('group_id')->default_value($group->id) if $group;
+<% $group ? $action->form_field('group_id') : '' %>
+<% $action->form_field('starts') %>
+<% $action->form_field('due') %>
+<% $action->form_field('description') %>
+<% $action->form_field('tags') %>
+<% $action->form_field('priority') %>
+<% Jifty->web->form->submit( label => "Create") %>
+<% Jifty->web->form->end %>
+</div>
+<%args>
+$group => undef
+</%args>

@@ -1,0 +1,69 @@
+<%args>
+$collection => undef
+@tokens => ()
+@ids => ()
+$title => undef
+$name => 'tasklist' # We can't auto-generate this because it is used for the page region's name
+$moniker => undef,
+$hide_if_empty => undef
+$render_submit => 1
+$item_path => "/mini/fragments/tasklist/view"
+$new_item_path => "/mini/fragments/tasklist/new_item_expands"
+$search_open => 0
+$search_open_when_empty => 0
+$brief => undef
+$hide_actions => 0
+$hide_paging => 0
+$hide_feeds => 0
+$page => 1
+</%args>
+<%init>
+unless ($collection) {
+    $collection = BTDT::Model::TaskCollection->new();
+    if (@ids) {
+        for (@ids) {
+            my $task = BTDT::Model::Task->new;
+            $task->load($_);
+            $collection->add_record($task);
+        }
+    } elsif (@tokens) {
+        $collection->from_tokens(@tokens);
+    }
+}
+
+return if $hide_if_empty and not $collection->count;
+
+my $inside_form = Jifty->web->form->is_open();
+
+my $list = Jifty::Web::PageRegion->new(
+    name     => $name,
+    path     => "/mini/fragments/tasklist/list",
+    defaults => {
+        tokens        => BTDT::Model::TaskCollection->join_tokens( grep { defined $_ } $collection->tokens ),
+        ids           => join( ' ', @ids ),
+        page          => $page,
+        render_submit => $render_submit,
+        item_path     => $item_path,
+        new_item_path => $new_item_path,
+        brief         => $brief,
+        moniker       => $moniker,
+        search_open   => $search_open,
+        search_open_when_empty => $search_open_when_empty,
+        hide_actions  => $hide_actions,
+        hide_paging   => $hide_paging,
+        hide_feeds    => $hide_feeds,
+    }
+);
+
+</%init>
+
+<div class="tasklist">
+% if ($title) {
+  <h2><% $title %></h2>
+% }
+
+% Jifty->web->form->start unless $inside_form;
+<% $list->render %>
+% Jifty->web->form->end unless $inside_form;
+</div>
+

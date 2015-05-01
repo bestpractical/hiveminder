@@ -1,0 +1,91 @@
+#protour #content-wrapper {
+    margin: 0;
+}
+
+#protour #content-wrapper2 {
+    margin: 0;
+}
+
+#protour .dropshadow_left_wrap1,
+#protour .dropshadow_left_wrap2,
+#protour .dropshadow_left_wrap3
+{
+    visibility: hidden;
+}
+
+#protour #content {
+    visibility: visible;
+    border: none;
+    padding: 0;
+    margin-top: 3.5em;
+}
+
+#protour.nonuser #content {
+    margin-top: 0.8em;
+}
+
+#protour #headers {
+    float: right;
+    margin-right: 1em;
+    position: absolute;
+    top: 0.2em;
+    right: 0.3em;
+}
+
+#protour #headers h1 { margin-top: 0; }
+#protour.nonuser #headers { top: 0.8em; }
+
+#protour h1.title {
+    width: 60%;
+}
+
+#protour #main {
+    padding-right: 1em;
+    padding-left: 1em;
+    background: none;
+}
+
+#protour p {
+    font-size: 1.4em;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+
+#protour #content-wrapper {
+    width: 100%;
+    float: none;
+    display: block;
+}
+
+/* part 2 */
+
+#protour strong {
+    color: #0065ce;
+    font-weight: bold;
+}
+
+#protour strong a {
+    color: #0065ce;
+}
+
+#protour #content img {
+    padding: 2px;
+    border: 1px solid #aaa;
+}
+
+#protour .feature p {
+    font-size: 1.5em;
+    margin-top: 1.5em;
+    text-align: justify;
+}
+
+#protour #col-left {
+    width: 48%;
+    float: left;
+}
+
+#protour #col-right {
+    width: 48%;
+    float: right;
+}
+
