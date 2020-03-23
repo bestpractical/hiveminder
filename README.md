@@ -1,3 +1,8 @@
+# Description
+  Hiveminder is a web organiser to plan and schedule tasks.
+  Tasks names and dates and can have dependent tasks that are not 
+  scheduled until the independent task is completed.
+  
 # Dependencies
 
  * PostgreSQL 8.1 or newer
